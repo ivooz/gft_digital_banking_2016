@@ -1,4 +1,6 @@
-
+*.log
+*.iml
+**/.idea/*
 # Created by https://www.gitignore.io/api/java,intellij,maven,gradle,eclipse,netbeans
 
 ### Intellij ###
