@@ -9,10 +9,11 @@ import com.gft.digitalbank.exchange.solution.service.dispatching.TradingMessageD
 import com.google.inject.AbstractModule;
 
 /**
+ * Google Guice utility component maping injection point interfaces to implementations.
+ *
  * Created by iozi on 2016-06-28.
  */
-//TODO change name
-public class AppModule extends AbstractModule {
+public class StockExchangeModule extends AbstractModule {
 
     @Override
     protected void configure() {
@@ -21,6 +22,5 @@ public class AppModule extends AbstractModule {
         bind(MessageDeserializer.class).to(GsonMessageDeserializer.class);
         //Queues
         bind(TradingMessageDispatcher.class).to(ThreadPoolTradingMessageDispatcher.class);
-
     }
 }

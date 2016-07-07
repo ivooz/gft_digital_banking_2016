@@ -10,11 +10,11 @@ import com.google.inject.Singleton;
 @Singleton
 public class CancelExecutionTaskProcessor {
 
-    public void processCancel(Cancel cancel, ProductLedger productLedger) {
+    public void processCancel(Cancel cancel, ProductExchange productExchange) {
         int cancelledOrderId = cancel.getCancelledOrderId();
-        Order orderToCancel = productLedger.getById(cancelledOrderId)
+        Order orderToCancel = productExchange.getById(cancelledOrderId)
                 //TODO replace NPE with something else
                 .orElseThrow(() -> new NullPointerException("Unable to find order to cancel!"));
-        productLedger.remove(orderToCancel);
+        productExchange.remove(orderToCancel);
     }
 }

@@ -1,5 +1,6 @@
 package com.gft.digitalbank.exchange.solution.service.tasks.execution;
 
+import com.gft.digitalbank.exchange.solution.service.processing.ProductExchange;
 import com.gft.digitalbank.exchange.solution.service.processing.ProductLedger;
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 
@@ -8,7 +9,7 @@ import com.gft.digitalbank.exchange.solution.model.TradingMessage;
  */
 public interface ExecutionTask extends Comparable {
 
-    void execute(ProductLedger productLedger);
+    void execute(ProductExchange productExchange);
 
     TradingMessage getTradingMessage();
 

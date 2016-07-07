@@ -37,37 +37,31 @@ public class Order extends TradingMessage implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        Order otherOrder = (Order) o;
+    public int compareTo(Object other) {
+        final int BEFORE = -1;
+        final int EQUAL = 0;
+        final int AFTER = 1;
+
+        if(this == other) {
+            return EQUAL;
+        }
+
+        Order otherOrder = (Order) other;
         int comparison = getPrice() - otherOrder.getPrice();
         switch (this.side) {
             case BUY:
                 if (comparison > 0) {
-                    return -1;
+                    return BEFORE;
                 } else if (comparison < 0) {
-                    return 1;
+                    return AFTER;
                 }
             case SELL:
                 if (comparison > 0) {
-                    return 1;
+                    return AFTER;
                 } else if (comparison < 0) {
-                    return -1;
+                    return BEFORE;
                 }
         }
         return (int) (this.getTimestamp() - otherOrder.getTimestamp());
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                ", client='" + client + '\'' +
-                ", id='" + getId() + '\'' +
-                ", broker='" + getBroker() + '\'' +
-                ", timestamp='" + getTimestamp() + '\'' +
-                ", side=" + side +
-                ", product='" + product + '\'' +
-                ", details=" + details +
-                ", scheduledForDeletion=" + scheduledForDeletion +
-                '}';
     }
 }

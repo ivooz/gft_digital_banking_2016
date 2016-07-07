@@ -1,6 +1,7 @@
 package com.gft.digitalbank.exchange.solution.service.tasks.execution;
 
 import com.gft.digitalbank.exchange.solution.model.Order;
+import com.gft.digitalbank.exchange.solution.service.processing.ProductExchange;
 import com.gft.digitalbank.exchange.solution.service.processing.ProductLedger;
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.processing.OrderExecutionTaskProcessor;
@@ -20,8 +21,8 @@ public class OrderExecutionTask implements ExecutionTask {
     }
 
     @Override
-    public void execute(ProductLedger productLedger) {
-        orderTaskProcessor.processOrder(order, productLedger);
+    public void execute(ProductExchange productExchange) {
+        orderTaskProcessor.processOrder(order, productExchange);
     }
 
     @Override

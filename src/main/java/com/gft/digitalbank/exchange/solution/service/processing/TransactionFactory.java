@@ -8,7 +8,6 @@ import com.google.inject.Singleton;
 /**
  * Created by iozi on 2016-06-30.
  */
-@Singleton
 public class TransactionFactory {
 
     public Transaction createTransaction(Order processedOrder, Order passiveOrder, int amountTraded, int id) {

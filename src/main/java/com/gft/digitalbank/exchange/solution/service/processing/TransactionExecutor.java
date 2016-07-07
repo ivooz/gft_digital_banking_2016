@@ -2,7 +2,6 @@ package com.gft.digitalbank.exchange.solution.service.processing;
 
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.util.Optional;
@@ -13,16 +12,13 @@ import java.util.Optional;
 @Singleton
 public class TransactionExecutor {
 
-    @Inject
-    TransactionFactory transactionFactory;
-
-    public void matchAndClearOrder(Order processedOrder,ProductLedger productLedger) {
+    public void matchAndClearOrder(Order processedOrder, ProductExchange productExchange) {
         Side processedOrderSide = processedOrder.getSide();
         Side passiveOrderSide = processedOrderSide.opposite();
         while (true) {
-            Optional<Order> passiveOrderOptional = productLedger.peekNextOrder(passiveOrderSide);
+            Optional<Order> passiveOrderOptional = productExchange.peekNextOrder(passiveOrderSide);
             if (!passiveOrderOptional.isPresent()) {
-                productLedger.addOrder(processedOrder);
+                productExchange.addOrder(processedOrder);
                 return;
             }
             Order passiveOrder = passiveOrderOptional.get();
@@ -30,10 +26,9 @@ public class TransactionExecutor {
                 int processedOrderAmount = processedOrder.getAmount();
                 int passiveOrderAmount = passiveOrder.getAmount();
                 int amountTraded = processedOrderAmount > passiveOrderAmount ? passiveOrderAmount : processedOrderAmount;
-                productLedger.addTransaction(transactionFactory.createTransaction(processedOrder, passiveOrder,
-                        amountTraded, productLedger.getTransactionCount() + 1));
+                productExchange.addTransaction(processedOrder, passiveOrder, amountTraded);
                 if (processedOrderAmount == passiveOrderAmount) {
-                    productLedger.markOrderAsComplete(passiveOrder);
+                    productExchange.markOrderAsComplete(passiveOrder);
                     break;
                 }
                 int newAmountToProcess = processedOrderAmount - amountTraded;
@@ -41,11 +36,11 @@ public class TransactionExecutor {
                     passiveOrder.getDetails().setAmount(passiveOrderAmount - amountTraded);
                     break;
                 } else {
-                    productLedger.markOrderAsComplete(passiveOrder);
+                    productExchange.markOrderAsComplete(passiveOrder);
                     processedOrder.getDetails().setAmount(newAmountToProcess);
                 }
             } else {
-                productLedger.addOrder(processedOrder);
+                productExchange.addOrder(processedOrder);
                 break;
             }
         }

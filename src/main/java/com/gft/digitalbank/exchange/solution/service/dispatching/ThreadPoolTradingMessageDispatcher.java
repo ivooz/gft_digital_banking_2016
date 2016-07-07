@@ -21,9 +21,10 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public class ThreadPoolTradingMessageDispatcher implements TradingMessageDispatcher {
 
-    private static final int CORE_POOL_SIZE = 5;
-    private static final int MAXIMUM_POOL_SIZE = 100;
+    private static final int MAXIMUM_POOL_SIZE = 200;
     private static final int KEEP_ALIVE_TIME = 0;
+    private static final int MESSAGE_EXECUTOR_CORE_POOL_SIZE = 40;
+    private static final int SCHEDULED_EXECUTOR_CORE_POOL_SIZE = 5;
 
     private final OrderSchedulingTaskFactory orderTaskFactory;
     private final ModificationSchedulingTaskFactory modificationTaskFactory;
@@ -41,10 +42,10 @@ public class ThreadPoolTradingMessageDispatcher implements TradingMessageDispatc
         this.modificationTaskFactory = modificationTaskFactory;
         this.cancelTaskFactory = cancelTaskFactory;
         this.orderNotFoundMessageBroker = orderNotFoundMessageBroker;
-        this.threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
+        this.threadPoolExecutor = new ThreadPoolExecutor(MESSAGE_EXECUTOR_CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
                 KEEP_ALIVE_TIME, TimeUnit.SECONDS, new PriorityBlockingQueue<>());
+        this.scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(SCHEDULED_EXECUTOR_CORE_POOL_SIZE);
         this.orderNotFoundMessageBroker.subscribe(this);
-        this.scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(5);
     }
 
     @Override
@@ -76,5 +77,4 @@ public class ThreadPoolTradingMessageDispatcher implements TradingMessageDispatc
         scheduledThreadPoolExecutor.shutdown();
         scheduledThreadPoolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
     }
-
 }

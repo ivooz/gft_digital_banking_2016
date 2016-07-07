@@ -15,9 +15,6 @@ public class CancelExecutionTaskFactory {
     @Inject
     CancelExecutionTaskProcessor cancelTaskProcessor;
 
-    @Inject
-    private IdProductIndex idProductIndex;
-
     public CancelExecutionTask createCancelTask(Cancel cancel) {
         return new CancelExecutionTask(cancelTaskProcessor, cancel);
     }

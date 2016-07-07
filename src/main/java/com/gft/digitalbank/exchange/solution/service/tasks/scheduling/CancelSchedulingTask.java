@@ -1,24 +1,27 @@
 package com.gft.digitalbank.exchange.solution.service.tasks.scheduling;
 
+import com.gft.digitalbank.exchange.solution.service.processing.ProductExchange;
 import com.gft.digitalbank.exchange.solution.service.processing.ProductLedger;
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.events.OrderNotFoundMessageBroker;
 import com.gft.digitalbank.exchange.solution.service.processing.IdProductIndex;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductLedgerIndex;
+import com.gft.digitalbank.exchange.solution.service.processing.ProductExchangeIndex;
 import com.gft.digitalbank.exchange.solution.service.tasks.execution.CancelExecutionTask;
+
+import java.util.Optional;
 
 /**
  * Created by iozi on 2016-06-28.
  */
 public class CancelSchedulingTask implements SchedulingTask,Runnable {
 
-    private final ProductLedgerIndex productMessageQueuesHolder;
+    private final ProductExchangeIndex productMessageQueuesHolder;
     private final IdProductIndex idProductIndex;
     private final ExecutionTaskScheduler executionTaskScheduler;
     private final OrderNotFoundMessageBroker orderNotFoundMessageBroker;
     private final CancelExecutionTask cancelExecutionTask;
 
-    public CancelSchedulingTask(ProductLedgerIndex productMessageQueuesHolder,
+    public CancelSchedulingTask(ProductExchangeIndex productMessageQueuesHolder,
                                 ExecutionTaskScheduler executionTaskScheduler,
                                 IdProductIndex idProductIndex,
                                 OrderNotFoundMessageBroker orderNotFoundMessageBroker,
@@ -32,14 +35,14 @@ public class CancelSchedulingTask implements SchedulingTask,Runnable {
 
     @Override
     public void run() {
-        String product = idProductIndex.get(cancelExecutionTask.getCancel().getCancelledOrderId());
-        if(product == null) {
+        Optional<String> productOptional = idProductIndex.get(cancelExecutionTask.getCancel().getCancelledOrderId());
+        if(!productOptional.isPresent()) {
             orderNotFoundMessageBroker.broadCastOrderNotFoundMessage(this);
             return;
         }
-        ProductLedger productLedger = productMessageQueuesHolder.getLedger(product);
-        synchronized (productLedger) {
-            executionTaskScheduler.scheduleExecutionTask(cancelExecutionTask, productLedger);
+        ProductExchange productExchange = productMessageQueuesHolder.getLedger(productOptional.get());
+        synchronized (productExchange) {
+            executionTaskScheduler.scheduleExecutionTask(cancelExecutionTask, productExchange);
         }
     }
 
@@ -47,8 +50,4 @@ public class CancelSchedulingTask implements SchedulingTask,Runnable {
     public TradingMessage getTradingMessage() {
         return cancelExecutionTask.getTradingMessage();
     }
-
-
-
-
 }

@@ -1,10 +1,9 @@
 package com.gft.digitalbank.exchange.solution.service.tasks.scheduling;
 
 import com.gft.digitalbank.exchange.solution.model.Cancel;
-import com.gft.digitalbank.exchange.solution.service.events.ExchangeEventBus;
 import com.gft.digitalbank.exchange.solution.service.events.OrderNotFoundMessageBroker;
 import com.gft.digitalbank.exchange.solution.service.processing.IdProductIndex;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductLedgerIndex;
+import com.gft.digitalbank.exchange.solution.service.processing.ProductExchangeIndex;
 import com.gft.digitalbank.exchange.solution.service.tasks.execution.CancelExecutionTaskFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -16,7 +15,7 @@ import com.google.inject.Singleton;
 public class CancelSchedulingTaskFactory {
 
     @Inject
-    private ProductLedgerIndex productMessageQueuesHolder;
+    private ProductExchangeIndex productMessageQueuesHolder;
 
     @Inject
     private ExecutionTaskScheduler executionTaskScheduler;

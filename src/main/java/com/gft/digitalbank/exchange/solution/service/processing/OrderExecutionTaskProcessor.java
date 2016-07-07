@@ -16,7 +16,7 @@ public class OrderExecutionTaskProcessor {
     @Inject
     TransactionExecutor transactionExecutor;
 
-    public void processOrder(Order processedOrder, ProductLedger productLedger) {
-        transactionExecutor.matchAndClearOrder(processedOrder,productLedger);
+    public void processOrder(Order processedOrder, ProductExchange productExchange) {
+        transactionExecutor.matchAndClearOrder(processedOrder,productExchange);
     }
 }

@@ -14,14 +14,14 @@ public class ModificationExecutionTaskProcessor {
     @Inject
     TransactionExecutor transactionExecutor;
 
-    public void processModification(Modification modification, ProductLedger productLedger) {
-        Order orderToModify = productLedger.getById(modification.getModifiedOrderId())
+    public void processModification(Modification modification, ProductExchange productExchange) {
+        Order orderToModify = productExchange.getById(modification.getModifiedOrderId())
                 //TODO
                 .orElseThrow(() -> new NullPointerException("Unable to find order to modify!"));
         Order copy = new Order(orderToModify);
         copy.setDetails(modification.getDetails());
-        productLedger.remove(orderToModify);
+        productExchange.remove(orderToModify);
         copy.setTimestamp(modification.getTimestamp());
-        transactionExecutor.matchAndClearOrder(copy,productLedger);
+        transactionExecutor.matchAndClearOrder(copy,productExchange);
     }
 }

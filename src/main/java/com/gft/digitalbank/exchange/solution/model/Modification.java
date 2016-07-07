@@ -10,14 +10,4 @@ public class Modification extends TradingMessage {
 
     private int modifiedOrderId;
     private Details details;
-
-    @Override
-    public String toString() {
-        return "Modification{" +
-                "timestamp=" + getTimestamp() +
-                ", modifiedOrderId=" + modifiedOrderId +
-                ", broker=" + getBroker() +
-                ", details=" + details +
-                '}';
-    }
 }

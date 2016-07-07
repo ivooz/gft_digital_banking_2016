@@ -4,6 +4,7 @@ import com.google.inject.Singleton;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -18,7 +19,7 @@ public class IdProductIndex {
         idProductMap.put(id, product);
     }
 
-    public String get(int id) {
-        return idProductMap.get(id);
+    public Optional<String> get(int id) {
+        return Optional.ofNullable(idProductMap.get(id));
     }
 }

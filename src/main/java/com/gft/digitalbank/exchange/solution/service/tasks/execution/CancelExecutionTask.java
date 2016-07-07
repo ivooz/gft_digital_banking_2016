@@ -1,6 +1,7 @@
 package com.gft.digitalbank.exchange.solution.service.tasks.execution;
 
 import com.gft.digitalbank.exchange.solution.model.Cancel;
+import com.gft.digitalbank.exchange.solution.service.processing.ProductExchange;
 import com.gft.digitalbank.exchange.solution.service.processing.ProductLedger;
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.processing.CancelExecutionTaskProcessor;
@@ -19,9 +20,9 @@ public class CancelExecutionTask implements ExecutionTask {
     }
 
     @Override
-    public void execute(ProductLedger productLedger) {
+    public void execute(ProductExchange productExchange) {
 
-        cancelTaskProcessor.processCancel(cancel, productLedger);
+        cancelTaskProcessor.processCancel(cancel, productExchange);
     }
 
     @Override

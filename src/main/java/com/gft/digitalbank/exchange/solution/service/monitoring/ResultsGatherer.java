@@ -5,12 +5,15 @@ import com.gft.digitalbank.exchange.model.OrderEntry;
 import com.gft.digitalbank.exchange.model.SolutionResult;
 import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.model.Order;
+import com.gft.digitalbank.exchange.solution.model.Side;
+import com.gft.digitalbank.exchange.solution.service.processing.ProductExchange;
 import com.gft.digitalbank.exchange.solution.service.processing.ProductLedger;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductLedgerIndex;
+import com.gft.digitalbank.exchange.solution.service.processing.ProductExchangeIndex;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -20,7 +23,7 @@ import java.util.stream.Collectors;
 public class ResultsGatherer {
 
     @Inject
-    ProductLedgerIndex productLedgerIndex;
+    ProductExchangeIndex productExchangeIndex;
 
     @Inject
     OrderEntryConverter orderEntryConverter;
@@ -31,63 +34,37 @@ public class ResultsGatherer {
                 .build();
     }
 
-
     public List<OrderBook> getOrdersBook() {
-        return productLedgerIndex.getProductLedgerMap().values().parallelStream()
+        return productExchangeIndex.getProductExchangeMap().values().parallelStream()
                 .map(this::getOrderBook)
                 .filter(orderBook -> !orderBook.getBuyEntries().isEmpty() || !orderBook.getSellEntries().isEmpty())
                 .collect(Collectors.toList());
     }
 
     public List<Transaction> getTransactions() {
-        return productLedgerIndex.getProductLedgerMap().values().parallelStream()
-                .map(ProductLedger::getTransactions)
+        return productExchangeIndex.getProductExchangeMap().values().parallelStream()
+                .map(ProductExchange::getTransactions)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
-    private OrderBook getOrderBook(ProductLedger ledger) {
+    private OrderBook getOrderBook(ProductExchange productExchange) {
+        return OrderBook.builder().product(productExchange.getProduct())
+                .buyEntries(extractOrderEntries(Side.BUY,productExchange))
+                .sellEntries(extractOrderEntries(Side.SELL,productExchange))
+                .build();
+    }
 
-        PriorityQueue<Order> buyOrders = ledger.getBuyOrders();
-        List<OrderEntry> buyEntries = new ArrayList<>(buyOrders.size());
-
+    private List<OrderEntry> extractOrderEntries(Side side, ProductExchange productExchange) {
+        List<OrderEntry> orderEntries = new ArrayList<>();
         int index = 1;
-        Order order = buyOrders.poll();
-        while (order != null) {
-            while (order.isScheduledForDeletion()) {
-                order = buyOrders.poll();
-                if (order == null) {
-                    break;
-                }
-            }
-            if (order == null) {
-                break;
-            }
+        Optional<Order> orderOptional = productExchange.getNextOrder(side);
+        while (orderOptional.isPresent()) {
+            Order order = orderOptional.get();
             order.setId(index++);
-            buyEntries.add(orderEntryConverter.convertToOrderEntry(order));
-            order = buyOrders.poll();
+            orderEntries.add(orderEntryConverter.convertToOrderEntry(order));
+            orderOptional = productExchange.getNextOrder(side);
         }
-
-        PriorityQueue<Order> sellOrders = ledger.getSellOrders();
-        List<OrderEntry> sellEntries = new ArrayList<>(sellOrders.size());
-
-        index = 1;
-        order = sellOrders.poll();
-        while (order != null) {
-            while (order.isScheduledForDeletion()) {
-                order = sellOrders.poll();
-                if (order == null) {
-                    break;
-                }
-            }
-            if (order == null) {
-                break;
-            }
-            order.setId(index++);
-            sellEntries.add(orderEntryConverter.convertToOrderEntry(order));
-            order = sellOrders.poll();
-        }
-
-        return OrderBook.builder().product(ledger.getProduct()).buyEntries(buyEntries).sellEntries(sellEntries).build();
+        return orderEntries;
     }
 }
