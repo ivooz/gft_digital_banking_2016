@@ -7,7 +7,6 @@ import com.gft.digitalbank.exchange.solution.service.deserialization.Deserializa
 import com.gft.digitalbank.exchange.solution.service.deserialization.DeserializationResult;
 import com.gft.digitalbank.exchange.solution.service.deserialization.MessageDeserializer;
 import com.gft.digitalbank.exchange.solution.service.dispatching.TradingMessageDispatcher;
-import com.gft.digitalbank.exchange.solution.service.events.ExchangeEventBus;
 import com.gft.digitalbank.exchange.solution.service.monitoring.ProcessingMonitor;
 
 import javax.jms.Message;
@@ -25,7 +24,6 @@ public class TradingMessageListener implements MessageListener {
 
     public TradingMessageListener(TradingMessageDispatcher tradingMessageDispatcher,
                                   MessageDeserializer messageDeserializer,
-                                  ExchangeEventBus exchangeEventBus,
                                   ProcessingMonitor processingMonitor) {
         this.tradingMessageDispatcher = tradingMessageDispatcher;
         this.messageDeserializer = messageDeserializer;
@@ -33,7 +31,7 @@ public class TradingMessageListener implements MessageListener {
     }
 
     @Override
-    public synchronized void onMessage(Message message) {
+    public void onMessage(Message message) {
         try {
             TextMessage textMessage = (TextMessage) message;
             DeserializationResult deserializationResult = messageDeserializer.deserialize(textMessage.getText());
@@ -58,4 +56,5 @@ public class TradingMessageListener implements MessageListener {
             e.printStackTrace();
         }
     }
+
 }

@@ -21,7 +21,6 @@ public class CancelExecutionTask implements ExecutionTask {
 
     @Override
     public void execute(ProductExchange productExchange) {
-
         cancelTaskProcessor.processCancel(cancel, productExchange);
     }
 

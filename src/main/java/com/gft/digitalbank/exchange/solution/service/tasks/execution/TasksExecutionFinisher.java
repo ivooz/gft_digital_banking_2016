@@ -1,4 +1,4 @@
-package com.gft.digitalbank.exchange.solution.service.tasks.scheduling;
+package com.gft.digitalbank.exchange.solution.service.tasks.execution;
 
 import com.gft.digitalbank.exchange.solution.service.processing.ProductExchangeIndex;
 import com.google.inject.Inject;

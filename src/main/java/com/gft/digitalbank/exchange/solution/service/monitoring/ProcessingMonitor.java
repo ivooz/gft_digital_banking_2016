@@ -4,7 +4,7 @@ import com.gft.digitalbank.exchange.listener.ProcessingListener;
 import com.gft.digitalbank.exchange.solution.service.dispatching.TradingMessageDispatcher;
 import com.gft.digitalbank.exchange.solution.service.events.ExchangeEventBus;
 import com.gft.digitalbank.exchange.solution.service.events.TradingFinishedEvent;
-import com.gft.digitalbank.exchange.solution.service.tasks.scheduling.TasksExecutionFinisher;
+import com.gft.digitalbank.exchange.solution.service.tasks.execution.TasksExecutionFinisher;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.slf4j.Logger;

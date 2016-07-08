@@ -1,17 +1,16 @@
 package com.gft.digitalbank.exchange.solution.service.tasks.scheduling;
 
 import com.gft.digitalbank.exchange.solution.model.Order;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductExchange;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductLedger;
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.processing.IdProductIndex;
+import com.gft.digitalbank.exchange.solution.service.processing.ProductExchange;
 import com.gft.digitalbank.exchange.solution.service.processing.ProductExchangeIndex;
 import com.gft.digitalbank.exchange.solution.service.tasks.execution.OrderExecutionTask;
 
 /**
  * Created by iozi on 2016-06-28.
  */
-public class OrderSchedulingTask implements SchedulingTask,Runnable {
+public class OrderSchedulingTask implements SchedulingTask, Runnable {
 
     private final ProductExchangeIndex productExchangeIndex;
     private final IdProductIndex idProductIndex;
@@ -33,9 +32,7 @@ public class OrderSchedulingTask implements SchedulingTask,Runnable {
         Order order = orderExecutionTask.getOrder();
         idProductIndex.put(order.getId(), order.getProduct());
         ProductExchange productExchange = productExchangeIndex.getLedger(order.getProduct());
-        synchronized (productExchange) {
-            executionTaskScheduler.scheduleExecutionTask(orderExecutionTask, productExchange);
-        }
+        executionTaskScheduler.scheduleExecutionTask(orderExecutionTask, productExchange);
     }
 
     @Override

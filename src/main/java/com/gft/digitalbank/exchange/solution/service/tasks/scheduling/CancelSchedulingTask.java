@@ -1,10 +1,9 @@
 package com.gft.digitalbank.exchange.solution.service.tasks.scheduling;
 
-import com.gft.digitalbank.exchange.solution.service.processing.ProductExchange;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductLedger;
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.events.OrderNotFoundMessageBroker;
 import com.gft.digitalbank.exchange.solution.service.processing.IdProductIndex;
+import com.gft.digitalbank.exchange.solution.service.processing.ProductExchange;
 import com.gft.digitalbank.exchange.solution.service.processing.ProductExchangeIndex;
 import com.gft.digitalbank.exchange.solution.service.tasks.execution.CancelExecutionTask;
 
@@ -13,7 +12,7 @@ import java.util.Optional;
 /**
  * Created by iozi on 2016-06-28.
  */
-public class CancelSchedulingTask implements SchedulingTask,Runnable {
+public class CancelSchedulingTask implements SchedulingTask, Runnable {
 
     private final ProductExchangeIndex productMessageQueuesHolder;
     private final IdProductIndex idProductIndex;
@@ -36,14 +35,12 @@ public class CancelSchedulingTask implements SchedulingTask,Runnable {
     @Override
     public void run() {
         Optional<String> productOptional = idProductIndex.get(cancelExecutionTask.getCancel().getCancelledOrderId());
-        if(!productOptional.isPresent()) {
+        if (!productOptional.isPresent()) {
             orderNotFoundMessageBroker.broadCastOrderNotFoundMessage(this);
             return;
         }
         ProductExchange productExchange = productMessageQueuesHolder.getLedger(productOptional.get());
-        synchronized (productExchange) {
-            executionTaskScheduler.scheduleExecutionTask(cancelExecutionTask, productExchange);
-        }
+        executionTaskScheduler.scheduleExecutionTask(cancelExecutionTask, productExchange);
     }
 
     @Override

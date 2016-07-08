@@ -20,12 +20,9 @@ public class TradingMessageListenerFactory {
     private MessageDeserializer messageDeserializer;
 
     @Inject
-    private ExchangeEventBus exchangeEventBus;
-
-    @Inject
     private ProcessingMonitor processingMonitor;
 
     public TradingMessageListener createTradingMessageListener() {
-        return new TradingMessageListener(tradingMessageDispatcher, messageDeserializer, exchangeEventBus, processingMonitor);
+        return new TradingMessageListener(tradingMessageDispatcher, messageDeserializer, processingMonitor);
     }
 }

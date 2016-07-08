@@ -16,11 +16,16 @@ public class ProductExchangeIndex {
 
     private final Map<String, ProductExchange> productExchangeMap = new HashMap<>();
 
-    public synchronized ProductExchange getLedger(String product) {
+    public ProductExchange getLedger(String product) {
         ProductExchange productExchange = productExchangeMap.get(product);
         if (productExchange == null) {
-            productExchange = new ProductExchange(product);
-            productExchangeMap.put(product, productExchange);
+            synchronized (this) {
+                productExchange = productExchangeMap.get(product);
+                if (productExchange == null) {
+                    productExchange = new ProductExchange(product);
+                    productExchangeMap.put(product, productExchange);
+                }
+            }
         }
         return productExchange;
     }

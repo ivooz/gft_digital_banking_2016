@@ -21,10 +21,10 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public class ThreadPoolTradingMessageDispatcher implements TradingMessageDispatcher {
 
-    private static final int MAXIMUM_POOL_SIZE = 200;
-    private static final int KEEP_ALIVE_TIME = 0;
-    private static final int MESSAGE_EXECUTOR_CORE_POOL_SIZE = 40;
-    private static final int SCHEDULED_EXECUTOR_CORE_POOL_SIZE = 5;
+    private static final int MAXIMUM_POOL_SIZE = 10;
+    private static final int KEEP_ALIVE_TIME = 200;
+    private static final int MESSAGE_EXECUTOR_CORE_POOL_SIZE = 1;
+    private static final int SCHEDULED_EXECUTOR_CORE_POOL_SIZE = 1;
 
     private final OrderSchedulingTaskFactory orderTaskFactory;
     private final ModificationSchedulingTaskFactory modificationTaskFactory;
@@ -43,7 +43,7 @@ public class ThreadPoolTradingMessageDispatcher implements TradingMessageDispatc
         this.cancelTaskFactory = cancelTaskFactory;
         this.orderNotFoundMessageBroker = orderNotFoundMessageBroker;
         this.threadPoolExecutor = new ThreadPoolExecutor(MESSAGE_EXECUTOR_CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
-                KEEP_ALIVE_TIME, TimeUnit.SECONDS, new PriorityBlockingQueue<>());
+                KEEP_ALIVE_TIME, TimeUnit.MILLISECONDS, new PriorityBlockingQueue<>());
         this.scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(SCHEDULED_EXECUTOR_CORE_POOL_SIZE);
         this.orderNotFoundMessageBroker.subscribe(this);
     }
@@ -66,13 +66,14 @@ public class ThreadPoolTradingMessageDispatcher implements TradingMessageDispatc
     @Override
     public void onOrderNotFound(Runnable runnable) {
         //Back to the queue
-        scheduledThreadPoolExecutor.schedule(runnable,10,TimeUnit.MILLISECONDS);
+        scheduledThreadPoolExecutor.schedule(runnable,1,TimeUnit.MILLISECONDS);
     }
 
     @Override
     //TODO handle exception
     public void shutdownAndAwaitTermination() throws InterruptedException {
         threadPoolExecutor.shutdown();
+        //TODO
         threadPoolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
         scheduledThreadPoolExecutor.shutdown();
         scheduledThreadPoolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);

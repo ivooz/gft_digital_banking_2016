@@ -10,16 +10,16 @@ public class StringContainsMessageTypeCheckerStrategy implements MessageTypeChec
 
     @Override
     public MessageType checkMessageType(String message) throws DeserializationException {
-        if (message.toLowerCase().contains("messagetype\":\"order")) {
+        if (message.toLowerCase().contains("type\":\"o")) {
             return MessageType.ORDER;
         }
-        if (message.toLowerCase().contains("messagetype\":\"modification")) {
+        if (message.toLowerCase().contains("type\":\"m")) {
             return MessageType.MODIFICATION;
         }
-        if (message.toLowerCase().contains("messagetype\":\"cancel")) {
+        if (message.toLowerCase().contains("type\":\"c")) {
             return MessageType.CANCEL;
         }
-        if (message.toLowerCase().contains("messagetype\":\"shutdown")) {
+        if (message.toLowerCase().contains("type\":\"s")) {
             return MessageType.SHUTDOWN;
         }
         throw new DeserializationException("Unable to determine message type");

@@ -22,6 +22,6 @@ public class ModificationExecutionTaskProcessor {
         copy.setDetails(modification.getDetails());
         productExchange.remove(orderToModify);
         copy.setTimestamp(modification.getTimestamp());
-        transactionExecutor.matchAndClearOrder(copy,productExchange);
+        transactionExecutor.matchAndClearOrder(copy, productExchange);
     }
 }

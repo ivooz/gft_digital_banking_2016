@@ -44,17 +44,16 @@ public class ProductExchange {
         return orderCache.get(id);
     }
 
+    public void executeRemainingTasks() {
+        executeTasksWhile(ExecutionTaskQueue::isNotEmpty);
+    }
+
     public void addTask(ExecutionTask executionTask) {
         executionTaskQueue.addTask(executionTask);
         executeTasksWhile(ExecutionTaskQueue::isFull);
     }
 
-
-    public void executeRemainingTasks() {
-        executeTasksWhile(ExecutionTaskQueue::isNotEmpty);
-    }
-
-    private void executeTasksWhile(Predicate<ExecutionTaskQueue> taskQueuePredicate) {
+    private synchronized void executeTasksWhile(Predicate<ExecutionTaskQueue> taskQueuePredicate) {
         while (taskQueuePredicate.test(executionTaskQueue)) {
             Optional<ExecutionTask> nextTaskToExecute = executionTaskQueue.getNextTaskToExecute();
             if (!nextTaskToExecute.isPresent()) {

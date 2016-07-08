@@ -4,6 +4,9 @@ import com.gft.digitalbank.exchange.solution.service.tasks.execution.ExecutionTa
 
 import java.util.Optional;
 import java.util.PriorityQueue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * Created by iozi on 2016-07-06.
@@ -12,7 +15,7 @@ public class ExecutionTaskQueue {
 
     private static final int MAX_QUEUE_SIZE = 5;
 
-    private final PriorityQueue<ExecutionTask> tasksToExecute = new PriorityQueue<>();
+    private final BlockingQueue<ExecutionTask> tasksToExecute = new PriorityBlockingQueue<>(2*MAX_QUEUE_SIZE+1);
 
     public void addTask(ExecutionTask executionTask) {
         tasksToExecute.add(executionTask);

@@ -15,6 +15,6 @@ public class CancelExecutionTaskProcessor {
         Order orderToCancel = productExchange.getById(cancelledOrderId)
                 //TODO replace NPE with something else
                 .orElseThrow(() -> new NullPointerException("Unable to find order to cancel!"));
-        productExchange.remove(orderToCancel);
+            productExchange.remove(orderToCancel);
     }
 }
