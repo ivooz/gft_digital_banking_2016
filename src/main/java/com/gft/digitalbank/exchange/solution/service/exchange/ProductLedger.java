@@ -1,7 +1,8 @@
-package com.gft.digitalbank.exchange.solution.service.processing;
+package com.gft.digitalbank.exchange.solution.service.exchange;
 
 import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.model.Order;
+import com.gft.digitalbank.exchange.solution.service.processing.TransactionFactory;
 
 import java.util.ArrayList;
 import java.util.List;

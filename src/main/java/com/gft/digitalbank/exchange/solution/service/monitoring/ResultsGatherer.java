@@ -6,14 +6,15 @@ import com.gft.digitalbank.exchange.model.SolutionResult;
 import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductExchange;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductLedger;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductExchangeIndex;
+import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
+import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchangeIndex;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import java.util.*;
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -50,8 +51,8 @@ public class ResultsGatherer {
 
     private OrderBook getOrderBook(ProductExchange productExchange) {
         return OrderBook.builder().product(productExchange.getProduct())
-                .buyEntries(extractOrderEntries(Side.BUY,productExchange))
-                .sellEntries(extractOrderEntries(Side.SELL,productExchange))
+                .buyEntries(extractOrderEntries(Side.BUY, productExchange))
+                .sellEntries(extractOrderEntries(Side.SELL, productExchange))
                 .build();
     }
 

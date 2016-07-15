@@ -42,7 +42,7 @@ public class Order extends TradingMessage implements Comparable {
         final int EQUAL = 0;
         final int AFTER = 1;
 
-        if(this == other) {
+        if (this == other) {
             return EQUAL;
         }
 

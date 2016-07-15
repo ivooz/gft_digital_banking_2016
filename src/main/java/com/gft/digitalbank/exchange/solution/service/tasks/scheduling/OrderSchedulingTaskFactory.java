@@ -2,8 +2,8 @@ package com.gft.digitalbank.exchange.solution.service.tasks.scheduling;
 
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.service.processing.IdProductIndex;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductExchangeIndex;
-import com.gft.digitalbank.exchange.solution.service.tasks.execution.OrderExecutionTaskFactory;
+import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchangeIndex;
+import com.gft.digitalbank.exchange.solution.service.tasks.execution.OrderProcessingTaskFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -23,10 +23,10 @@ public class OrderSchedulingTaskFactory {
     private IdProductIndex idProductIndex;
 
     @Inject
-    private OrderExecutionTaskFactory orderExecutionTaskFactory;
+    private OrderProcessingTaskFactory orderProcessingTaskFactory;
 
     public OrderSchedulingTask createOrderTask(Order order) {
         return new OrderSchedulingTask(productExchangeIndex, idProductIndex, executionTaskScheduler,
-                orderExecutionTaskFactory.createOrderTask(order));
+                orderProcessingTaskFactory.createOrderTask(order));
     }
 }

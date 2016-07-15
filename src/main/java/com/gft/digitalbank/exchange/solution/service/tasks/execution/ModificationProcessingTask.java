@@ -1,20 +1,19 @@
 package com.gft.digitalbank.exchange.solution.service.tasks.execution;
 
 import com.gft.digitalbank.exchange.solution.model.Modification;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductExchange;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductLedger;
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.processing.ModificationExecutionTaskProcessor;
+import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 
 /**
  * Created by iozi on 2016-06-28.
  */
-public class ModificationExecutionTask implements ExecutionTask {
+public class ModificationProcessingTask implements ProcessingTask {
 
     private final ModificationExecutionTaskProcessor modificationTaskProcessor;
     private final Modification modification;
 
-    public ModificationExecutionTask(ModificationExecutionTaskProcessor modificationTaskProcessor, Modification modification) {
+    public ModificationProcessingTask(ModificationExecutionTaskProcessor modificationTaskProcessor, Modification modification) {
         this.modificationTaskProcessor = modificationTaskProcessor;
         this.modification = modification;
     }

@@ -9,12 +9,12 @@ import com.google.inject.Singleton;
  * Created by iozi on 2016-06-28.
  */
 @Singleton
-public class OrderExecutionTaskFactory {
+public class OrderProcessingTaskFactory {
 
     @Inject
     private OrderExecutionTaskProcessor orderTaskProcessor;
 
-    public OrderExecutionTask createOrderTask(Order order) {
-        return new OrderExecutionTask(orderTaskProcessor, order);
+    public OrderProcessingTask createOrderTask(Order order) {
+        return new OrderProcessingTask(orderTaskProcessor, order);
     }
 }

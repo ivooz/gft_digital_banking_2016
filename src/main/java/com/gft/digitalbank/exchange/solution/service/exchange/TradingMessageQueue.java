@@ -1,8 +1,7 @@
-package com.gft.digitalbank.exchange.solution.service.processing;
+package com.gft.digitalbank.exchange.solution.service.exchange;
 
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
-import com.gft.digitalbank.exchange.solution.service.tasks.execution.ExecutionTask;
 import lombok.Data;
 
 import java.util.Optional;
@@ -19,12 +18,12 @@ public class TradingMessageQueue {
 
     public Optional<Order> getNextOrder(Side side) {
         Order order = null;
-        while (true){
+        while (true) {
             order = pollOrder(side);
             if (order == null) {
                 return Optional.empty();
             }
-            if(!order.isScheduledForDeletion()) {
+            if (!order.isScheduledForDeletion()) {
                 return Optional.of(order);
             }
         }
@@ -37,7 +36,7 @@ public class TradingMessageQueue {
             if (order == null) {
                 return Optional.empty();
             }
-            if(order.isScheduledForDeletion()) {
+            if (order.isScheduledForDeletion()) {
                 discardTopOrder(side);
             } else {
                 return Optional.of(order);

@@ -1,6 +1,6 @@
 package com.gft.digitalbank.exchange.solution.service.tasks.execution;
 
-import com.gft.digitalbank.exchange.solution.service.processing.ProductExchangeIndex;
+import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchangeIndex;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

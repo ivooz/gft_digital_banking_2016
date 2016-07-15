@@ -1,10 +1,9 @@
 package com.gft.digitalbank.exchange.solution.service.tasks.scheduling;
 
 import com.gft.digitalbank.exchange.solution.model.Modification;
-import com.gft.digitalbank.exchange.solution.service.events.OrderNotFoundMessageBroker;
 import com.gft.digitalbank.exchange.solution.service.processing.IdProductIndex;
-import com.gft.digitalbank.exchange.solution.service.processing.ProductExchangeIndex;
-import com.gft.digitalbank.exchange.solution.service.tasks.execution.ModificationExecutionTaskFactory;
+import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchangeIndex;
+import com.gft.digitalbank.exchange.solution.service.tasks.execution.ModificationProcessingTaskFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -24,13 +23,10 @@ public class ModificationSchedulingTaskFactory {
     private IdProductIndex idProductIndex;
 
     @Inject
-    private ModificationExecutionTaskFactory modificationExecutionTaskFactory;
-
-    @Inject
-    private OrderNotFoundMessageBroker orderNotFoundMessageBroker;
+    private ModificationProcessingTaskFactory modificationProcessingTaskFactory;
 
     public ModificationSchedulingTask createModificationTask(Modification modification) {
         return new ModificationSchedulingTask(productExchangeIndex, idProductIndex, executionTaskScheduler,
-                orderNotFoundMessageBroker,modificationExecutionTaskFactory.createModificationTask(modification));
+                modificationProcessingTaskFactory.createModificationTask(modification));
     }
 }

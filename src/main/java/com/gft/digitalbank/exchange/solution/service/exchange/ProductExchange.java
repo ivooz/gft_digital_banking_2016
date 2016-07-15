@@ -1,9 +1,9 @@
-package com.gft.digitalbank.exchange.solution.service.processing;
+package com.gft.digitalbank.exchange.solution.service.exchange;
 
 import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
-import com.gft.digitalbank.exchange.solution.service.tasks.execution.ExecutionTask;
+import com.gft.digitalbank.exchange.solution.service.tasks.execution.ProcessingTask;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +18,7 @@ public class ProductExchange {
     private final String product;
     private final ProductLedger productLedger = new ProductLedger();
     private final TradingMessageQueue tradingMessageQueue = new TradingMessageQueue();
+    private final ProcessingTaskExecutor taskExecutor = new ProcessingTaskExecutor();
     private final ExecutionTaskQueue executionTaskQueue = new ExecutionTaskQueue();
     private final OrderCache orderCache = new OrderCache();
 
@@ -45,17 +46,21 @@ public class ProductExchange {
     }
 
     public void executeRemainingTasks() {
+        taskExecutor.shutdown();
         executeTasksWhile(ExecutionTaskQueue::isNotEmpty);
     }
 
-    public void addTask(ExecutionTask executionTask) {
-        executionTaskQueue.addTask(executionTask);
-        executeTasksWhile(ExecutionTaskQueue::isFull);
+    public void addTask(ProcessingTask processingTask) {
+        executionTaskQueue.addTask(processingTask);
+        if (executionTaskQueue.isFull()) {
+            ProcessingTask taskToExecute = executionTaskQueue.getNextTaskToExecute().get();
+            taskExecutor.execute(taskToExecute,this);
+        }
     }
 
-    private synchronized void executeTasksWhile(Predicate<ExecutionTaskQueue> taskQueuePredicate) {
+    private void executeTasksWhile(Predicate<ExecutionTaskQueue> taskQueuePredicate) {
         while (taskQueuePredicate.test(executionTaskQueue)) {
-            Optional<ExecutionTask> nextTaskToExecute = executionTaskQueue.getNextTaskToExecute();
+            Optional<ProcessingTask> nextTaskToExecute = executionTaskQueue.getNextTaskToExecute();
             if (!nextTaskToExecute.isPresent()) {
                 return;
             }

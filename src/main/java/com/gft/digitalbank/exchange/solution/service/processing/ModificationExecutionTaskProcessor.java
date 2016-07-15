@@ -2,6 +2,7 @@ package com.gft.digitalbank.exchange.solution.service.processing;
 
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.Order;
+import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

@@ -9,12 +9,12 @@ import com.google.inject.Singleton;
  * Created by iozi on 2016-06-28.
  */
 @Singleton
-public class ModificationExecutionTaskFactory {
+public class ModificationProcessingTaskFactory {
 
     @Inject
     private ModificationExecutionTaskProcessor modificationTaskProcessor;
 
-    public ModificationExecutionTask createModificationTask(Modification modification) {
-        return new ModificationExecutionTask(modificationTaskProcessor, modification);
+    public ModificationProcessingTask createModificationTask(Modification modification) {
+        return new ModificationProcessingTask(modificationTaskProcessor, modification);
     }
 }
