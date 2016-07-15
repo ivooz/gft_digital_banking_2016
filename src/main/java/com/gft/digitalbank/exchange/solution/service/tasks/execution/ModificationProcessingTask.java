@@ -12,6 +12,7 @@ public class ModificationProcessingTask implements ProcessingTask {
 
     private final ModificationExecutionTaskProcessor modificationTaskProcessor;
     private final Modification modification;
+    private ProductExchange productExchange;
 
     public ModificationProcessingTask(ModificationExecutionTaskProcessor modificationTaskProcessor, Modification modification) {
         this.modificationTaskProcessor = modificationTaskProcessor;
@@ -19,8 +20,13 @@ public class ModificationProcessingTask implements ProcessingTask {
     }
 
     @Override
-    public void execute(ProductExchange productExchange) {
+    public void run() {
         modificationTaskProcessor.processModification(modification, productExchange);
+    }
+
+    @Override
+    public void setProductExchange(ProductExchange productExchange) {
+        this.productExchange = productExchange;
     }
 
     @Override

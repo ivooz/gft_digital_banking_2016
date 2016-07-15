@@ -12,7 +12,7 @@ public class OrderProcessingTask implements ProcessingTask {
 
     private final OrderExecutionTaskProcessor orderTaskProcessor;
     private final Order order;
-
+    private ProductExchange productExchange;
 
     public OrderProcessingTask(OrderExecutionTaskProcessor orderTaskProcessor, Order order) {
         this.orderTaskProcessor = orderTaskProcessor;
@@ -20,8 +20,13 @@ public class OrderProcessingTask implements ProcessingTask {
     }
 
     @Override
-    public void execute(ProductExchange productExchange) {
+    public void run() {
         orderTaskProcessor.processOrder(order, productExchange);
+    }
+
+    @Override
+    public void setProductExchange(ProductExchange productExchange) {
+        this.productExchange = productExchange;
     }
 
     @Override

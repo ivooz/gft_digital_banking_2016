@@ -54,7 +54,8 @@ public class ProductExchange {
         executionTaskQueue.addTask(processingTask);
         if (executionTaskQueue.isFull()) {
             ProcessingTask taskToExecute = executionTaskQueue.getNextTaskToExecute().get();
-            taskExecutor.execute(taskToExecute,this);
+            taskToExecute.setProductExchange(this);
+            taskExecutor.execute(taskToExecute);
         }
     }
 
@@ -64,7 +65,9 @@ public class ProductExchange {
             if (!nextTaskToExecute.isPresent()) {
                 return;
             }
-            nextTaskToExecute.get().execute(this);
+            ProcessingTask processingTask = nextTaskToExecute.get();
+            processingTask .setProductExchange(this);
+            processingTask.run();
         }
     }
 

@@ -12,6 +12,7 @@ public class CancelProcessingTask implements ProcessingTask {
 
     private final CancelExecutionTaskProcessor cancelTaskProcessor;
     private final Cancel cancel;
+    private ProductExchange productExchange;
 
     public CancelProcessingTask(CancelExecutionTaskProcessor cancelTaskProcessor, Cancel cancel) {
         this.cancelTaskProcessor = cancelTaskProcessor;
@@ -19,8 +20,13 @@ public class CancelProcessingTask implements ProcessingTask {
     }
 
     @Override
-    public void execute(ProductExchange productExchange) {
+    public void run() {
         cancelTaskProcessor.processCancel(cancel, productExchange);
+    }
+
+    @Override
+    public void setProductExchange(ProductExchange productExchange) {
+        this.productExchange = productExchange;
     }
 
     @Override

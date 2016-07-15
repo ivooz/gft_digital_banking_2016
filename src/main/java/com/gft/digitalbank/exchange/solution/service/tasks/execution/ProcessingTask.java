@@ -6,10 +6,9 @@ import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 /**
  * Created by iozi on 2016-07-01.
  */
-public interface ProcessingTask extends Comparable {
+public interface ProcessingTask extends Comparable, Runnable {
 
-    void execute(ProductExchange productExchange);
-
+    void setProductExchange(ProductExchange productExchange);
     TradingMessage getTradingMessage();
 
     @Override
