@@ -1,10 +1,9 @@
-package com.gft.digitalbank.exchange.solution.service.exchange;
+package com.gft.digitalbank.exchange.solution.service.scheduling.indexing;
 
+import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 import com.google.inject.Singleton;
-import lombok.Data;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,16 +11,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by iozi on 2016-06-28.
  */
 @Singleton
-@Data
 public class ProductExchangeIndex {
 
     private final Map<String, ProductExchange> productExchangeMap = new ConcurrentHashMap<>();
 
-    public ProductExchange getLedger(String product) {
-        ProductExchange productExchange = productExchangeMap.get(product);
+    public ProductExchange getLedger(String productName) {
+        ProductExchange productExchange = productExchangeMap.get(productName);
         if (productExchange == null) {
-            productExchangeMap.putIfAbsent(product,new ProductExchange(product));
-            return productExchangeMap.get(product);
+            productExchangeMap.putIfAbsent(productName,new ProductExchange(productName));
+            return productExchangeMap.get(productName);
         }
         return productExchange;
     }

@@ -9,12 +9,17 @@ import com.google.inject.Singleton;
  * Created by iozi on 2016-06-30.
  */
 @Singleton
-public class OrderExecutionTaskProcessor {
+public class OrderExecutionTaskProcessor implements TradingMessageProcessor<Order> {
+
+    private final OrderMatcher orderMatcher;
 
     @Inject
-    TransactionExecutor transactionExecutor;
+    public OrderExecutionTaskProcessor(OrderMatcher orderMatcher) {
+        this.orderMatcher = orderMatcher;
+    }
 
-    public void processOrder(Order processedOrder, ProductExchange productExchange) {
-        transactionExecutor.matchAndClearOrder(processedOrder, productExchange);
+    @Override
+    public void processTradingMessage(Order processedOrder, ProductExchange productExchange) throws OrderProcessingException {
+        orderMatcher.matchOrder(processedOrder, productExchange);
     }
 }

@@ -1,8 +1,10 @@
 package com.gft.digitalbank.exchange.solution.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Created by
@@ -10,7 +12,9 @@ import lombok.Data;
  */
 @Data
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class Order extends TradingMessage implements Comparable {
 
     private String client;
@@ -36,6 +40,11 @@ public class Order extends TradingMessage implements Comparable {
         return details.getAmount();
     }
 
+    public boolean isFullyProcessed() {
+        return getAmount() == 0;
+    }
+
+    //TODO
     @Override
     public int compareTo(Object other) {
         final int BEFORE = -1;

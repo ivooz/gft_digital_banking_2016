@@ -7,7 +7,7 @@ import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
-import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchangeIndex;
+import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.ProductExchangeIndex;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -23,11 +23,14 @@ import java.util.stream.Collectors;
 @Singleton
 public class ResultsGatherer {
 
-    @Inject
-    ProductExchangeIndex productExchangeIndex;
+    private final ProductExchangeIndex productExchangeIndex;
+    private final OrderEntryConverter orderEntryConverter;
 
     @Inject
-    OrderEntryConverter orderEntryConverter;
+    public ResultsGatherer(ProductExchangeIndex productExchangeIndex, OrderEntryConverter orderEntryConverter) {
+        this.productExchangeIndex = productExchangeIndex;
+        this.orderEntryConverter = orderEntryConverter;
+    }
 
     public SolutionResult gatherResults() {
         return SolutionResult.builder().orderBooks(getOrdersBook())
@@ -36,21 +39,21 @@ public class ResultsGatherer {
     }
 
     public List<OrderBook> getOrdersBook() {
-        return productExchangeIndex.getProductExchangeMap().values().parallelStream()
+        return productExchangeIndex.getAllExchanges().parallelStream()
                 .map(this::getOrderBook)
                 .filter(orderBook -> !orderBook.getBuyEntries().isEmpty() || !orderBook.getSellEntries().isEmpty())
                 .collect(Collectors.toList());
     }
 
     public List<Transaction> getTransactions() {
-        return productExchangeIndex.getProductExchangeMap().values().parallelStream()
+        return productExchangeIndex.getAllExchanges().parallelStream()
                 .map(ProductExchange::getTransactions)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
     private OrderBook getOrderBook(ProductExchange productExchange) {
-        return OrderBook.builder().product(productExchange.getProduct())
+        return OrderBook.builder().product(productExchange.getProductName())
                 .buyEntries(extractOrderEntries(Side.BUY, productExchange))
                 .sellEntries(extractOrderEntries(Side.SELL, productExchange))
                 .build();

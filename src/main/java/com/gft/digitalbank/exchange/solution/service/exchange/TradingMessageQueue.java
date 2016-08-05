@@ -10,27 +10,28 @@ import java.util.PriorityQueue;
 /**
  * Created by iozi on 2016-07-06.
  */
-@Data
 public class TradingMessageQueue {
 
     private final PriorityQueue<Order> buyOrders = new PriorityQueue<>();
     private final PriorityQueue<Order> sellOrders = new PriorityQueue<>();
 
     public Optional<Order> getNextOrder(Side side) {
-        Order order = null;
+        Order order;
         while (true) {
             order = pollOrder(side);
             if (order == null) {
                 return Optional.empty();
             }
+            //Orders scheduled for deletion are skipped
             if (!order.isScheduledForDeletion()) {
                 return Optional.of(order);
             }
+
         }
     }
 
     public Optional<Order> peekNextOrder(Side side) {
-        Order order = null;
+        Order order;
         while (true) {
             order = peekOrder(side);
             if (order == null) {
@@ -64,6 +65,10 @@ public class TradingMessageQueue {
         }
         //TODO throw exception?
         return null;
+    }
+
+    public void removeTopOrder(Side side) {
+        getNextOrder(side);
     }
 
     private Order pollOrder(Side side) {

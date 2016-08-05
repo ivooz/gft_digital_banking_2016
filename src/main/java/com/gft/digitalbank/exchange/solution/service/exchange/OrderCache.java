@@ -21,9 +21,9 @@ public class OrderCache {
     }
 
     public void remove(Order order) {
-        if (orderCache.size() >= MAX_CACHE_SIZE) {
-            CompletableFuture.runAsync(() -> orderCache.remove(order.getId()));
-        }
+//        if (orderCache.size() >= MAX_CACHE_SIZE) {
+//            CompletableFuture.runAsync(() -> orderCache.remove(order.getId()));
+//        }
     }
 
     public Optional<Order> get(int id) {

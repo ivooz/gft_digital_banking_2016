@@ -10,21 +10,22 @@ import java.util.List;
 /**
  * Created by iozi on 2016-06-28.
  */
-public class ProductLedger {
+public class ProductTransactionLedger {
 
     private final TransactionFactory transactionFactory = new TransactionFactory();
     private final List<Transaction> transactions = new ArrayList<>();
-
-    public int getTransactionCount() {
-        return transactions.size();
-    }
 
     public List<Transaction> getTransactions() {
         return transactions;
     }
 
-    public void addTransaction(Order processedOrder, Order passiveOrder, int amountTraded) {
+    public void executeTransaction(Order processedOrder, Order passiveOrder) {
+        int processedOrderAmount = processedOrder.getAmount();
+        int passiveOrderAmount = passiveOrder.getAmount();
+        int amountTraded = processedOrderAmount > passiveOrderAmount ? passiveOrderAmount : processedOrderAmount;
         transactions.add(transactionFactory.createTransaction(processedOrder, passiveOrder, amountTraded,
                 transactions.size() + 1));
+        processedOrder.getDetails().setAmount(processedOrderAmount - amountTraded);
+        passiveOrder.getDetails().setAmount(passiveOrderAmount - amountTraded);
     }
 }

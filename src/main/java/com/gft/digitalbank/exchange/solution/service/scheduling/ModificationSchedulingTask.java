@@ -1,11 +1,10 @@
-package com.gft.digitalbank.exchange.solution.service.tasks.scheduling;
+package com.gft.digitalbank.exchange.solution.service.scheduling;
 
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
-import com.gft.digitalbank.exchange.solution.service.processing.IdProductIndex;
-import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
-import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchangeIndex;
-import com.gft.digitalbank.exchange.solution.service.tasks.execution.ModificationProcessingTask;
+import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.IdProductIndex;
+import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.ProductExchangeIndex;
+import com.gft.digitalbank.exchange.solution.service.execution.ProcessingTask;
 
 import java.util.Optional;
 
@@ -16,29 +15,25 @@ public class ModificationSchedulingTask implements SchedulingTask {
 
     private final ProductExchangeIndex productExchangeIndex;
     private final IdProductIndex idProductIndex;
-    private final ExecutionTaskScheduler executionTaskScheduler;
-    private final ModificationProcessingTask modificationProcessingTask;
+    private final ProcessingTask<Modification> modificationProcessingTask;
 
 
     public ModificationSchedulingTask(ProductExchangeIndex productExchangeIndex,
                                       IdProductIndex idProductIndex,
-                                      ExecutionTaskScheduler executionTaskScheduler,
-                                      ModificationProcessingTask modificationProcessingTask) {
+                                      ProcessingTask<Modification> modificationProcessingTask) {
         this.productExchangeIndex = productExchangeIndex;
         this.idProductIndex = idProductIndex;
-        this.executionTaskScheduler = executionTaskScheduler;
         this.modificationProcessingTask = modificationProcessingTask;
     }
 
     @Override
     public void execute() throws OrderNotFoundException {
-        Modification modification = modificationProcessingTask.getModification();
+        Modification modification = modificationProcessingTask.getTradingMessage();
         Optional<String> product = idProductIndex.get(modification.getModifiedOrderId());
         if (!product.isPresent()) {
             throw new OrderNotFoundException();
         }
-        ProductExchange productExchange = productExchangeIndex.getLedger(product.get());
-        executionTaskScheduler.scheduleExecutionTask(modificationProcessingTask, productExchange);
+        productExchangeIndex.getLedger(product.get()).addTask(modificationProcessingTask);
     }
 
     @Override

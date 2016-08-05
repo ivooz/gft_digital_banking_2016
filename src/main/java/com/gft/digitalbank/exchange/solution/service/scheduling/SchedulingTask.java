@@ -1,11 +1,11 @@
-package com.gft.digitalbank.exchange.solution.service.tasks.scheduling;
+package com.gft.digitalbank.exchange.solution.service.scheduling;
 
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 
 /**
  * Created by iozi on 2016-07-01.
  */
-public interface SchedulingTask extends Comparable {
+public interface SchedulingTask<E extends TradingMessage> extends Comparable {
 
     void execute() throws OrderNotFoundException;
 

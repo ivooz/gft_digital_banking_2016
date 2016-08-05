@@ -1,10 +1,12 @@
 package com.gft.digitalbank.exchange.solution.service.monitoring;
 
+import com.codahale.metrics.MetricRegistry;
 import com.gft.digitalbank.exchange.listener.ProcessingListener;
-import com.gft.digitalbank.exchange.solution.service.tasks.execution.TasksExecutionFinisher;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.camel.CamelContext;
+import org.apache.camel.component.metrics.messagehistory.MetricsMessageHistoryService;
+import org.apache.camel.component.metrics.routepolicy.MetricsRegistryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +28,6 @@ public class ProcessingMonitor {
     private AtomicInteger brokerCount;
     private ProcessingListener processingListener;
 
-
     @Inject
     public ProcessingMonitor(ResultsGatherer resultGatherer,
                              TasksExecutionFinisher tasksExecutionFinisher,
@@ -43,10 +44,13 @@ public class ProcessingMonitor {
                 try {
                     camelContext.stop();
                 } catch (Exception e) {
+                    //TODO
                     e.printStackTrace();
                 }
-                tasksExecutionFinisher.finishAllTasks();
+                tasksExecutionFinisher.finishAllTasks().forEach(
+                        e -> LOGGER.error("Exception occured during finishing tasks:", e));
                 processingListener.processingDone(resultGatherer.gatherResults());
+
             }
         });
     }

@@ -1,4 +1,4 @@
-package com.gft.digitalbank.exchange.solution.service.processing;
+package com.gft.digitalbank.exchange.solution.service.scheduling.indexing;
 
 import com.google.inject.Singleton;
 

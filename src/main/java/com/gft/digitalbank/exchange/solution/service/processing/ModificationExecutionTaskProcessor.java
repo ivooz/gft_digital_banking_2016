@@ -10,19 +10,23 @@ import com.google.inject.Singleton;
  * Created by iozi on 2016-06-30.
  */
 @Singleton
-public class ModificationExecutionTaskProcessor {
+public class ModificationExecutionTaskProcessor implements TradingMessageProcessor<Modification> {
+
+    private final OrderMatcher orderMatcher;
 
     @Inject
-    TransactionExecutor transactionExecutor;
+    public ModificationExecutionTaskProcessor(OrderMatcher orderMatcher) {
+        this.orderMatcher = orderMatcher;
+    }
 
-    public void processModification(Modification modification, ProductExchange productExchange) {
+    @Override
+    public void processTradingMessage(Modification modification, ProductExchange productExchange) throws OrderProcessingException {
         Order orderToModify = productExchange.getById(modification.getModifiedOrderId())
-                //TODO
                 .orElseThrow(() -> new NullPointerException("Unable to find order to modify!"));
         Order copy = new Order(orderToModify);
         copy.setDetails(modification.getDetails());
         productExchange.remove(orderToModify);
         copy.setTimestamp(modification.getTimestamp());
-        transactionExecutor.matchAndClearOrder(copy, productExchange);
+        orderMatcher.matchOrder(copy, productExchange);
     }
 }

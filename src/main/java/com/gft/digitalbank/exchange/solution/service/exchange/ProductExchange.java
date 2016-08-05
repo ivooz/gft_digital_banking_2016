@@ -3,11 +3,11 @@ package com.gft.digitalbank.exchange.solution.service.exchange;
 import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
-import com.gft.digitalbank.exchange.solution.service.tasks.execution.ProcessingTask;
+import com.gft.digitalbank.exchange.solution.service.execution.ProcessingTask;
+import com.gft.digitalbank.exchange.solution.service.processing.OrderProcessingException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
 /**
@@ -15,24 +15,24 @@ import java.util.function.Predicate;
  */
 public class ProductExchange {
 
-    private final String product;
-    private final ProductLedger productLedger = new ProductLedger();
+    private final String productName;
+    private final ProductTransactionLedger productTransactionLedger = new ProductTransactionLedger();
     private final TradingMessageQueue tradingMessageQueue = new TradingMessageQueue();
     private final ProcessingTaskExecutor taskExecutor = new ProcessingTaskExecutor();
     private final ExecutionTaskQueue executionTaskQueue = new ExecutionTaskQueue();
     private final OrderCache orderCache = new OrderCache();
 
-    public ProductExchange(String product) {
-        this.product = product;
+    public ProductExchange(String productName) {
+        this.productName = productName;
     }
 
-    public void addOrder(Order order) {
+    public void queueOrder(Order order) {
         orderCache.add(order);
         tradingMessageQueue.pushOrder(order);
     }
 
     public void markOrderAsComplete(Order order) {
-        tradingMessageQueue.getNextOrder(order.getSide());
+        tradingMessageQueue.removeTopOrder(order.getSide());
         orderCache.remove(order);
     }
 
@@ -45,28 +45,25 @@ public class ProductExchange {
         return orderCache.get(id);
     }
 
-    public void executeRemainingTasks() {
+    public void executeRemainingTasksAndShutDown() throws ExchangeShutdownException, OrderProcessingException {
         taskExecutor.shutdown();
         executeTasksWhile(ExecutionTaskQueue::isNotEmpty);
     }
 
     public void addTask(ProcessingTask processingTask) {
         executionTaskQueue.addTask(processingTask);
-        if (executionTaskQueue.isFull()) {
-            ProcessingTask taskToExecute = executionTaskQueue.getNextTaskToExecute().get();
-            taskToExecute.setProductExchange(this);
-            taskExecutor.execute(taskToExecute);
-        }
+        executionTaskQueue.executeIfFull(() ->
+                taskExecutor.execute(executionTaskQueue.getNextTaskToExecute().get(),this));
     }
 
-    private void executeTasksWhile(Predicate<ExecutionTaskQueue> taskQueuePredicate) {
+    private void executeTasksWhile(Predicate<ExecutionTaskQueue> taskQueuePredicate) throws OrderProcessingException {
         while (taskQueuePredicate.test(executionTaskQueue)) {
             Optional<ProcessingTask> nextTaskToExecute = executionTaskQueue.getNextTaskToExecute();
             if (!nextTaskToExecute.isPresent()) {
                 return;
             }
             ProcessingTask processingTask = nextTaskToExecute.get();
-            processingTask .setProductExchange(this);
+            processingTask.setProductExchange(this);
             processingTask.run();
         }
     }
@@ -79,19 +76,18 @@ public class ProductExchange {
         return tradingMessageQueue.getNextOrder(side);
     }
 
-    public void addTransaction(Order processedOrder, Order passiveOrder, int amountTraded) {
-        productLedger.addTransaction(processedOrder, passiveOrder, amountTraded);
+    public void executeTransaction(Order processedOrder, Order passiveOrder) {
+        productTransactionLedger.executeTransaction(processedOrder, passiveOrder);
+        if (passiveOrder.getDetails().getAmount() == 0) {
+            markOrderAsComplete(passiveOrder);
+        }
     }
 
-    public String getProduct() {
-        return product;
-    }
-
-    public PriorityQueue<Order> getOrders(Side side) {
-        return side == Side.BUY ? tradingMessageQueue.getBuyOrders() : tradingMessageQueue.getSellOrders();
+    public String getProductName() {
+        return productName;
     }
 
     public List<Transaction> getTransactions() {
-        return productLedger.getTransactions();
+        return productTransactionLedger.getTransactions();
     }
 }
