@@ -40,7 +40,7 @@ public class ProcessingMonitor {
             int currentCount = brokerCount.decrementAndGet();
             if (currentCount == 0) {
                 try {
-//                    Thread.sleep(50);
+                    Thread.sleep(50);
                     camelContext.stop();
                 } catch (Exception e) {
                     e.printStackTrace();

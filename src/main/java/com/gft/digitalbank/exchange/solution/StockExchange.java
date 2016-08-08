@@ -10,9 +10,13 @@ import com.google.inject.Injector;
 import org.apache.activemq.camel.component.ActiveMQComponent;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.jms.ConsumerType;
+import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.component.jms.JmsConfiguration;
 
+import javax.jms.ConnectionFactory;
 import javax.jms.MessageConsumer;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +47,9 @@ public class StockExchange implements Exchange {
     public void setDestinations(List<String> destinations) {
         processingMonitor.setBrokerCount(destinations.size());
         try {
-            ActiveMQComponent activeMQComponent = ActiveMQComponent.activeMQComponent("vm://localhost");
+            Context context = new InitialContext();
+            ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("ConnectionFactory");
+            JmsComponent activeMQComponent = ActiveMQComponent.jmsComponent(connectionFactory);
             JmsConfiguration configuration = activeMQComponent.getConfiguration();
             configuration.setConsumerType(ConsumerType.Simple);
             activeMQComponent.setConfiguration(configuration);
