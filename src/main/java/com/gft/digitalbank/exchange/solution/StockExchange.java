@@ -51,7 +51,6 @@ public class StockExchange implements Exchange {
             ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("ConnectionFactory");
             JmsComponent activeMQComponent = ActiveMQComponent.jmsComponent(connectionFactory);
             JmsConfiguration configuration = activeMQComponent.getConfiguration();
-            configuration.setConsumerType(ConsumerType.Simple);
             activeMQComponent.setConfiguration(configuration);
             camelContext.addComponent("activemq", activeMQComponent);
             camelRouteBuilder.setDestinations(destinations);
