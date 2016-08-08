@@ -1,9 +1,7 @@
-package com.gft.digitalbank.exchange.solution.service.execution;
+package com.gft.digitalbank.exchange.solution.service.processing;
 
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
-import com.gft.digitalbank.exchange.solution.service.processing.OrderProcessingException;
-import com.gft.digitalbank.exchange.solution.service.processing.TradingMessageProcessor;
 
 /**
  * Created by iozi on 2016-07-01.

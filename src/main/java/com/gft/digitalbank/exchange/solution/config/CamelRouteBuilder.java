@@ -4,17 +4,18 @@ import com.gft.digitalbank.exchange.solution.model.Cancel;
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.service.monitoring.ProcessingMonitor;
-import com.gft.digitalbank.exchange.solution.service.scheduling.OrderNotFoundException;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskCreator;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskExecutor;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by iozi on 2016-07-14.
@@ -22,36 +23,43 @@ import java.util.List;
 @Singleton
 public class CamelRouteBuilder extends RouteBuilder {
 
-    private final ProcessingMonitor processingMonitor;
-    private final SchedulingTaskCreator tradingMessageDispatcher;
-    private final SchedulingTaskExecutor schedulingTaskExecutor;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessingMonitor.class);
+
+    @Inject
+    ProcessingMonitor processingMonitor;
+
+    @Inject
+    SchedulingTaskCreator tradingMessageDispatcher;
+
+    @Inject
+    SchedulingTaskExecutor schedulingTaskExecutor;
 
     private List<String> destinations;
 
-    @Inject
-    public CamelRouteBuilder(ProcessingMonitor processingMonitor,
-                             SchedulingTaskCreator tradingMessageDispatcher,
-                             SchedulingTaskExecutor schedulingTaskExecutor) {
-        this.processingMonitor = processingMonitor;
-        this.tradingMessageDispatcher = tradingMessageDispatcher;
-        this.schedulingTaskExecutor = schedulingTaskExecutor;
-    }
-
     public void configure() {
-        onException(OrderNotFoundException.class).redeliveryDelay(10).maximumRedeliveries(100);
-        for (String destination : destinations) {
-            from("activemq:queue:" + destination+"?exchangePattern=InOnly")
-                    .choice()
-                    .when(body().contains("ORDER"))
-                    .unmarshal().json(JsonLibrary.Jackson, Order.class).bean(tradingMessageDispatcher, "dispatchOrder")
-                    .when(body().contains("MODIFICATION"))
-                    .unmarshal().json(JsonLibrary.Jackson, Modification.class).bean(tradingMessageDispatcher, "dispatchModification")
-                    .when(body().contains("CANCEL"))
-                    .unmarshal().json(JsonLibrary.Jackson, Cancel.class).bean(tradingMessageDispatcher, "dispatchCancel")
-                    .when(body().contains("SHUTDOWN_NOTIFICATION"))
-                    .bean(processingMonitor, "decreaseBrokerCounter").stop().end()
-                    .bean(schedulingTaskExecutor, "executeSchedulingTask");
-        }
+        errorHandler(defaultErrorHandler()
+                .allowRedeliveryWhileStopping(true)
+                .maximumRedeliveries(20)
+                .redeliveryDelay(25)
+                .retryAttemptedLogLevel(LoggingLevel.INFO));
+//        onException(OrderNotFoundException.class)
+//                .redeliveryDelay(10)
+//                .maximumRedeliveries(100);
+        String[] queueUrls = destinations.stream()
+                .map(destination -> "activemq:queue:".concat(destination))
+                .collect(Collectors.toList())
+                .toArray(new String[]{});
+        from(queueUrls)
+                .choice()
+                .when().jsonpath("$[?(@.messageType=='ORDER')]")
+                .unmarshal().json(JsonLibrary.Gson, Order.class).bean(tradingMessageDispatcher, "dispatchOrder")
+                .when().jsonpath("$[?(@.messageType=='SHUTDOWN_NOTIFICATION')]")
+                .bean(processingMonitor, "decreaseBrokerCounter").stop()
+                .when().jsonpath("$[?(@.messageType=='MODIFICATION')]")
+                .unmarshal().json(JsonLibrary.Gson, Modification.class).bean(tradingMessageDispatcher, "dispatchModification")
+                .when().jsonpath("$[?(@.messageType=='CANCEL')]")
+                .unmarshal().json(JsonLibrary.Gson, Cancel.class).bean(tradingMessageDispatcher, "dispatchCancel").end()
+                .bean(schedulingTaskExecutor, "executeSchedulingTask");
     }
 
     public void setDestinations(List<String> destinations) {

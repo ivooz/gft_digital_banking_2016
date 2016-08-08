@@ -1,7 +1,6 @@
-package com.gft.digitalbank.exchange.solution.service.execution;
+package com.gft.digitalbank.exchange.solution.service.processing;
 
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
-import com.gft.digitalbank.exchange.solution.service.processing.TradingMessageProcessor;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

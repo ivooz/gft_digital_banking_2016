@@ -3,7 +3,7 @@ package com.gft.digitalbank.exchange.solution.service.scheduling;
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.IdProductIndex;
 import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.ProductExchangeIndex;
-import com.gft.digitalbank.exchange.solution.service.execution.ProcessingTaskFactory;
+import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTaskFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

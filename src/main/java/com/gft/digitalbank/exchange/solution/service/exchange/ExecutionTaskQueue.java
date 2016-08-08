@@ -1,6 +1,6 @@
 package com.gft.digitalbank.exchange.solution.service.exchange;
 
-import com.gft.digitalbank.exchange.solution.service.execution.ProcessingTask;
+import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
 import com.gft.digitalbank.exchange.solution.util.Procedure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
