@@ -25,15 +25,15 @@ public class SchedulingTaskCreator {
         this.cancelSchedulingTaskFactory = cancelSchedulingTaskFactory;
     }
 
-    public SchedulingTask dispatchOrder(Order order) {
+    public SchedulingTask createOrderSchedulingTask(Order order) {
         return orderSchedulingTaskFactory.createOrderTask(order);
     }
 
-    public SchedulingTask dispatchModification(Modification modification) {
+    public SchedulingTask createModificationSchedulingTask(Modification modification) {
         return modificationSchedulingTaskFactory.createModificationTask(modification);
     }
 
-    public SchedulingTask dispatchCancel(Cancel cancel) {
+    public SchedulingTask createCancelSchedulingTask(Cancel cancel) {
         return cancelSchedulingTaskFactory.createCancelTask(cancel);
     }
 }

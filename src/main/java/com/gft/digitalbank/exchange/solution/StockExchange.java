@@ -13,10 +13,7 @@ import org.apache.camel.component.jms.ConsumerType;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.component.jms.JmsConfiguration;
 
-import javax.jms.ConnectionFactory;
 import javax.jms.MessageConsumer;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,13 +42,11 @@ public class StockExchange implements Exchange {
 
     @Override
     public void setDestinations(List<String> destinations) {
-        processingMonitor.setBrokerCount(destinations.size());
         try {
-            Context context = new InitialContext();
-            ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("ConnectionFactory");
-            JmsComponent activeMQComponent = ActiveMQComponent.jmsComponent(connectionFactory);
+            processingMonitor.setBrokerCount(destinations.size());
+            JmsComponent activeMQComponent = ActiveMQComponent.activeMQComponent("vm://localhost");
             JmsConfiguration configuration = activeMQComponent.getConfiguration();
-            activeMQComponent.setConfiguration(configuration);
+            configuration.setConsumerType(ConsumerType.Simple);
             camelContext.addComponent("activemq", activeMQComponent);
             camelRouteBuilder.setDestinations(destinations);
             camelContext.addRoutes(camelRouteBuilder);

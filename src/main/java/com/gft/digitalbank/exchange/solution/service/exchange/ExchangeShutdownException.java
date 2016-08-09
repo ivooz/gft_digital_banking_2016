@@ -1,6 +1,8 @@
 package com.gft.digitalbank.exchange.solution.service.exchange;
 
 /**
+ * Thrown on encountering problems with shutting down the exchange.
+ *
  * Created by iozi on 2016-08-01.
  */
 public class ExchangeShutdownException extends Exception {

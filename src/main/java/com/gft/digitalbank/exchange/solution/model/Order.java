@@ -1,21 +1,24 @@
 package com.gft.digitalbank.exchange.solution.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.common.base.Preconditions;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Represents the Order message.
+ *
  * Created by
  * iozi on 2016-06-27.
  */
 @Data
 @Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order extends TradingMessage implements Comparable {
+public class Order extends TradingMessage implements Comparable<Order> {
 
     private String client;
     private Side side;
@@ -23,6 +26,10 @@ public class Order extends TradingMessage implements Comparable {
     private Details details;
     private boolean scheduledForDeletion;
 
+    /**
+     * Copying constructor.
+     * @param order
+     */
     public Order(Order order) {
         super(order.getId(), order.getTimestamp(), order.getBroker());
         this.client = order.client;
@@ -40,36 +47,37 @@ public class Order extends TradingMessage implements Comparable {
         return details.getAmount();
     }
 
+    /**
+     * The amount to buy/sell has been fulfilled.
+     * @return
+     */
     public boolean isFullyProcessed() {
         return getAmount() == 0;
     }
 
-    //TODO
+    /**
+     * A buy order with the higher prices has precedence.
+     * A sell order with lower price has precedence.
+     * If prices are equal, the one with smaller timestamp has precedence.
+     * @param otherOrder
+     * @return
+     */
     @Override
-    public int compareTo(Object other) {
+    public int compareTo(Order otherOrder) {
+        Preconditions.checkNotNull(otherOrder,"Cannot compare with null.");
         final int BEFORE = -1;
         final int EQUAL = 0;
         final int AFTER = 1;
 
-        if (this == other) {
+        if (this == otherOrder) {
             return EQUAL;
         }
 
-        Order otherOrder = (Order) other;
         int comparison = getPrice() - otherOrder.getPrice();
-        switch (this.side) {
-            case BUY:
-                if (comparison > 0) {
-                    return BEFORE;
-                } else if (comparison < 0) {
-                    return AFTER;
-                }
-            case SELL:
-                if (comparison > 0) {
-                    return AFTER;
-                } else if (comparison < 0) {
-                    return BEFORE;
-                }
+        if (comparison > 0) {
+            return this.side == Side.BUY ? BEFORE : AFTER;
+        } else if (comparison < 0) {
+            return this.side == Side.BUY ? AFTER : BEFORE;
         }
         return (int) (this.getTimestamp() - otherOrder.getTimestamp());
     }

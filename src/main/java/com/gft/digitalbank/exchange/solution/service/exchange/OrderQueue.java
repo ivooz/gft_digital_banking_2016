@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 /**
  * Created by iozi on 2016-07-06.
  */
-public class TradingMessageQueue {
+public class OrderQueue {
 
     private final PriorityQueue<Order> buyOrders = new PriorityQueue<>();
     private final PriorityQueue<Order> sellOrders = new PriorityQueue<>();

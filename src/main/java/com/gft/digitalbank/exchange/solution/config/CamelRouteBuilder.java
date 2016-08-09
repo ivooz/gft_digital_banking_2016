@@ -6,63 +6,102 @@ import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.service.monitoring.ProcessingMonitor;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskCreator;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskExecutor;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+import lombok.NonNull;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Responsible for creating Apache camel routes that define the flow of messages across the program components.
+ * <p>
  * Created by iozi on 2016-07-14.
  */
 @Singleton
 public class CamelRouteBuilder extends RouteBuilder {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessingMonitor.class);
+    private static final String ACTIVEMQ_QUEUE_PREFIX = "activemq:queue:";
+    private static final String ORDER_IDENTIFYING_JSONPATH = "$[?(@.messageType=='ORDER')]";
+    private static final String ORDER_SCHEDULING_TASK_CREATION_METHOD_NAME = "createOrderSchedulingTask";
+    private static final String MODIFICATION_SCHEDULING_TASK_CREATION_METHOD_NAME = "createModificationSchedulingTask";
+    private static final JsonLibrary UNMARSHALLING_LIBRARY = JsonLibrary.Gson;
+    private static final String MODIFICATION_IDENTIFYING_JSONPATH = "$[?(@.messageType=='MODIFICATION')]";
+    private static final String CANCEL_IDENTIFYING_JSONPATH = "$[?(@.messageType=='CANCEL')]";
+    private static final String SHUTDOWN_NOTIFICATION_IDENTIFYING_JSONPATH = "$[?(@.messageType=='SHUTDOWN_NOTIFICATION')]";
+    private static final String SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME = "decreaseBrokerCounter";
+    private static final String CANCEL_SCHEDULING_TASK_CREATION_METHOD_NAME = "createCancelSchedulingTask";
+    private static final String SCHEDULING_TASK_EXECUTOR_METHOD_NAME = "executeSchedulingTask";
 
-    @Inject
-    ProcessingMonitor processingMonitor;
-
-    @Inject
-    SchedulingTaskCreator tradingMessageDispatcher;
-
-    @Inject
-    SchedulingTaskExecutor schedulingTaskExecutor;
+    private final ProcessingMonitor processingMonitor;
+    private final SchedulingTaskCreator schedulingTaskCreator;
+    private final SchedulingTaskExecutor schedulingTaskExecutor;
+    private final int maximumRedeliveriesOnFailure;
+    private final int redeliveryDelayOnFailure;
 
     private List<String> destinations;
 
-    public void configure() {
-        errorHandler(defaultErrorHandler()
-                .allowRedeliveryWhileStopping(true)
-                .maximumRedeliveries(20)
-                .redeliveryDelay(25)
-                .retryAttemptedLogLevel(LoggingLevel.INFO));
-//        onException(OrderNotFoundException.class)
-//                .redeliveryDelay(10)
-//                .maximumRedeliveries(100);
-        String[] queueUrls = destinations.stream()
-                .map(destination -> "activemq:queue:".concat(destination))
-                .collect(Collectors.toList())
-                .toArray(new String[]{});
-        from(queueUrls)
-                .choice()
-                .when().jsonpath("$[?(@.messageType=='ORDER')]")
-                .unmarshal().json(JsonLibrary.Gson, Order.class).bean(tradingMessageDispatcher, "dispatchOrder")
-                .when().jsonpath("$[?(@.messageType=='SHUTDOWN_NOTIFICATION')]")
-                .bean(processingMonitor, "decreaseBrokerCounter").stop()
-                .when().jsonpath("$[?(@.messageType=='MODIFICATION')]")
-                .unmarshal().json(JsonLibrary.Gson, Modification.class).bean(tradingMessageDispatcher, "dispatchModification")
-                .when().jsonpath("$[?(@.messageType=='CANCEL')]")
-                .unmarshal().json(JsonLibrary.Gson, Cancel.class).bean(tradingMessageDispatcher, "dispatchCancel").end()
-                .bean(schedulingTaskExecutor, "executeSchedulingTask");
+    @Inject
+    public CamelRouteBuilder(ProcessingMonitor processingMonitor,
+                             SchedulingTaskCreator schedulingTaskCreator,
+                             SchedulingTaskExecutor schedulingTaskExecutor,
+                             @Named("camel.failure.redeliveries") int maximumRedeliveriesOnFailure,
+                             @Named("camel.failure.delay") int redeliveryDelayOnFailure) {
+        this.processingMonitor = processingMonitor;
+        this.schedulingTaskCreator = schedulingTaskCreator;
+        this.schedulingTaskExecutor = schedulingTaskExecutor;
+        this.maximumRedeliveriesOnFailure = maximumRedeliveriesOnFailure;
+        this.redeliveryDelayOnFailure = redeliveryDelayOnFailure;
     }
 
-    public void setDestinations(List<String> destinations) {
+    /**
+     * Configures the Camel routes given the previously supplied list of destinations.
+     */
+    public void configure() {
+        Preconditions.checkNotNull(destinations, "Cannot configure routes without queue destinations.");
+        defineErrorHandling();
+        from(convertDestinationsToQueueUrls())
+                .threads(10)
+                .choice()
+                //Create task handling dependent on the message type
+                .when().jsonpath(ORDER_IDENTIFYING_JSONPATH)
+                .unmarshal().json(UNMARSHALLING_LIBRARY, Order.class)
+                .bean(schedulingTaskCreator, ORDER_SCHEDULING_TASK_CREATION_METHOD_NAME)
+                .when().jsonpath(MODIFICATION_IDENTIFYING_JSONPATH)
+                .unmarshal().json(UNMARSHALLING_LIBRARY, Modification.class)
+                .bean(schedulingTaskCreator, MODIFICATION_SCHEDULING_TASK_CREATION_METHOD_NAME)
+                .when().jsonpath(CANCEL_IDENTIFYING_JSONPATH)
+                .unmarshal().json(UNMARSHALLING_LIBRARY, Cancel.class)
+                .bean(schedulingTaskCreator, CANCEL_SCHEDULING_TASK_CREATION_METHOD_NAME)
+                .when().jsonpath(SHUTDOWN_NOTIFICATION_IDENTIFYING_JSONPATH)
+                .bean(processingMonitor, SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME).stop().end()
+                //Pass the created task to the executor
+                .threads(10)
+                .bean(schedulingTaskExecutor, SCHEDULING_TASK_EXECUTOR_METHOD_NAME);
+    }
+
+    public void setDestinations(@NonNull List<String> destinations) {
         this.destinations = destinations;
     }
+
+    private String[] convertDestinationsToQueueUrls() {
+        return destinations.stream()
+                .map(ACTIVEMQ_QUEUE_PREFIX::concat)
+                .collect(Collectors.toList())
+                .toArray(new String[]{});
+    }
+
+    private void defineErrorHandling() {
+        errorHandler(defaultErrorHandler()
+                .allowRedeliveryWhileStopping(true)
+                .maximumRedeliveries(maximumRedeliveriesOnFailure)
+                .redeliveryDelay(redeliveryDelayOnFailure)
+                .retryAttemptedLogLevel(LoggingLevel.INFO));
+    }
+
 }

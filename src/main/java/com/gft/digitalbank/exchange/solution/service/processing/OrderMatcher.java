@@ -26,7 +26,7 @@ public class OrderMatcher {
             Optional<Order> passiveOrderOptional = productExchange.peekNextOrder(passiveOrderSide);
 
             if (!passiveOrderOptional.isPresent()) {
-                productExchange.queueOrder(processedOrder);
+                productExchange.enqueue(processedOrder);
                 return;
             }
 
@@ -35,7 +35,7 @@ public class OrderMatcher {
             if (ordersMatch(processedOrder,passiveOrder)) {
                 productExchange.executeTransaction(processedOrder, passiveOrder);
             } else {
-                productExchange.queueOrder(processedOrder);
+                productExchange.enqueue(processedOrder);
                 return;
             }
         }

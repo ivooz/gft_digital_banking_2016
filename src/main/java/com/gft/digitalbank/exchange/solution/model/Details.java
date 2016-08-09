@@ -7,11 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Represents the additional details associated with new Cancel, Order and Modification messages.
+ *
  * Created by iozi on 2016-06-27.
  */
 @Data
 @Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Details {
@@ -19,6 +20,10 @@ public class Details {
     private int amount;
     private int price;
 
+    /**
+     * Copying constructor
+     * @param details to copy
+     */
     public Details(Details details) {
         this.amount = details.getAmount();
         this.price = details.getPrice();

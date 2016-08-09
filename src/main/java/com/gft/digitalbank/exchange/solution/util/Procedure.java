@@ -6,5 +6,5 @@ package com.gft.digitalbank.exchange.solution.util;
 @FunctionalInterface
 public interface Procedure {
 
-    void invoke();
+    void execute();
 }

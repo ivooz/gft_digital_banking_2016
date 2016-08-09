@@ -5,6 +5,8 @@ import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 import com.google.inject.Singleton;
 
+import java.util.Optional;
+
 /**
  * Created by iozi on 2016-06-30.
  */
@@ -14,9 +16,16 @@ public class CancelExecutionTaskProcessor implements TradingMessageProcessor<Can
     @Override
     public void processTradingMessage(Cancel processedCancel, ProductExchange productExchange) {
         int cancelledOrderId = processedCancel.getCancelledOrderId();
-        Order orderToCancel = productExchange.getById(cancelledOrderId)
-                //TODO replace NPE with something else
-                .orElseThrow(() -> new NullPointerException("Unable to find order to cancel!"));
-        productExchange.remove(orderToCancel);
+        //TODO, check brokers!
+        Optional<Order> orderToCancel = productExchange.getById(cancelledOrderId);
+        if(!orderToCancel.isPresent()) {
+            //The Order has already been cancelled or fully processed
+            return;
+        }
+        Order order = orderToCancel.get();
+        if(!processedCancel.getBroker().equals(order.getBroker())) {
+            return;
+        }
+        productExchange.remove(order);
     }
 }

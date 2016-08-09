@@ -6,7 +6,7 @@ import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 /**
  * Created by iozi on 2016-07-01.
  */
-public class ProcessingTask<E extends TradingMessage> implements Comparable, Runnable {
+public class ProcessingTask<E extends TradingMessage> implements Comparable<ProcessingTask>, Runnable {
 
     private final TradingMessageProcessor<E> tradingMessageProcessor;
     private final E tradingMessage;
@@ -31,8 +31,7 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable, Run
     }
 
     @Override
-    public int compareTo(Object o) {
-        ProcessingTask processingTask = (ProcessingTask) o;
+    public int compareTo(ProcessingTask processingTask) {
         return (int) (this.getTradingMessage().getTimestamp() - processingTask.getTradingMessage().getTimestamp());
     }
 

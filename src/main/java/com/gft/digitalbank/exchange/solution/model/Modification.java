@@ -5,10 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Represents the Modification message.
+ *
  * Created by iozi on 2016-06-27.
  */
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 public class Modification extends TradingMessage {
 
