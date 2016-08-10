@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * Represents the Cancel message.
- *
- * Created by iozi on 2016-06-27.
+ * <p>
+ * Created by Ivo Zieliński on 2016-06-27.
  */
 @Data
 @NoArgsConstructor

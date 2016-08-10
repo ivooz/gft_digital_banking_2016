@@ -4,7 +4,7 @@ import com.gft.digitalbank.exchange.Exchange;
 import com.gft.digitalbank.exchange.listener.ProcessingListener;
 import com.gft.digitalbank.exchange.solution.config.CamelRouteBuilder;
 import com.gft.digitalbank.exchange.solution.config.StockExchangeModule;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ProcessingMonitor;
+import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationListener;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.apache.activemq.camel.component.ActiveMQComponent;
@@ -24,26 +24,27 @@ public class StockExchange implements Exchange {
 
     List<MessageConsumer> messageConsumers = new ArrayList<>();
 
-    private ProcessingMonitor processingMonitor;
+    private ShutdownNotificationListener shutdownNotificationListener;
     private CamelRouteBuilder camelRouteBuilder;
     private CamelContext camelContext;
 
     public StockExchange() {
         Injector injector = Guice.createInjector(new StockExchangeModule());
-        this.processingMonitor = injector.getInstance(ProcessingMonitor.class);
+        this.shutdownNotificationListener = injector.getInstance(ShutdownNotificationListener.class);
         this.camelRouteBuilder = injector.getInstance(CamelRouteBuilder.class);
         this.camelContext = injector.getInstance(CamelContext.class);
     }
 
     @Override
     public void register(ProcessingListener processingListener) {
-        processingMonitor.setProcessingListener(processingListener);
+        shutdownNotificationListener.setProcessingListener(processingListener);
     }
 
     @Override
     public void setDestinations(List<String> destinations) {
         try {
-            processingMonitor.setBrokerCount(destinations.size());
+            //TODO move it to external class
+            shutdownNotificationListener.setBrokerCount(destinations.size());
             JmsComponent activeMQComponent = ActiveMQComponent.activeMQComponent("vm://localhost");
             JmsConfiguration configuration = activeMQComponent.getConfiguration();
             configuration.setConsumerType(ConsumerType.Simple);

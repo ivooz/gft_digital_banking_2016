@@ -2,8 +2,8 @@ package com.gft.digitalbank.exchange.solution.model;
 
 /**
  * Represents the Order type.
- *
- * Created by iozi on 2016-06-27.
+ * <p>
+ * Created by Ivo Zieliński on 2016-06-27.
  */
 public enum Side {
 

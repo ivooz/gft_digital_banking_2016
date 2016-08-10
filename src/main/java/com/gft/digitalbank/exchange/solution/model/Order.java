@@ -1,8 +1,6 @@
 package com.gft.digitalbank.exchange.solution.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.base.Preconditions;
-import com.sun.org.apache.xpath.internal.operations.Or;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +8,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * Represents the Order message.
- *
- * Created by
- * iozi on 2016-06-27.
+ * <p>
+ * Created by Ivo Zieliński on 2016-06-27.
  */
 @Data
 @Builder
@@ -28,6 +25,7 @@ public class Order extends TradingMessage implements Comparable<Order> {
 
     /**
      * Copying constructor.
+     *
      * @param order
      */
     public Order(Order order) {
@@ -49,6 +47,7 @@ public class Order extends TradingMessage implements Comparable<Order> {
 
     /**
      * The amount to buy/sell has been fulfilled.
+     *
      * @return
      */
     public boolean isFullyProcessed() {
@@ -59,12 +58,13 @@ public class Order extends TradingMessage implements Comparable<Order> {
      * A buy order with the higher prices has precedence.
      * A sell order with lower price has precedence.
      * If prices are equal, the one with smaller timestamp has precedence.
+     *
      * @param otherOrder
      * @return
      */
     @Override
     public int compareTo(Order otherOrder) {
-        Preconditions.checkNotNull(otherOrder,"Cannot compare with null.");
+        Preconditions.checkNotNull(otherOrder, "Cannot compare with null.");
         final int BEFORE = -1;
         final int EQUAL = 0;
         final int AFTER = 1;

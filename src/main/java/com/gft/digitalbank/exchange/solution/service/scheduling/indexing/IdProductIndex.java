@@ -7,13 +7,26 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by iozi on 2016-06-28.
+ * Responsible for holding information about the location of Orders across ProductExchanges Order queues.
+ * Used when handling Cancel and Modification TradingMessages that don't know which product the Order they seek to modify
+ * is assigned.
+ *
+ * Created by Ivo Zieliński on 2016-06-28.
  */
 @Singleton
 public class IdProductIndex {
 
-    private final Map<Integer, String> idProductMap = new ConcurrentHashMap<>();
+    private final Map<Integer, String> idProductMap;
 
+    public IdProductIndex() {
+        this.idProductMap = new ConcurrentHashMap<>();
+    }
+
+    /**
+     * Lets the index know where the Order with the given id resides.
+     * @param id
+     * @param product
+     */
     public void put(int id, String product) {
         idProductMap.put(id, product);
     }

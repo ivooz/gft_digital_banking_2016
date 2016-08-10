@@ -2,10 +2,17 @@ package com.gft.digitalbank.exchange.solution.service.processing;
 
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
+import com.google.common.base.Preconditions;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Created by iozi on 2016-07-01.
+ * Represents the unit of work associated with applying the TradingMessage to ProductExchange.
+ * It is meant to be used in PriorityQueues so that tasks can be properly ordered.
+ *
+ * Created by Ivo Zieliński on 2016-07-01.
  */
+@Slf4j
 public class ProcessingTask<E extends TradingMessage> implements Comparable<ProcessingTask>, Runnable {
 
     private final TradingMessageProcessor<E> tradingMessageProcessor;
@@ -18,24 +25,43 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
         this.tradingMessage = tradingMessage;
     }
 
+    /**
+     * Initializes the process of applying the TradingMessage against the ProductExchange.
+     */
+    public void run() {
+        Preconditions.checkNotNull(productExchange, "Cannot process TradingMessage without the ProductExchange!");
+        try {
+            tradingMessageProcessor.processTradingMessage(tradingMessage, productExchange);
+        } catch (OrderProcessingException ex) {
+            log.error("Cannot properly conclude the processing task.",ex);
+        }
+    }
+
+    /**
+     *
+     * @return the TradingMessage that the ProcessingTask is to apply
+     */
     public E getTradingMessage() {
         return tradingMessage;
     }
 
-    public void run() {
-        try {
-            tradingMessageProcessor.processTradingMessage(tradingMessage,productExchange);
-        } catch (OrderProcessingException e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * The tasks are ordered according to the timestamp of their underlying TradingMessage. Messages with lower
+     * timestamp (earlier) have priority.
+     * @param processingTask to comapre against
+     * @return
+     */
     @Override
-    public int compareTo(ProcessingTask processingTask) {
+    public int compareTo(@NonNull ProcessingTask processingTask) {
         return (int) (this.getTradingMessage().getTimestamp() - processingTask.getTradingMessage().getTimestamp());
     }
 
-    public void setProductExchange(ProductExchange productExchange) {
+    /**
+     * Sets the ProductExchange to apply the TradingMessage against. This cannot be done during the ProcessingTask
+     * creation as it is not always immediately known to which ProductExchange the ProcessingTask pertains.
+     * @param productExchange
+     */
+    public void setProductExchange(@NonNull ProductExchange productExchange) {
         this.productExchange = productExchange;
     }
 }

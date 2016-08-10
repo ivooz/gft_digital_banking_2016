@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by iozi on 2016-06-28.
+ * Created by Ivo Zieliński on 2016-06-28.
  */
 @Singleton
 public class ProductExchangeIndex {
@@ -27,7 +27,7 @@ public class ProductExchangeIndex {
     public ProductExchange getLedger(String productName) {
         ProductExchange productExchange = productExchangeMap.get(productName);
         if (productExchange == null) {
-            productExchangeMap.putIfAbsent(productName,productExchangeFactory.createProducteExchange(productName));
+            productExchangeMap.putIfAbsent(productName, productExchangeFactory.createProductExchange(productName));
             return productExchangeMap.get(productName);
         }
         return productExchange;

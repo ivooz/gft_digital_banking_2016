@@ -19,7 +19,7 @@ import java.util.Properties;
 /**
  * Google Guice utility component mapping injection point interfaces to implementations.
  * <p>
- * Created by iozi on 2016-06-28.
+ * Created by Ivo Zieliński on 2016-06-28.
  */
 public class StockExchangeModule extends CamelModuleWithMatchingRoutes {
 
@@ -39,8 +39,8 @@ public class StockExchangeModule extends CamelModuleWithMatchingRoutes {
             bind(new TypeLiteral<TradingMessageProcessor<Modification>>() {
             }).to(ModificationExecutionTaskProcessor.class);
         } catch (IOException ex) {
-            LOGGER.error(UNABLE_TO_LOAD_PROPERTIES_FILE,ex);
-            throw new IllegalStateException(UNABLE_TO_LOAD_PROPERTIES_FILE,ex);
+            LOGGER.error(UNABLE_TO_LOAD_PROPERTIES_FILE, ex);
+            throw new IllegalStateException(UNABLE_TO_LOAD_PROPERTIES_FILE, ex);
         }
 
     }

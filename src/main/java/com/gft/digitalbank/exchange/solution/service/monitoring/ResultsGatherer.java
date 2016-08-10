@@ -18,7 +18,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Created by iozi on 2016-06-29.
+ * Responsible for extracting the results of TradingMessage procsssing from ProductExchanges and converting them
+ * to format expected by the ProcessingListener.
+ *
+ * Created by Ivo Zieliński on 2016-06-29.
  */
 @Singleton
 public class ResultsGatherer {
@@ -32,20 +35,25 @@ public class ResultsGatherer {
         this.orderEntryConverter = orderEntryConverter;
     }
 
+    /**
+     * Gathers all the OrderBooks and Transactions from the ProductExchanges applying conversions if necessary.
+     *
+     * @return result of the message processing
+     */
     public SolutionResult gatherResults() {
         return SolutionResult.builder().orderBooks(getOrdersBook())
                 .transactions(getTransactions())
                 .build();
     }
 
-    public List<OrderBook> getOrdersBook() {
+    private List<OrderBook> getOrdersBook() {
         return productExchangeIndex.getAllExchanges().parallelStream()
                 .map(this::getOrderBook)
                 .filter(orderBook -> !orderBook.getBuyEntries().isEmpty() || !orderBook.getSellEntries().isEmpty())
                 .collect(Collectors.toList());
     }
 
-    public List<Transaction> getTransactions() {
+    private List<Transaction> getTransactions() {
         return productExchangeIndex.getAllExchanges().parallelStream()
                 .map(ProductExchange::getTransactions)
                 .flatMap(Collection::stream)

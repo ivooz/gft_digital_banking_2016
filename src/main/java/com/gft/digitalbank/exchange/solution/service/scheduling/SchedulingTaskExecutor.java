@@ -3,7 +3,7 @@ package com.gft.digitalbank.exchange.solution.service.scheduling;
 import com.google.inject.Singleton;
 
 /**
- * Created by iozi on 2016-07-15.
+ * Created by Ivo Zieliński on 2016-07-15.
  */
 @Singleton
 public class SchedulingTaskExecutor {

@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by iozi on 2016-07-01.
+ * Responsible for finishing the execution of outstanding ProcessingTasks.
+ *
+ * Created by Ivo Zieliński on 2016-07-01.
  */
 @Singleton
 public class TasksExecutionFinisher {
@@ -23,6 +25,11 @@ public class TasksExecutionFinisher {
         this.productExchangeIndex = productExchangeIndex;
     }
 
+    /**
+     * Shuts down ExecutorServices and initiates the processing of all the outstanding ProcessingTasks
+     * from the ProductExchange ProcessingTasksQueues.
+     * @return list of exceptions that occured during the execution
+     */
     public List<Exception> finishAllTasks() {
         return productExchangeIndex.getAllExchanges().parallelStream()
                 .map(productExchange -> {

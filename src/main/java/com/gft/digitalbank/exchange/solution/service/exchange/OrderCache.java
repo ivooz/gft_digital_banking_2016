@@ -5,14 +5,13 @@ import lombok.NonNull;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Acts as an index of Orders by their id.
  * Used by Modification and Cancel ProcessingTasks.
  * <p>
- * Created by iozi on 2016-07-06.
+ * Created by Ivo Zieliński on 2016-07-06.
  */
 public class OrderCache {
 
@@ -38,7 +37,7 @@ public class OrderCache {
      * @param order to remove from cache
      */
     public void remove(@NonNull Order order) {
-            CompletableFuture.runAsync(() -> orderCache.remove(order.getId()));
+        orderCache.remove(order.getId());
     }
 
     /**

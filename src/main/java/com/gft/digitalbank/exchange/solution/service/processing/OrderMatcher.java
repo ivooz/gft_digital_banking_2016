@@ -3,21 +3,29 @@ package com.gft.digitalbank.exchange.solution.service.processing;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
-import com.google.common.base.Preconditions;
 import com.google.inject.Singleton;
+import lombok.NonNull;
 
 import java.util.Optional;
 
 /**
- * Created by iozi on 2016-07-05.
+ * Defines the logic of matching an incoming Order message with those residing in OrderQueues.
+ * <p>
+ * Created by Ivo Zieliński on 2016-07-05.
  */
 @Singleton
 public class OrderMatcher {
 
-    public void matchOrder(Order processedOrder, ProductExchange productExchange) throws OrderProcessingException {
-        Preconditions.checkNotNull(productExchange,"Product exchange cannot be null!");
-        Preconditions.checkNotNull(processedOrder,"Processed order cannot be null!");
-
+    /**
+     * Applies an incoming Order message to the ProductExchange. Creates Transactions as long as there is a matching
+     * Order in the ProductExchange queues. If no matching Order is found it is enqueued. All the 'fully traded' Orders
+     * extracted from the ProductExchange queues are removed.
+     *
+     * @param processedOrder  the new Order that handled
+     * @param productExchange to apply the Order message against
+     * @throws OrderProcessingException
+     */
+    public void matchOrder(@NonNull Order processedOrder, @NonNull ProductExchange productExchange) throws OrderProcessingException {
         Side processedOrderSide = processedOrder.getSide();
         Side passiveOrderSide = processedOrderSide.opposite();
 
@@ -32,7 +40,7 @@ public class OrderMatcher {
 
             Order passiveOrder = passiveOrderOptional.get();
 
-            if (ordersMatch(processedOrder,passiveOrder)) {
+            if (ordersMatch(processedOrder, passiveOrder)) {
                 productExchange.executeTransaction(processedOrder, passiveOrder);
             } else {
                 productExchange.enqueue(processedOrder);
@@ -42,7 +50,7 @@ public class OrderMatcher {
     }
 
     private boolean ordersMatch(Order processedOrder, Order matchedOrder) throws OrderProcessingException {
-        if(processedOrder.getSide() == matchedOrder.getSide()) {
+        if (processedOrder.getSide() == matchedOrder.getSide()) {
             throw new OrderProcessingException("Attempted to matched orders of the same type.");
         }
         int comparison = processedOrder.getPrice() - matchedOrder.getPrice();

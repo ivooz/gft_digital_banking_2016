@@ -3,7 +3,7 @@ package com.gft.digitalbank.exchange.solution.config;
 import com.gft.digitalbank.exchange.solution.model.Cancel;
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.Order;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ProcessingMonitor;
+import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationListener;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskCreator;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskExecutor;
 import com.google.common.base.Preconditions;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Responsible for creating Apache camel routes that define the flow of messages across the program components.
  * <p>
- * Created by iozi on 2016-07-14.
+ * Created by Ivo Zieliński on 2016-07-14.
  */
 @Singleton
 public class CamelRouteBuilder extends RouteBuilder {
@@ -34,11 +34,11 @@ public class CamelRouteBuilder extends RouteBuilder {
     private static final String MODIFICATION_IDENTIFYING_JSONPATH = "$[?(@.messageType=='MODIFICATION')]";
     private static final String CANCEL_IDENTIFYING_JSONPATH = "$[?(@.messageType=='CANCEL')]";
     private static final String SHUTDOWN_NOTIFICATION_IDENTIFYING_JSONPATH = "$[?(@.messageType=='SHUTDOWN_NOTIFICATION')]";
-    private static final String SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME = "decreaseBrokerCounter";
+    private static final String SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME = "handleShutdownNotification";
     private static final String CANCEL_SCHEDULING_TASK_CREATION_METHOD_NAME = "createCancelSchedulingTask";
     private static final String SCHEDULING_TASK_EXECUTOR_METHOD_NAME = "executeSchedulingTask";
 
-    private final ProcessingMonitor processingMonitor;
+    private final ShutdownNotificationListener shutdownNotificationListener;
     private final SchedulingTaskCreator schedulingTaskCreator;
     private final SchedulingTaskExecutor schedulingTaskExecutor;
     private final int maximumRedeliveriesOnFailure;
@@ -47,12 +47,12 @@ public class CamelRouteBuilder extends RouteBuilder {
     private List<String> destinations;
 
     @Inject
-    public CamelRouteBuilder(ProcessingMonitor processingMonitor,
+    public CamelRouteBuilder(ShutdownNotificationListener shutdownNotificationListener,
                              SchedulingTaskCreator schedulingTaskCreator,
                              SchedulingTaskExecutor schedulingTaskExecutor,
                              @Named("camel.failure.redeliveries") int maximumRedeliveriesOnFailure,
                              @Named("camel.failure.delay") int redeliveryDelayOnFailure) {
-        this.processingMonitor = processingMonitor;
+        this.shutdownNotificationListener = shutdownNotificationListener;
         this.schedulingTaskCreator = schedulingTaskCreator;
         this.schedulingTaskExecutor = schedulingTaskExecutor;
         this.maximumRedeliveriesOnFailure = maximumRedeliveriesOnFailure;
@@ -79,7 +79,7 @@ public class CamelRouteBuilder extends RouteBuilder {
                 .unmarshal().json(UNMARSHALLING_LIBRARY, Cancel.class)
                 .bean(schedulingTaskCreator, CANCEL_SCHEDULING_TASK_CREATION_METHOD_NAME)
                 .when().jsonpath(SHUTDOWN_NOTIFICATION_IDENTIFYING_JSONPATH)
-                .bean(processingMonitor, SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME).stop().end()
+                .bean(shutdownNotificationListener, SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME).stop().end()
                 //Pass the created task to the executor
                 .threads(10)
                 .bean(schedulingTaskExecutor, SCHEDULING_TASK_EXECUTOR_METHOD_NAME);

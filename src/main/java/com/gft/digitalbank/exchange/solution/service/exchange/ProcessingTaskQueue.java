@@ -14,7 +14,7 @@ import java.util.concurrent.PriorityBlockingQueue;
  * ProcessingTasks are taken from the top of the queue according to the order of they were dispatched in.
  * Increasing the buffer size decreases the probability that tasks will be served out of order.
  * <p>
- * Created by iozi on 2016-07-06.
+ * Created by Ivo Zieliński on 2016-07-06.
  */
 public class ProcessingTaskQueue {
 
@@ -32,6 +32,7 @@ public class ProcessingTaskQueue {
     /**
      * The ProcessingTask shall be enqueued, if the queue size exceeds the buffer size the execution of the top
      * ProcessingTask should start.
+     *
      * @param processingTask to enqueue
      */
     public void enqueueTask(@NonNull ProcessingTask processingTask) {
@@ -40,6 +41,7 @@ public class ProcessingTaskQueue {
 
     /**
      * Returns the next Optional ProcessingTask from the queue according to the timestamp of the TradingMessage they wrap.
+     *
      * @return
      */
     public Optional<ProcessingTask> getNextTaskToExecute() {
@@ -60,16 +62,27 @@ public class ProcessingTaskQueue {
     /**
      * Checks whether the queue is full, which means that is the buffer size was exceeded and the the ProcessingTask
      * execution should begin.
+     *
      * @return boolean
      */
     public boolean isFull() {
         return tasksToExecute.size() >= processingTaskBufferSize;
     }
 
+    /**
+     * Checks whether there are any ProcessingTasks queued
+     *
+     * @return true if empty
+     */
     public boolean isEmpty() {
         return tasksToExecute.isEmpty();
     }
 
+    /**
+     * Checks whether there are no ProcessingTasks queued
+     *
+     * @return true if not empty
+     */
     public boolean isNotEmpty() {
         return !isEmpty();
     }

@@ -5,7 +5,9 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 /**
- * Created by iozi on 2016-08-09.
+ * Responsible for creating ProductExchange objects.
+ * <p>
+ * Created by Ivo Zieliński on 2016-08-09.
  */
 @Singleton
 public class ProductExchangeFactory {
@@ -17,7 +19,13 @@ public class ProductExchangeFactory {
         this.processingTaskBufferSize = processingTaskBufferSize;
     }
 
-    public ProductExchange createProducteExchange(String productName) {
-        return new ProductExchange(productName,processingTaskBufferSize);
+    /**
+     * Creates a new ProductExchange object
+     *
+     * @param productName for the ProductExchange
+     * @return
+     */
+    public ProductExchange createProductExchange(String productName) {
+        return new ProductExchange(productName, processingTaskBufferSize);
     }
 }

@@ -1,7 +1,9 @@
 package com.gft.digitalbank.exchange.solution.service.processing;
 
 /**
- * Created by iozi on 2016-08-01.
+ * Throw whenever a problem occurs during new Order processing.
+ *
+ * Created by Ivo Zieliński 2016-08-01.
  */
 public class OrderProcessingException extends Exception {
 

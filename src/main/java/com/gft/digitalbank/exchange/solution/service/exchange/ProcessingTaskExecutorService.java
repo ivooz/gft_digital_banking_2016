@@ -2,8 +2,6 @@ package com.gft.digitalbank.exchange.solution.service.exchange;
 
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
 import lombok.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -14,10 +12,10 @@ import java.util.concurrent.TimeUnit;
  * Encapsulates single-threaded executor service so that no ProductExchanged-scoped synchronization is required for
  * ProcessingTask execution.
  * ProcessingTasks execution order is dictated by their timestamp.
- *
- * Created by iozi on 2016-07-15.
+ * <p>
+ * Created by Ivo Zieliński on 2016-07-15.
  */
-public class ProcessingTaskExecutor {
+public class ProcessingTaskExecutorService {
 
     public static final int CORE_POOL_SIZE = 1;
     public static final int MAXIMUM_POOL_SIZE = 1;
@@ -28,10 +26,9 @@ public class ProcessingTaskExecutor {
     private final ThreadPoolExecutor taskExecutor;
 
     /**
-     *
      * @param productExchange that the ProcessingTasks shall be executed against.
      */
-    public ProcessingTaskExecutor(@NonNull ProductExchange productExchange) {
+    public ProcessingTaskExecutorService(@NonNull ProductExchange productExchange) {
         this.productExchange = productExchange;
         this.taskExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME,
                 TimeUnit.MILLISECONDS, new PriorityBlockingQueue<>());
@@ -39,6 +36,7 @@ public class ProcessingTaskExecutor {
 
     /**
      * Shuts down and waits till currently executed task terminates.
+     *
      * @throws ExchangeShutdownException
      */
     public void shutdownAndAwaitTermination() throws ExchangeShutdownException {
@@ -52,6 +50,7 @@ public class ProcessingTaskExecutor {
 
     /**
      * Adds the ProcessingTask to the queue.
+     *
      * @param processingTask to queue
      */
     public void enqueueProcessingTask(@NonNull ProcessingTask processingTask) {

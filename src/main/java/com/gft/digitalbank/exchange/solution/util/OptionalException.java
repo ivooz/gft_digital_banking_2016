@@ -3,7 +3,7 @@ package com.gft.digitalbank.exchange.solution.util;
 import java.util.Optional;
 
 /**
- * Created by iozi on 2016-08-02.
+ * Created by Ivo Zieliński on 2016-08-02.
  */
 public class OptionalException {
 

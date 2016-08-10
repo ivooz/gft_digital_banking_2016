@@ -4,9 +4,17 @@ import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 
 /**
- * Created by iozi on 2016-07-15.
+ * Defines how the TradingMessage is applied to the ProductExchange.
+ *
+ * Created by Ivo Zieliński on 2016-07-15.
  */
 public interface TradingMessageProcessor<E extends TradingMessage> {
 
-    public void processTradingMessage(E message, ProductExchange productExchange) throws OrderProcessingException;
+    /**
+     * Applies the TradingMessage to the ProductExchange.
+     *
+     * @param message message
+     * @param productExchange to execute the message against
+     */
+    void processTradingMessage(E message, ProductExchange productExchange) throws OrderProcessingException;
 }

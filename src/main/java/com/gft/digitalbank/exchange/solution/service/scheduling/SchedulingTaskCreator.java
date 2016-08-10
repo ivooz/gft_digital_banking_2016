@@ -7,7 +7,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * Created by iozi on 2016-06-28.
+ * Created by Ivo Zieliński on 2016-06-28.
  */
 @Singleton
 public class SchedulingTaskCreator {

@@ -2,93 +2,107 @@ package com.gft.digitalbank.exchange.solution.service.exchange;
 
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
-import lombok.Data;
+import lombok.NonNull;
 
 import java.util.Optional;
 import java.util.PriorityQueue;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
- * Created by iozi on 2016-07-06.
+ * Holds the state of buy and sell Order queues.
+ * Uses priority queues to enforce the correct processing Order.
+ * Responsible from lazy removal of Orders from queues.
+ * <p>
+ * Created by Ivo Zieliński on 2016-07-06.
  */
 public class OrderQueue {
 
     private final PriorityQueue<Order> buyOrders = new PriorityQueue<>();
     private final PriorityQueue<Order> sellOrders = new PriorityQueue<>();
 
-    public Optional<Order> getNextOrder(Side side) {
-        Order order;
+    /**
+     * Retrieves the next Order to process from the Queue. The Order will be removed from the Queue.
+     * If the retrieved order has been marked for deletion by a Cancel or has been 'fully traded', it will be ignored
+     * and the next Order will be retrieved.
+     *
+     * @param side
+     * @return the top Order
+     */
+    public Optional<Order> getNextOrder(@NonNull Side side) {
+        Optional<Order> orderOptional;
         while (true) {
-            order = pollOrder(side);
-            if (order == null) {
-                return Optional.empty();
+            orderOptional = pollOrder(side);
+            if (!orderOptional.isPresent()) {
+                return orderOptional;
             }
-            //Orders scheduled for deletion are skipped
-            if (!order.isScheduledForDeletion()) {
-                return Optional.of(order);
+            if (!orderOptional.get().isScheduledForDeletion()) {
+                return orderOptional;
             }
-
         }
     }
 
-    public Optional<Order> peekNextOrder(Side side) {
-        Order order;
+    /**
+     * Peeks the next Order to process from the Queue. The Order will not be removed from the Queue.
+     * If the retrieved order has been marked for deletion by a Cancel or has been 'fully traded', it will be ignored
+     * and the next Order will be peeked.
+     *
+     * @param side
+     * @return the top Order
+     */
+    public Optional<Order> peekNextOrder(@NonNull Side side) {
+        Optional<Order> orderOptional;
         while (true) {
-            order = peekOrder(side);
-            if (order == null) {
-                return Optional.empty();
+            orderOptional = peekOrder(side);
+            if (!orderOptional.isPresent()) {
+                return orderOptional;
             }
-            if (order.isScheduledForDeletion()) {
+            if (orderOptional.get().isScheduledForDeletion()) {
                 discardTopOrder(side);
             } else {
-                return Optional.of(order);
+                return orderOptional;
             }
         }
     }
 
-    public void pushOrder(Order order) {
-        switch (order.getSide()) {
-            case BUY:
-                buyOrders.add(order);
-                break;
-            case SELL:
-                sellOrders.add(order);
-                break;
-        }
+    /**
+     * Pushes Order onto the proper queue.
+     *
+     * @param order to add
+     */
+    public void pushOrder(@NonNull Order order) {
+        consumeQueue(order.getSide(), queue -> queue.add(order));
     }
 
-    public Order peekOrder(Side side) {
-        switch (side) {
-            case BUY:
-                return buyOrders.peek();
-            case SELL:
-                return sellOrders.peek();
-        }
-        //TODO throw exception?
-        return null;
+    private Optional<Order> peekOrder(Side side) {
+        return applyToQueue(side, queue -> queue.peek());
     }
 
-    public void removeTopOrder(Side side) {
-        getNextOrder(side);
-    }
-
-    private Order pollOrder(Side side) {
-        switch (side) {
-            case BUY:
-                return buyOrders.poll();
-            case SELL:
-                return sellOrders.poll();
-        }
-        //TODO throw exception?
-        return null;
+    private Optional<Order> pollOrder(Side side) {
+        return applyToQueue(side, queue -> queue.poll());
     }
 
     private void discardTopOrder(Side side) {
+        consumeQueue(side, queue -> queue.poll());
+    }
+
+    private Optional<Order> applyToQueue(Side side, Function<PriorityQueue<Order>, Order> function) {
         switch (side) {
             case BUY:
-                buyOrders.poll();
+                return Optional.ofNullable(function.apply(buyOrders));
+            case SELL:
+                return Optional.ofNullable(function.apply(sellOrders));
+        }
+        return Optional.empty();
+    }
+
+    private void consumeQueue(Side side, Consumer<PriorityQueue<Order>> consumer) {
+        switch (side) {
+            case BUY:
+                consumer.accept(buyOrders);
                 break;
             case SELL:
-                sellOrders.poll();
+                consumer.accept(sellOrders);
                 break;
         }
     }
