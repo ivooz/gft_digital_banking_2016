@@ -2,11 +2,12 @@ package com.gft.digitalbank.exchange.solution.service.processing;
 
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.google.inject.Inject;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import lombok.NonNull;
 
 /**
- * Responsible for creation of ProcessingTask objects.
+ * Responsible for creation of ProcessingTasks.
  *
  * Created by Ivo Zieliński on 2016-06-28.
  */
@@ -25,7 +26,8 @@ public class ProcessingTaskFactory<E extends TradingMessage> {
      * @param message for the ProcessingTask to execute
      * @return
      */
+    @Provides
     public ProcessingTask<E> createProcessingTask(@NonNull E message) {
-        return new ProcessingTask<E>(tradingMessageProcessor, message);
+        return new ProcessingTask<>(tradingMessageProcessor, message);
     }
 }

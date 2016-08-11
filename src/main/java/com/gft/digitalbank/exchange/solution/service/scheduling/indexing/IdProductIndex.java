@@ -1,6 +1,7 @@
 package com.gft.digitalbank.exchange.solution.service.scheduling.indexing;
 
 import com.google.inject.Singleton;
+import lombok.NonNull;
 
 import java.util.Map;
 import java.util.Optional;
@@ -23,14 +24,19 @@ public class IdProductIndex {
     }
 
     /**
-     * Lets the index know where the Order with the given id resides.
-     * @param id
-     * @param product
+     * Saves the productName name associated with the Order with the given id
+     * @param id of the Order
+     * @param productName name
      */
-    public void put(int id, String product) {
-        idProductMap.put(id, product);
+    public void put(int id, @NonNull String productName) {
+        idProductMap.put(id, productName);
     }
 
+    /**
+     * Retrieves the product name of an Order with a given id.
+     * @param id of the Order
+     * @return product name
+     */
     public Optional<String> get(int id) {
         return Optional.ofNullable(idProductMap.get(id));
     }

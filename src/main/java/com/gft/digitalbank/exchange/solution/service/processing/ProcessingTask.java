@@ -15,12 +15,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProcessingTask<E extends TradingMessage> implements Comparable<ProcessingTask>, Runnable {
 
+    private static final String PRODUCT_EXCHANGE_NOT_SET_EXCEPTION_MESSAGE =
+            "Cannot process TradingMessage without the ProductExchange!";
+
     private final TradingMessageProcessor<E> tradingMessageProcessor;
     private final E tradingMessage;
 
     private ProductExchange productExchange;
 
-    public ProcessingTask(TradingMessageProcessor<E> tradingMessageProcessor, E tradingMessage) {
+    public ProcessingTask(TradingMessageProcessor<E> tradingMessageProcessor,
+                          E tradingMessage) {
         this.tradingMessageProcessor = tradingMessageProcessor;
         this.tradingMessage = tradingMessage;
     }
@@ -29,7 +33,7 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
      * Initializes the process of applying the TradingMessage against the ProductExchange.
      */
     public void run() {
-        Preconditions.checkNotNull(productExchange, "Cannot process TradingMessage without the ProductExchange!");
+        Preconditions.checkNotNull(productExchange, PRODUCT_EXCHANGE_NOT_SET_EXCEPTION_MESSAGE);
         try {
             tradingMessageProcessor.processTradingMessage(tradingMessage, productExchange);
         } catch (OrderProcessingException ex) {
@@ -48,7 +52,7 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
     /**
      * The tasks are ordered according to the timestamp of their underlying TradingMessage. Messages with lower
      * timestamp (earlier) have priority.
-     * @param processingTask to comapre against
+     * @param processingTask to compare against
      * @return
      */
     @Override

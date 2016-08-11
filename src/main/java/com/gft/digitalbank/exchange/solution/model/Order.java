@@ -1,10 +1,7 @@
 package com.gft.digitalbank.exchange.solution.model;
 
 import com.google.common.base.Preconditions;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * Represents the Order message.
@@ -63,8 +60,7 @@ public class Order extends TradingMessage implements Comparable<Order> {
      * @return
      */
     @Override
-    public int compareTo(Order otherOrder) {
-        Preconditions.checkNotNull(otherOrder, "Cannot compare with null.");
+    public int compareTo(@NonNull Order otherOrder) {
         final int BEFORE = -1;
         final int EQUAL = 0;
         final int AFTER = 1;

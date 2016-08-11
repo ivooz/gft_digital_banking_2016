@@ -17,10 +17,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class ProcessingTaskExecutorService {
 
-    public static final int CORE_POOL_SIZE = 1;
-    public static final int MAXIMUM_POOL_SIZE = 1;
-    public static final int KEEP_ALIVE_TIME = 1000;
-    public static final int SHUTDOWN_TIMEOUT = 1000;
+    private static final int CORE_POOL_SIZE = 1;
+    private static final int MAXIMUM_POOL_SIZE = 1;
+    private static final int KEEP_ALIVE_TIME = 1000;
+    private static final int SHUTDOWN_TIMEOUT = 1000;
+    private static final String EXECUTOR_INTERRUPTED_EXCEPTION_MESSAGE = "Task executor terminated incorrectly.";
 
     private final ProductExchange productExchange;
     private final ThreadPoolExecutor taskExecutor;
@@ -44,7 +45,7 @@ public class ProcessingTaskExecutorService {
         try {
             taskExecutor.awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
-            throw new ExchangeShutdownException("Processing task interrupted!", e);
+            throw new ExchangeShutdownException(EXECUTOR_INTERRUPTED_EXCEPTION_MESSAGE, e);
         }
     }
 

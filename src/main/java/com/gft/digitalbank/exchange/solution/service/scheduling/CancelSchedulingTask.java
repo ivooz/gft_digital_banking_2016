@@ -5,37 +5,33 @@ import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
 import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.IdProductIndex;
 import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.ProductExchangeIndex;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 import java.util.Optional;
 
 /**
+ * @inheritDoc
  * Created by Ivo Zieliński on 2016-06-28.
  */
-public class CancelSchedulingTask implements SchedulingTask {
+public class CancelSchedulingTask extends SchedulingTask<Cancel> {
 
-    private final ProductExchangeIndex productMessageQueuesHolder;
-    private final IdProductIndex idProductIndex;
-    private final ProcessingTask<Cancel> cancelProcessingTask;
-
-    public CancelSchedulingTask(ProductExchangeIndex productMessageQueuesHolder,
+    @Inject
+    public CancelSchedulingTask(ProductExchangeIndex productExchangeIndex,
                                 IdProductIndex idProductIndex,
-                                ProcessingTask<Cancel> cancelProcessingTask) {
-        this.productMessageQueuesHolder = productMessageQueuesHolder;
-        this.idProductIndex = idProductIndex;
-        this.cancelProcessingTask = cancelProcessingTask;
+                                @Assisted ProcessingTask<Cancel> processingTask) {
+        super(productExchangeIndex, idProductIndex, processingTask);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void execute() throws OrderNotFoundException {
-        Optional<String> productOptional = idProductIndex.get(cancelProcessingTask.getTradingMessage().getCancelledOrderId());
+        Optional<String> productOptional = idProductIndex.get(processingTask.getTradingMessage().getCancelledOrderId());
         if (!productOptional.isPresent()) {
             throw new OrderNotFoundException();
         }
-        productMessageQueuesHolder.getLedger(productOptional.get()).enqueueTask(cancelProcessingTask);
-    }
-
-    @Override
-    public TradingMessage getTradingMessage() {
-        return cancelProcessingTask.getTradingMessage();
+        productExchangeIndex.getProductExchange(productOptional.get()).enqueueTask(processingTask);
     }
 }

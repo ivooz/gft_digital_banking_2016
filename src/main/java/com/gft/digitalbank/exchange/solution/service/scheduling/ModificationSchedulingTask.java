@@ -5,39 +5,35 @@ import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
 import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.IdProductIndex;
 import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.ProductExchangeIndex;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 import java.util.Optional;
 
 /**
+ * @inheritDoc
+ *
  * Created by Ivo Zieliński on 2016-06-28.
  */
-public class ModificationSchedulingTask implements SchedulingTask {
+public class ModificationSchedulingTask extends SchedulingTask<Modification> {
 
-    private final ProductExchangeIndex productExchangeIndex;
-    private final IdProductIndex idProductIndex;
-    private final ProcessingTask<Modification> modificationProcessingTask;
-
-
+    @Inject
     public ModificationSchedulingTask(ProductExchangeIndex productExchangeIndex,
                                       IdProductIndex idProductIndex,
-                                      ProcessingTask<Modification> modificationProcessingTask) {
-        this.productExchangeIndex = productExchangeIndex;
-        this.idProductIndex = idProductIndex;
-        this.modificationProcessingTask = modificationProcessingTask;
+                                      @Assisted ProcessingTask<Modification> processingTask) {
+        super(productExchangeIndex, idProductIndex, processingTask);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void execute() throws OrderNotFoundException {
-        Modification modification = modificationProcessingTask.getTradingMessage();
+        Modification modification = processingTask.getTradingMessage();
         Optional<String> product = idProductIndex.get(modification.getModifiedOrderId());
         if (!product.isPresent()) {
             throw new OrderNotFoundException();
         }
-        productExchangeIndex.getLedger(product.get()).enqueueTask(modificationProcessingTask);
-    }
-
-    @Override
-    public TradingMessage getTradingMessage() {
-        return modificationProcessingTask.getTradingMessage();
+        productExchangeIndex.getProductExchange(product.get()).enqueueTask(processingTask);
     }
 }

@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class ProductTransactionLedger {
 
+    public static final String SAME_ORDER_TYPE_EXCEPTION_MESSAGE = "Cannot transact Orders of the same type!";
     private final TransactionFactory transactionFactory = new TransactionFactory();
     private final List<Transaction> transactions = new ArrayList<>();
 
@@ -31,7 +32,7 @@ public class ProductTransactionLedger {
      */
     public void executeTransaction(@NonNull Order processedOrder, @NonNull Order passiveOrder) throws OrderProcessingException {
         Preconditions.checkState(processedOrder.getSide() != passiveOrder.getSide(),
-                "Cannot transact Orders of the same type!");
+                SAME_ORDER_TYPE_EXCEPTION_MESSAGE);
         int processedOrderAmount = processedOrder.getAmount();
         int passiveOrderAmount = passiveOrder.getAmount();
         int amountTraded = processedOrderAmount > passiveOrderAmount ? passiveOrderAmount : processedOrderAmount;

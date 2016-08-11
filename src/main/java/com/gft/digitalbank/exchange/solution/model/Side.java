@@ -19,5 +19,9 @@ public enum Side {
         }
     };
 
+    /**
+     *
+     * @return the opposite side
+     */
     public abstract Side opposite();
 }

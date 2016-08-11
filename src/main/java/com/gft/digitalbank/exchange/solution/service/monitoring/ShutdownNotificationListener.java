@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Singleton
 public class ShutdownNotificationListener {
 
+    public static final String SHUTDOWN_EXCEPTION_MESSAGE = "Encountered problems when shutting down processing session.";
     private final ResultsGatherer resultGatherer;
     private final ProcessingFinisher processingFinisher;
 
@@ -46,7 +47,7 @@ public class ShutdownNotificationListener {
                 try {
                     processingFinisher.finishProcessing();
                 } catch (ProcessingShutdownException e) {
-                    log.error("Encountered problems when shutting down processing session.",e);
+                    log.error(SHUTDOWN_EXCEPTION_MESSAGE,e);
                 }
                 processingListener.processingDone(resultGatherer.gatherResults());
             }

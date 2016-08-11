@@ -7,7 +7,9 @@ import com.gft.digitalbank.exchange.solution.service.processing.CancelExecutionT
 import com.gft.digitalbank.exchange.solution.service.processing.ModificationExecutionTaskProcessor;
 import com.gft.digitalbank.exchange.solution.service.processing.OrderExecutionTaskProcessor;
 import com.gft.digitalbank.exchange.solution.service.processing.TradingMessageProcessor;
+import com.gft.digitalbank.exchange.solution.service.scheduling.*;
 import com.google.inject.TypeLiteral;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Names;
 import org.apache.camel.guice.CamelModuleWithMatchingRoutes;
 import org.slf4j.Logger;
@@ -31,18 +33,38 @@ public class StockExchangeModule extends CamelModuleWithMatchingRoutes {
     protected void configure() {
         super.configure();
         try {
-            Names.bindProperties(binder(), getProperties());
-            bind(new TypeLiteral<TradingMessageProcessor<Order>>() {
-            }).to(OrderExecutionTaskProcessor.class);
-            bind(new TypeLiteral<TradingMessageProcessor<Cancel>>() {
-            }).to(CancelExecutionTaskProcessor.class);
-            bind(new TypeLiteral<TradingMessageProcessor<Modification>>() {
-            }).to(ModificationExecutionTaskProcessor.class);
+            bindGenericProcessors();
+            bindGenericFactories();
         } catch (IOException ex) {
             LOGGER.error(UNABLE_TO_LOAD_PROPERTIES_FILE, ex);
             throw new IllegalStateException(UNABLE_TO_LOAD_PROPERTIES_FILE, ex);
         }
 
+    }
+
+    private void bindGenericProcessors() throws IOException {
+        Names.bindProperties(binder(), getProperties());
+        bind(new TypeLiteral<TradingMessageProcessor<Order>>() {
+        }).to(OrderExecutionTaskProcessor.class);
+        bind(new TypeLiteral<TradingMessageProcessor<Cancel>>() {
+        }).to(CancelExecutionTaskProcessor.class);
+        bind(new TypeLiteral<TradingMessageProcessor<Modification>>() {
+        }).to(ModificationExecutionTaskProcessor.class);
+    }
+
+    private void bindGenericFactories() {
+        install(new FactoryModuleBuilder().implement(new TypeLiteral<SchedulingTask<Order>>() {
+        }, OrderSchedulingTask.class)
+                .build(new TypeLiteral<SchedulingTaskFactory<Order>>() {
+                }));
+        install(new FactoryModuleBuilder().implement(new TypeLiteral<SchedulingTask<Modification>>() {
+        }, ModificationSchedulingTask.class)
+                .build(new TypeLiteral<SchedulingTaskFactory<Modification>>() {
+                }));
+        install(new FactoryModuleBuilder().implement(new TypeLiteral<SchedulingTask<Cancel>>() {
+        }, CancelSchedulingTask.class)
+                .build(new TypeLiteral<SchedulingTaskFactory<Cancel>>() {
+                }));
     }
 
     private Properties getProperties() throws IOException {

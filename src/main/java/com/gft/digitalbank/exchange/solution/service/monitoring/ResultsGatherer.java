@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 @Singleton
 public class ResultsGatherer {
 
+    private static final int ORDER_ENTRIES_START_INDEX = 1;
+
     private final ProductExchangeIndex productExchangeIndex;
     private final OrderEntryConverter orderEntryConverter;
 
@@ -69,7 +71,7 @@ public class ResultsGatherer {
 
     private List<OrderEntry> extractOrderEntries(Side side, ProductExchange productExchange) {
         List<OrderEntry> orderEntries = new ArrayList<>();
-        int index = 1;
+        int index = ORDER_ENTRIES_START_INDEX;
         Optional<Order> orderOptional = productExchange.getNextOrder(side);
         while (orderOptional.isPresent()) {
             Order order = orderOptional.get();

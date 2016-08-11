@@ -2,68 +2,46 @@ package com.gft.digitalbank.exchange.solution;
 
 import com.gft.digitalbank.exchange.Exchange;
 import com.gft.digitalbank.exchange.listener.ProcessingListener;
-import com.gft.digitalbank.exchange.solution.config.CamelRouteBuilder;
+import com.gft.digitalbank.exchange.solution.config.StockExchangeBootstrapper;
 import com.gft.digitalbank.exchange.solution.config.StockExchangeModule;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationListener;
+import com.gft.digitalbank.exchange.solution.config.StockExchangeStartupException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import org.apache.activemq.camel.component.ActiveMQComponent;
-import org.apache.camel.CamelContext;
-import org.apache.camel.component.jms.ConsumerType;
-import org.apache.camel.component.jms.JmsComponent;
-import org.apache.camel.component.jms.JmsConfiguration;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.jms.MessageConsumer;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Your solution must implement the {@link Exchange} interface.
  */
+@Slf4j
 public class StockExchange implements Exchange {
 
-    List<MessageConsumer> messageConsumers = new ArrayList<>();
+    private static final String STARTUP_EXCEPTION_MESSAGE = "Could not start StockExchange.";
 
-    private ShutdownNotificationListener shutdownNotificationListener;
-    private CamelRouteBuilder camelRouteBuilder;
-    private CamelContext camelContext;
+    private final StockExchangeBootstrapper stockExchangeBootstrapper;
 
     public StockExchange() {
         Injector injector = Guice.createInjector(new StockExchangeModule());
-        this.shutdownNotificationListener = injector.getInstance(ShutdownNotificationListener.class);
-        this.camelRouteBuilder = injector.getInstance(CamelRouteBuilder.class);
-        this.camelContext = injector.getInstance(CamelContext.class);
+        this.stockExchangeBootstrapper = injector.getInstance(StockExchangeBootstrapper.class);
     }
 
     @Override
     public void register(ProcessingListener processingListener) {
-        shutdownNotificationListener.setProcessingListener(processingListener);
+        stockExchangeBootstrapper.registerProcessingListener(processingListener);
     }
 
     @Override
     public void setDestinations(List<String> destinations) {
-        try {
-            //TODO move it to external class
-            shutdownNotificationListener.setBrokerCount(destinations.size());
-            JmsComponent activeMQComponent = ActiveMQComponent.activeMQComponent("vm://localhost");
-            JmsConfiguration configuration = activeMQComponent.getConfiguration();
-            configuration.setConsumerType(ConsumerType.Simple);
-            camelContext.addComponent("activemq", activeMQComponent);
-            camelRouteBuilder.setDestinations(destinations);
-            camelContext.addRoutes(camelRouteBuilder);
-            camelContext.setAllowUseOriginalMessage(false);
-        } catch (Exception e) {
-            //TODO
-            e.printStackTrace();
-        }
+        stockExchangeBootstrapper.configure(destinations);
     }
 
     @Override
     public void start() {
         try {
-            camelContext.start();
-        } catch (Exception e) {
-            e.printStackTrace();
+            stockExchangeBootstrapper.start();
+        } catch (StockExchangeStartupException e) {
+            log.error(STARTUP_EXCEPTION_MESSAGE,e);
         }
     }
 }

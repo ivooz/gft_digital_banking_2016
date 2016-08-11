@@ -16,6 +16,8 @@ import java.util.Optional;
 @Singleton
 public class OrderMatcher {
 
+    private static final String SAME_ORDER_SIDE_EXCEPTION_MESSAGE = "Attempted to matched orders of the same type.";
+
     /**
      * Applies an incoming Order message to the ProductExchange. Creates Transactions as long as there is a matching
      * Order in the ProductExchange queues. If no matching Order is found it is enqueued. All the 'fully traded' Orders
@@ -51,7 +53,7 @@ public class OrderMatcher {
 
     private boolean ordersMatch(Order processedOrder, Order matchedOrder) throws OrderProcessingException {
         if (processedOrder.getSide() == matchedOrder.getSide()) {
-            throw new OrderProcessingException("Attempted to matched orders of the same type.");
+            throw new OrderProcessingException(SAME_ORDER_SIDE_EXCEPTION_MESSAGE);
         }
         int comparison = processedOrder.getPrice() - matchedOrder.getPrice();
         return processedOrder.getSide() == Side.BUY ? comparison >= 0 : comparison <= 0;

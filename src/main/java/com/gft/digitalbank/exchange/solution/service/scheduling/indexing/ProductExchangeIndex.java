@@ -4,12 +4,15 @@ import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchangeFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import lombok.NonNull;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * Indexes ProductExchanges on their product name.
+ *
  * Created by Ivo Zieliński on 2016-06-28.
  */
 @Singleton
@@ -24,7 +27,12 @@ public class ProductExchangeIndex {
         this.productExchangeMap = new ConcurrentHashMap<>();
     }
 
-    public ProductExchange getLedger(String productName) {
+    /**
+     * Retrieves the ProductExchange with the given product name
+     * @param productName
+     * @return
+     */
+    public ProductExchange getProductExchange(@NonNull String productName) {
         ProductExchange productExchange = productExchangeMap.get(productName);
         if (productExchange == null) {
             productExchangeMap.putIfAbsent(productName, productExchangeFactory.createProductExchange(productName));

@@ -13,9 +13,21 @@ import lombok.NonNull;
  */
 public class TransactionFactory {
 
-    public Transaction createTransaction(@NonNull Order processedOrder, @NonNull Order passiveOrder, int amountTraded, int id) {
+    private static final String CANNOT_TRANSACT_ORDERS_OF_THE_SAME_TYPE = "Cannot transact Orders of the same type!";
+
+    /**
+     * Creates a Transaction from two Orders. Orders are not modified.
+     *
+     * @param processedOrder that is being handled
+     * @param passiveOrder   retrieved from the queue
+     * @param amountTraded   of the product
+     * @param id             of the Transaction
+     * @return the resulting Transaction
+     */
+    public Transaction createTransaction(@NonNull Order processedOrder, @NonNull Order passiveOrder,
+                                         int amountTraded, int id) {
         Preconditions.checkState(processedOrder.getSide() != passiveOrder.getSide(),
-                "Cannot transact Orders of the same type!");
+                CANNOT_TRANSACT_ORDERS_OF_THE_SAME_TYPE);
         boolean processedOrderIsBuying = processedOrder.getSide() == Side.BUY;
         return Transaction.builder().amount(amountTraded)
                 .brokerBuy(processedOrderIsBuying ? processedOrder.getBroker() : passiveOrder.getBroker())
