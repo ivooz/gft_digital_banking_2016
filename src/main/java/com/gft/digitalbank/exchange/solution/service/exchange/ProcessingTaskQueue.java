@@ -41,6 +41,7 @@ public class ProcessingTaskQueue {
 
     /**
      * Returns the next Optional ProcessingTask from the queue according to the timestamp of the TradingMessage they wrap.
+     * The task is removed from the queue.
      *
      * @return
      */

@@ -1,6 +1,5 @@
 package com.gft.digitalbank.exchange.solution.model;
 
-import com.google.common.base.Preconditions;
 import lombok.*;
 
 /**
@@ -9,7 +8,6 @@ import lombok.*;
  * Created by Ivo Zieliński on 2016-06-27.
  */
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Order extends TradingMessage implements Comparable<Order> {
@@ -19,6 +17,16 @@ public class Order extends TradingMessage implements Comparable<Order> {
     private String product;
     private Details details;
     private boolean scheduledForDeletion;
+
+    @Builder
+    public Order(int id, long timestamp, String broker, String client, Side side, String product, Details details, boolean scheduledForDeletion) {
+        super(id, timestamp, broker);
+        this.client = client;
+        this.side = side;
+        this.product = product;
+        this.details = details;
+        this.scheduledForDeletion = scheduledForDeletion;
+    }
 
     /**
      * Copying constructor.
@@ -47,7 +55,7 @@ public class Order extends TradingMessage implements Comparable<Order> {
      *
      * @return
      */
-    public boolean isFullyProcessed() {
+    public boolean isFullyTraded() {
         return getAmount() == 0;
     }
 

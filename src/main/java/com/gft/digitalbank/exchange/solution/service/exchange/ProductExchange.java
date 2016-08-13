@@ -5,6 +5,7 @@ import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
 import com.gft.digitalbank.exchange.solution.service.processing.OrderProcessingException;
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
+import com.google.common.base.Preconditions;
 import lombok.NonNull;
 
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.function.Predicate;
  * Created by Ivo Zieliński on 2016-07-06.
  */
 public class ProductExchange {
+
+    private static final String ENQUEUED_ORDER_SCHEDULED_FOR_DELETION_EXCEPTION_MESSAGE = "Enqueued Order must not be marked as scheduled for deletion.";
 
     private final String productName;
     private final ProductTransactionLedger productTransactionLedger;
@@ -40,9 +43,10 @@ public class ProductExchange {
      * Adds the Order to the cache for further retrieval as well as queues it for later matching.
      * This method is invoked to add Orders that have not been fully 'traded' or/and no match for them has been found.
      *
-     * @param order to enqueue
+     * @param order to enqueue, it cannot be marked as Scheduled for deletion.
      */
     public void enqueue(@NonNull Order order) {
+        Preconditions.checkArgument(!order.isScheduledForDeletion(), ENQUEUED_ORDER_SCHEDULED_FOR_DELETION_EXCEPTION_MESSAGE);
         orderCache.add(order);
         orderQueue.pushOrder(order);
     }
@@ -90,6 +94,7 @@ public class ProductExchange {
      * the ProcessingTask with the lowest timestamp is passed to the ExecutorService.
      *
      * @param processingTask to enqueue
+     *
      */
     public void enqueueTask(@NonNull ProcessingTask processingTask) {
         processingTaskQueue.enqueueTask(processingTask);
@@ -118,7 +123,7 @@ public class ProductExchange {
      * @return
      */
     public Optional<Order> getNextOrder(@NonNull Side side) {
-        return orderQueue.getNextOrder(side);
+        return orderQueue.pollNextOrder(side);
     }
 
     /**
@@ -136,7 +141,7 @@ public class ProductExchange {
             throw new OrderProcessingException("Attempting to match orders of the same type!");
         }
         productTransactionLedger.executeTransaction(processedOrder, passiveOrder);
-        if (passiveOrder.isFullyProcessed()) {
+        if (passiveOrder.isFullyTraded()) {
             remove(passiveOrder);
         }
     }

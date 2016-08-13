@@ -31,7 +31,7 @@ public class OrderMatcher {
         Side processedOrderSide = processedOrder.getSide();
         Side passiveOrderSide = processedOrderSide.opposite();
 
-        while (!processedOrder.isFullyProcessed()) {
+        while (!processedOrder.isFullyTraded()) {
 
             Optional<Order> passiveOrderOptional = productExchange.peekNextOrder(passiveOrderSide);
 

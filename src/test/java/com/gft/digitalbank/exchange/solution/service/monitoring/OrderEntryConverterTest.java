@@ -11,8 +11,4 @@ import org.junit.experimental.categories.Category;
 @Category({UnitTest.class})
 public class OrderEntryConverterTest {
 
-    @Test
-    public void ble() {
-        System.out.println("BLE");
-    }
 }
