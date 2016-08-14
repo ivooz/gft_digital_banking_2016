@@ -19,6 +19,7 @@ public class PojoFactory {
             .id(0)
             .side(Side.BUY)
             .timestamp(0)
+            .product("product")
             .scheduledForDeletion(false).build();
 
     private Cloner cloner = new Cloner();
@@ -28,6 +29,12 @@ public class PojoFactory {
         counter++;
         order.setId(counter);
         order.setTimestamp(counter);
+        return order;
+    }
+
+    public Order createNextOrderWithAmountAndSide(int amount, Side side) {
+        Order order = createNextOrderWithSide(side);
+        order.getDetails().setAmount(amount);
         return order;
     }
 

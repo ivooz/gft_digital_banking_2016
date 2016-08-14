@@ -27,7 +27,8 @@ public class ModificationExecutionTaskProcessor implements TradingMessageProcess
      * @inheritDoc
      */
     @Override
-    public void processTradingMessage(@NonNull Modification modification,@NonNull ProductExchange productExchange) throws OrderProcessingException {
+    public void processTradingMessage(@NonNull Modification modification,@NonNull ProductExchange productExchange)
+            throws OrderProcessingException {
         Optional<Order> orderToModify = productExchange.getById(modification.getModifiedOrderId());
         if (!orderToModify.isPresent()) {
             //The order has already been fully processed or cancelled
@@ -40,7 +41,7 @@ public class ModificationExecutionTaskProcessor implements TradingMessageProcess
         Order copy = new Order(order);
         copy.setDetails(modification.getDetails());
         //Copy is created and the old Order is eagerly removed from the cache so that we don't have to search OrderQueues
-        //for it. It will be llazily removed during retrieval.
+        //for it. It will be lazily removed during retrieval.
         productExchange.remove(order);
         copy.setTimestamp(modification.getTimestamp());
         //We treat the modified Order just like an incoming new Order.

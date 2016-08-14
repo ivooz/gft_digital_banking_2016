@@ -64,26 +64,6 @@ public class ProcessingTaskQueueTest {
     }
 
     @Test
-    public void executeIfFull_ifEmpty_shouldNotExecuteProcedure() {
-        Procedure procedure = Mockito.mock(Procedure.class);
-        sut.executeIfFull(procedure);
-        Mockito.verify(procedure, times(0)).execute();
-    }
-
-    @Test
-    public void executeIfFull_ifFull_shouldExecuteProcedure() {
-        Procedure procedure = Mockito.mock(Procedure.class);
-        fillTheQueue();
-        sut.executeIfFull(procedure);
-        Mockito.verify(procedure, times(1)).execute();
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void executeIfFull_ifPassedNull_shouldThrowNullPointerException() {
-        sut.executeIfFull(null);
-    }
-
-    @Test
     public void isFull_ifBufferFull_shouldReturnTrue() {
         fillTheQueue();
         assertThat(sut.isFull(), is(equalTo(true)));

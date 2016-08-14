@@ -3,6 +3,7 @@ package com.gft.digitalbank.exchange.solution.service.processing;
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 import com.google.common.base.Preconditions;
+import com.google.inject.assistedinject.Assisted;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +25,7 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
     private ProductExchange productExchange;
 
     public ProcessingTask(TradingMessageProcessor<E> tradingMessageProcessor,
-                          E tradingMessage) {
+                          @Assisted E tradingMessage) {
         this.tradingMessageProcessor = tradingMessageProcessor;
         this.tradingMessage = tradingMessage;
     }

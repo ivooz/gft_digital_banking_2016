@@ -22,6 +22,9 @@ public class OrderSchedulingTask extends SchedulingTask<Order> {
 
     /**
      * @inheritDoc
+     *
+     * Adds a mapping entry orderId -> productName so that Cancel and Modify tasks can determine
+     * in which ProductExchange the Order resides.
      */
     @Override
     public void execute() {

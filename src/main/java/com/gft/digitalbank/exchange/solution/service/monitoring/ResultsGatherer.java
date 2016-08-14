@@ -72,12 +72,12 @@ public class ResultsGatherer {
     private List<OrderEntry> extractOrderEntries(Side side, ProductExchange productExchange) {
         List<OrderEntry> orderEntries = new ArrayList<>();
         int index = ORDER_ENTRIES_START_INDEX;
-        Optional<Order> orderOptional = productExchange.getNextOrder(side);
+        Optional<Order> orderOptional = productExchange.pollNextOrder(side);
         while (orderOptional.isPresent()) {
             Order order = orderOptional.get();
             order.setId(index++);
             orderEntries.add(orderEntryConverter.convertToOrderEntry(order));
-            orderOptional = productExchange.getNextOrder(side);
+            orderOptional = productExchange.pollNextOrder(side);
         }
         return orderEntries;
     }

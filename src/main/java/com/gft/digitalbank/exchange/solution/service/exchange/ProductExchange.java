@@ -22,6 +22,7 @@ import java.util.function.Predicate;
 public class ProductExchange {
 
     private static final String ENQUEUED_ORDER_SCHEDULED_FOR_DELETION_EXCEPTION_MESSAGE = "Enqueued Order must not be marked as scheduled for deletion.";
+    public static final String SAME_SIDE_ORDERS_EXCEPTION_MESSAGE = "Attempting to match orders of the same type!";
 
     private final String productName;
     private final ProductTransactionLedger productTransactionLedger;
@@ -43,9 +44,9 @@ public class ProductExchange {
      * Adds the Order to the cache for further retrieval as well as queues it for later matching.
      * This method is invoked to add Orders that have not been fully 'traded' or/and no match for them has been found.
      *
-     * @param order to enqueue, it cannot be marked as Scheduled for deletion.
+     * @param order to enqueueOrder, it cannot be marked as Scheduled for deletion.
      */
-    public void enqueue(@NonNull Order order) {
+    public void enqueueOrder(@NonNull Order order) {
         Preconditions.checkArgument(!order.isScheduledForDeletion(), ENQUEUED_ORDER_SCHEDULED_FOR_DELETION_EXCEPTION_MESSAGE);
         orderCache.add(order);
         orderQueue.pushOrder(order);
@@ -77,7 +78,7 @@ public class ProductExchange {
     }
 
     /**
-     * Shutes down the single-threaded ExecutorService responsible for executing ProcessingTasks and executes all
+     * Shuts down the single-threaded ExecutorService responsible for executing ProcessingTasks and executes all
      * currently enqueued ProcessingTasks from the ProcessingTasks queue.
      *
      * @throws ExchangeShutdownException if there are problems with shutting down ExecutorService
@@ -93,13 +94,16 @@ public class ProductExchange {
      * dictated by the timestamp of their encapsulated TradingMessage. If the ProcessingTaskQueue is full the top is full
      * the ProcessingTask with the lowest timestamp is passed to the ExecutorService.
      *
-     * @param processingTask to enqueue
+     * @param processingTask to enqueueOrder
      *
      */
     public void enqueueTask(@NonNull ProcessingTask processingTask) {
         processingTaskQueue.enqueueTask(processingTask);
-        processingTaskQueue.executeIfFull(() ->
-                taskExecutor.enqueueProcessingTask(processingTaskQueue.getNextTaskToExecute().get()));
+        synchronized (processingTaskQueue) {
+            if(processingTaskQueue.isFull()) {
+                taskExecutor.enqueueProcessingTask(processingTaskQueue.getNextTaskToExecute().get());
+            }
+        }
     }
 
     /**
@@ -122,24 +126,22 @@ public class ProductExchange {
      * @param side of the retrieved Order
      * @return
      */
-    public Optional<Order> getNextOrder(@NonNull Side side) {
+    public Optional<Order> pollNextOrder(@NonNull Side side) {
         return orderQueue.pollNextOrder(side);
     }
 
     /**
-     * Creates a transaction from the Orders passed.
+     * Passed the Orders to the ProductTransactionLedger so that it is saved.
      * Subtracts the traded amount from both Orders.
      * If the processed Order is 'fully traded' it will be removed from the OrderCache so that it cannot be cancelled
      * or modified any more.
      *
      * @param processedOrder that is currently handled
      * @param passiveOrder   retrieved from the queue
-     * @throws OrderProcessingException
      */
-    public void executeTransaction(@NonNull Order processedOrder, @NonNull Order passiveOrder) throws OrderProcessingException {
-        if (processedOrder.getSide() == passiveOrder.getSide()) {
-            throw new OrderProcessingException("Attempting to match orders of the same type!");
-        }
+    public void executeTransaction(@NonNull Order processedOrder, @NonNull Order passiveOrder) {
+        Preconditions.checkArgument(processedOrder.getSide() != passiveOrder.getSide(),
+                SAME_SIDE_ORDERS_EXCEPTION_MESSAGE);
         productTransactionLedger.executeTransaction(processedOrder, passiveOrder);
         if (passiveOrder.isFullyTraded()) {
             remove(passiveOrder);
@@ -165,9 +167,6 @@ public class ProductExchange {
     private void executeTasksWhile(Predicate<ProcessingTaskQueue> taskQueuePredicate) throws OrderProcessingException {
         while (taskQueuePredicate.test(processingTaskQueue)) {
             Optional<ProcessingTask> nextTaskToExecute = processingTaskQueue.getNextTaskToExecute();
-            if (!nextTaskToExecute.isPresent()) {
-                return;
-            }
             ProcessingTask processingTask = nextTaskToExecute.get();
             processingTask.setProductExchange(this);
             processingTask.run();

@@ -5,6 +5,7 @@ import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTaskFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import lombok.NonNull;
 
 /**
  * Responsible for creation of SchedulingTasks.
@@ -30,7 +31,7 @@ public class SchedulingTaskCreator<E extends TradingMessage> {
      * @param message
      * @return
      */
-    public SchedulingTask<E> createSchedulingTask(E message) {
+    public SchedulingTask<E> createSchedulingTask(@NonNull E message) {
         ProcessingTask<E> processingTask = processingTaskFactory.createProcessingTask(message);
         return schedulingTaskFactory.create(processingTask);
     }

@@ -30,7 +30,7 @@ public class ProductTransactionLedger {
      * @param processedOrder the currently handled order
      * @param orderFromQueue   order retrieved from the queue
      */
-    public void executeTransaction(@NonNull Order processedOrder, @NonNull Order orderFromQueue) throws OrderProcessingException {
+    public void executeTransaction(@NonNull Order processedOrder, @NonNull Order orderFromQueue) {
         Preconditions.checkState(processedOrder.getSide() != orderFromQueue.getSide(),
                 SAME_ORDER_TYPE_EXCEPTION_MESSAGE);
         int processedOrderAmount = processedOrder.getAmount();
