@@ -41,6 +41,11 @@ public class ProcessingTaskExecutorServiceTest {
         sut.enqueueProcessingTask(null);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void noArgConstructor_whenPassedNull_shouldThrowNullPointerException() {
+        new ProcessingTaskExecutorService(null);
+    }
+
     @Test
     public void enqueueProcessingTask_whenPassedAProcessingTaskAndThenShutdown_theTaskShouldBeExecuted() {
         ProcessingTask processingTask = Mockito.mock(ProcessingTask.class);

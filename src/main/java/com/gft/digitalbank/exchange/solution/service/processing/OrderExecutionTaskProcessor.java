@@ -17,8 +17,6 @@ import java.util.Optional;
 @Singleton
 public class OrderExecutionTaskProcessor implements TradingMessageProcessor<Order> {
 
-    private static final String SAME_ORDER_SIDE_EXCEPTION_MESSAGE = "Attempted to matched orders of the same type.";
-
     /**
      * @inheritDoc
      *
@@ -56,9 +54,6 @@ public class OrderExecutionTaskProcessor implements TradingMessageProcessor<Orde
     }
 
     private boolean ordersMatch(Order processedOrder, Order matchedOrder) throws OrderProcessingException {
-        if (processedOrder.getSide() == matchedOrder.getSide()) {
-            throw new OrderProcessingException(SAME_ORDER_SIDE_EXCEPTION_MESSAGE);
-        }
         int comparison = processedOrder.getPrice() - matchedOrder.getPrice();
         return processedOrder.getSide() == Side.BUY ? comparison >= 0 : comparison <= 0;
     }
