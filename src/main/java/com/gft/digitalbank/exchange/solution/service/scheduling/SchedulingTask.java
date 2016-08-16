@@ -44,14 +44,4 @@ public abstract class SchedulingTask<E extends TradingMessage> {
     public E getTradingMessage() {
         return processingTask.getTradingMessage();
     }
-
-//    /**
-//     * Tasks are ordered according to the timestamp of the ProcessingTask's TradingMessage. Lower timestamps have priority.
-//     * @param schedulingTask
-//     * @return
-//     */
-//    @Override
-//    public int compareTo(@NonNull SchedulingTask schedulingTask) {
-//        return (int) (this.getTradingMessage().getTimestamp() - schedulingTask.getTradingMessage().getTimestamp());
-//    }
 }

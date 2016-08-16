@@ -16,23 +16,23 @@ import java.util.List;
  * Created by iozi on 2016-08-11.
  */
 @Singleton
-public class StockExchangeBootstrapper {
+public class ApacheCamelConfigurer {
 
     private final CamelContext camelContext;
     private final CamelRouteBuilder camelRouteBuilder;
     private final ShutdownNotificationListener shutdownNotificationListener;
 
     @Inject
-    public StockExchangeBootstrapper(CamelContext camelContext,
-                                     CamelRouteBuilder camelRouteBuilder,
-                                     ShutdownNotificationListener shutdownNotificationListener) {
+    public ApacheCamelConfigurer(CamelContext camelContext,
+                                 CamelRouteBuilder camelRouteBuilder,
+                                 ShutdownNotificationListener shutdownNotificationListener) {
         this.camelContext = camelContext;
         this.camelRouteBuilder = camelRouteBuilder;
         this.shutdownNotificationListener = shutdownNotificationListener;
     }
 
-    public void configure(List<String> destinations) {
-        JmsComponent activeMQComponent = ActiveMQComponent.activeMQComponent("vm://localhost");
+    public void configure(List<String> destinations, String brokerURL) {
+        JmsComponent activeMQComponent = ActiveMQComponent.activeMQComponent(brokerURL);
         JmsConfiguration configuration = activeMQComponent.getConfiguration();
         configuration.setConsumerType(ConsumerType.Simple);
         camelContext.addComponent("activemq", activeMQComponent);

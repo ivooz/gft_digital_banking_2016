@@ -1,0 +1,13 @@
+{
+  "messageType": "ORDER",
+  "side": "BUY",
+  "id": 1,
+  "timestamp": 1,
+  "broker": "b001",
+  "client": "c001",
+  "product": "abc",
+  "details": {
+    "amount": 10,
+    "price": 90
+  }
+}
