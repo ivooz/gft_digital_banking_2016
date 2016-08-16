@@ -28,18 +28,18 @@ public class ProductTransactionLedger {
      * Saves the created Transaction for later retrieval.
      *
      * @param processedOrder the currently handled order
-     * @param passiveOrder   order retrieved from the queue
+     * @param orderFromQueue   order retrieved from the queue
      */
-    public void executeTransaction(@NonNull Order processedOrder, @NonNull Order passiveOrder) throws OrderProcessingException {
-        Preconditions.checkState(processedOrder.getSide() != passiveOrder.getSide(),
+    public void executeTransaction(@NonNull Order processedOrder, @NonNull Order orderFromQueue) {
+        Preconditions.checkState(processedOrder.getSide() != orderFromQueue.getSide(),
                 SAME_ORDER_TYPE_EXCEPTION_MESSAGE);
         int processedOrderAmount = processedOrder.getAmount();
-        int passiveOrderAmount = passiveOrder.getAmount();
+        int passiveOrderAmount = orderFromQueue.getAmount();
         int amountTraded = processedOrderAmount > passiveOrderAmount ? passiveOrderAmount : processedOrderAmount;
-        transactions.add(transactionFactory.createTransaction(processedOrder, passiveOrder, amountTraded,
+        transactions.add(transactionFactory.createTransaction(processedOrder, orderFromQueue, amountTraded,
                 transactions.size() + 1));
         processedOrder.getDetails().setAmount(processedOrderAmount - amountTraded);
-        passiveOrder.getDetails().setAmount(passiveOrderAmount - amountTraded);
+        orderFromQueue.getDetails().setAmount(passiveOrderAmount - amountTraded);
     }
 
     /**

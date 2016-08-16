@@ -26,6 +26,19 @@ import java.util.stream.Collectors;
 @Singleton
 public class CamelRouteBuilder extends RouteBuilder {
 
+    public static final String AMQ_MESSAGE_ENDPOINT = "direct:messages";
+    public static final String ORDERS_ENDPOINT_NAME = "direct:orders";
+    public static final String MODIFICATIONS_ENDPOINT_NAME = "direct:modifications";
+    public static final String CANCELS_ENDPOINT_NAME = "direct:cancels";
+    public static final String SHUTDOWN_NOTIFICATIONS_ENDPOINT_NAME = "direct:shutdown-notifications";
+    public static final String SCHEDULING_TASKS_ENDPOINT_NAME = "direct:schedulingTasks";
+
+    public static final String DYNAMIC_ROUTING_ROUTE_ID = "dynamicRouting";
+    public static final String ORDERS_ROUTE_ID = "orders";
+    public static final String MODIFICATIONS_ROUTE_ID = "modifications";
+    public static final String CANCELS_ROUTE_ID = "cancels";
+    public static final String SHUTDOWN_ROUTE_ID = "shutdownNotifications";
+
     private static final String ACTIVEMQ_QUEUE_PREFIX = "activemq:queue:";
     private static final String ORDER_IDENTIFYING_JSONPATH = "$[?(@.messageType=='ORDER')]";
     private static final String SCHEDULING_TASK_CREATION_METHOD_NAME = "createSchedulingTask";
@@ -36,6 +49,7 @@ public class CamelRouteBuilder extends RouteBuilder {
     private static final String SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME = "handleShutdownNotification";
     private static final String SCHEDULING_TASK_EXECUTOR_METHOD_NAME = "executeSchedulingTask";
     private static final String CANNOT_CONFIGURE_ROUTES_WITHOUT_QUEUE_DESTINATIONS = "Cannot configure routes without queue destinations.";
+
 
     private final ShutdownNotificationListener shutdownNotificationListener;
     private final SchedulingTaskCreator<Order> orderSchedulingTaskCreator;
@@ -68,31 +82,71 @@ public class CamelRouteBuilder extends RouteBuilder {
      * Configures the Camel routes given the previously supplied list of destinations.
      */
     public void configure() {
-        Preconditions.checkNotNull(destinations, CANNOT_CONFIGURE_ROUTES_WITHOUT_QUEUE_DESTINATIONS);
+        Preconditions.checkState(destinations != null, CANNOT_CONFIGURE_ROUTES_WITHOUT_QUEUE_DESTINATIONS);
         defineErrorHandling();
         defineRoutes();
     }
 
     private void defineRoutes() {
-        from(convertDestinationsToQueueUrls())
+        if (!destinations.isEmpty()) {
+            from(convertDestinationsToQueueUrls()).to(AMQ_MESSAGE_ENDPOINT);
+        }
+        defineDynamicRouting();
+        defineOrdersRoute();
+        defineModificationsRoute();
+        defineCancelsRoute();
+        defineShutdownNotificationsRoute();
+        defineSchedulingTaskExecutionRoute();
+    }
+
+    public void defineDynamicRouting() {
+        from(AMQ_MESSAGE_ENDPOINT)
+                .routeId(DYNAMIC_ROUTING_ROUTE_ID)
                 .choice()
-                //Create task handling dependent on the message type
-                .when().jsonpath(ORDER_IDENTIFYING_JSONPATH)
-                .unmarshal().json(UNMARSHALLING_LIBRARY, Order.class)
-                .bean(orderSchedulingTaskCreator, SCHEDULING_TASK_CREATION_METHOD_NAME)
-                .when().jsonpath(MODIFICATION_IDENTIFYING_JSONPATH)
-                .unmarshal().json(UNMARSHALLING_LIBRARY, Modification.class)
-                .bean(modificationSchedulingTaskCreator, SCHEDULING_TASK_CREATION_METHOD_NAME)
-                .when().jsonpath(CANCEL_IDENTIFYING_JSONPATH)
-                .unmarshal().json(UNMARSHALLING_LIBRARY, Cancel.class)
-                .bean(cancelSchedulingTaskCreator, SCHEDULING_TASK_CREATION_METHOD_NAME)
-                .when().jsonpath(SHUTDOWN_NOTIFICATION_IDENTIFYING_JSONPATH)
-                .bean(shutdownNotificationListener, SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME).stop().end()
-                .bean(schedulingTaskExecutor, SCHEDULING_TASK_EXECUTOR_METHOD_NAME);
+                .when().jsonpath(ORDER_IDENTIFYING_JSONPATH).to(ORDERS_ENDPOINT_NAME)
+                .when().jsonpath(MODIFICATION_IDENTIFYING_JSONPATH).to(MODIFICATIONS_ENDPOINT_NAME)
+                .when().jsonpath(CANCEL_IDENTIFYING_JSONPATH).to(CANCELS_ENDPOINT_NAME)
+                .when().jsonpath(SHUTDOWN_NOTIFICATION_IDENTIFYING_JSONPATH).to(SHUTDOWN_NOTIFICATIONS_ENDPOINT_NAME)
+                .end();
     }
 
     public void setDestinations(@NonNull List<String> destinations) {
         this.destinations = destinations;
+    }
+
+    private void defineOrdersRoute() {
+        from(ORDERS_ENDPOINT_NAME)
+                .routeId(ORDERS_ROUTE_ID)
+                .unmarshal().json(UNMARSHALLING_LIBRARY, Order.class)
+                .bean(orderSchedulingTaskCreator, SCHEDULING_TASK_CREATION_METHOD_NAME)
+                .to(SCHEDULING_TASKS_ENDPOINT_NAME);
+    }
+
+    private void defineModificationsRoute() {
+        from(MODIFICATIONS_ENDPOINT_NAME)
+                .routeId(MODIFICATIONS_ROUTE_ID)
+                .unmarshal().json(UNMARSHALLING_LIBRARY, Modification.class)
+                .bean(modificationSchedulingTaskCreator, SCHEDULING_TASK_CREATION_METHOD_NAME)
+                .to(SCHEDULING_TASKS_ENDPOINT_NAME);
+    }
+
+    private void defineCancelsRoute() {
+        from(CANCELS_ENDPOINT_NAME)
+                .routeId(CANCELS_ROUTE_ID)
+                .unmarshal().json(UNMARSHALLING_LIBRARY, Cancel.class)
+                .bean(cancelSchedulingTaskCreator, SCHEDULING_TASK_CREATION_METHOD_NAME)
+                .to(SCHEDULING_TASKS_ENDPOINT_NAME);
+    }
+
+    private void defineShutdownNotificationsRoute() {
+        from(SHUTDOWN_NOTIFICATIONS_ENDPOINT_NAME)
+                .bean(shutdownNotificationListener, SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME).stop();
+    }
+
+    private void defineSchedulingTaskExecutionRoute() {
+        from(SCHEDULING_TASKS_ENDPOINT_NAME)
+                .routeId(SHUTDOWN_ROUTE_ID)
+                .bean(schedulingTaskExecutor, SCHEDULING_TASK_EXECUTOR_METHOD_NAME);
     }
 
     private String[] convertDestinationsToQueueUrls() {

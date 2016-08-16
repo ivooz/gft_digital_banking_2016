@@ -65,6 +65,7 @@ public class StockExchangeModule extends CamelModuleWithMatchingRoutes {
         }, CancelSchedulingTask.class)
                 .build(new TypeLiteral<SchedulingTaskFactory<Cancel>>() {
                 }));
+
     }
 
     private Properties getProperties() throws IOException {

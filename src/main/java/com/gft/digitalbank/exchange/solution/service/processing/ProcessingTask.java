@@ -3,6 +3,7 @@ package com.gft.digitalbank.exchange.solution.service.processing;
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 import com.google.common.base.Preconditions;
+import com.google.inject.assistedinject.Assisted;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,6 +18,7 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
 
     private static final String PRODUCT_EXCHANGE_NOT_SET_EXCEPTION_MESSAGE =
             "Cannot process TradingMessage without the ProductExchange!";
+    public static final String CANNOT_PROCESS_TASK_EXCEPTION_MESSAGE = "Cannot properly conclude the processing task.";
 
     private final TradingMessageProcessor<E> tradingMessageProcessor;
     private final E tradingMessage;
@@ -24,7 +26,7 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
     private ProductExchange productExchange;
 
     public ProcessingTask(TradingMessageProcessor<E> tradingMessageProcessor,
-                          E tradingMessage) {
+                          @Assisted E tradingMessage) {
         this.tradingMessageProcessor = tradingMessageProcessor;
         this.tradingMessage = tradingMessage;
     }
@@ -33,11 +35,11 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
      * Initializes the process of applying the TradingMessage against the ProductExchange.
      */
     public void run() {
-        Preconditions.checkNotNull(productExchange, PRODUCT_EXCHANGE_NOT_SET_EXCEPTION_MESSAGE);
+        Preconditions.checkState(productExchange!=null, PRODUCT_EXCHANGE_NOT_SET_EXCEPTION_MESSAGE);
         try {
             tradingMessageProcessor.processTradingMessage(tradingMessage, productExchange);
         } catch (OrderProcessingException ex) {
-            log.error("Cannot properly conclude the processing task.",ex);
+            log.error(CANNOT_PROCESS_TASK_EXCEPTION_MESSAGE,ex);
         }
     }
 
@@ -52,12 +54,15 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
     /**
      * The tasks are ordered according to the timestamp of their underlying TradingMessage. Messages with lower
      * timestamp (earlier) have priority.
-     * @param processingTask to compare against
+     * @param otherProcessingTask to compare against
      * @return
      */
     @Override
-    public int compareTo(@NonNull ProcessingTask processingTask) {
-        return (int) (this.getTradingMessage().getTimestamp() - processingTask.getTradingMessage().getTimestamp());
+    public int compareTo(@NonNull ProcessingTask otherProcessingTask) {
+        if(this == otherProcessingTask) {
+            return 0;
+        }
+        return (int) (this.getTradingMessage().getTimestamp() - otherProcessingTask.getTradingMessage().getTimestamp());
     }
 
     /**

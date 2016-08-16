@@ -33,7 +33,7 @@ public class ProcessingTaskQueue {
      * The ProcessingTask shall be enqueued, if the queue size exceeds the buffer size the execution of the top
      * ProcessingTask should start.
      *
-     * @param processingTask to enqueue
+     * @param processingTask to enqueueOrder
      */
     public void enqueueTask(@NonNull ProcessingTask processingTask) {
         tasksToExecute.add(processingTask);
@@ -41,24 +41,14 @@ public class ProcessingTaskQueue {
 
     /**
      * Returns the next Optional ProcessingTask from the queue according to the timestamp of the TradingMessage they wrap.
+     * The task is removed from the queue.
      *
      * @return
      */
     public Optional<ProcessingTask> getNextTaskToExecute() {
         return Optional.ofNullable(tasksToExecute.poll());
     }
-
-    /**
-     * Synchronized method executing a procedure if the queue is full
-     *
-     * @param procedure to execute
-     */
-    public synchronized void executeIfFull(@NonNull Procedure procedure) {
-        if (isFull()) {
-            procedure.execute();
-        }
-    }
-
+    
     /**
      * Checks whether the queue is full, which means that is the buffer size was exceeded and the the ProcessingTask
      * execution should begin.

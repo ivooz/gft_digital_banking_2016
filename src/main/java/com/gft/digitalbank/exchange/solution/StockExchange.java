@@ -2,7 +2,7 @@ package com.gft.digitalbank.exchange.solution;
 
 import com.gft.digitalbank.exchange.Exchange;
 import com.gft.digitalbank.exchange.listener.ProcessingListener;
-import com.gft.digitalbank.exchange.solution.config.StockExchangeBootstrapper;
+import com.gft.digitalbank.exchange.solution.config.ApacheCamelConfigurer;
 import com.gft.digitalbank.exchange.solution.config.StockExchangeModule;
 import com.gft.digitalbank.exchange.solution.config.StockExchangeStartupException;
 import com.google.inject.Guice;
@@ -19,27 +19,27 @@ public class StockExchange implements Exchange {
 
     private static final String STARTUP_EXCEPTION_MESSAGE = "Could not start StockExchange.";
 
-    private final StockExchangeBootstrapper stockExchangeBootstrapper;
+    private final ApacheCamelConfigurer apacheCamelConfigurer;
 
     public StockExchange() {
         Injector injector = Guice.createInjector(new StockExchangeModule());
-        this.stockExchangeBootstrapper = injector.getInstance(StockExchangeBootstrapper.class);
+        this.apacheCamelConfigurer = injector.getInstance(ApacheCamelConfigurer.class);
     }
 
     @Override
     public void register(ProcessingListener processingListener) {
-        stockExchangeBootstrapper.registerProcessingListener(processingListener);
+        apacheCamelConfigurer.registerProcessingListener(processingListener);
     }
 
     @Override
     public void setDestinations(List<String> destinations) {
-        stockExchangeBootstrapper.configure(destinations);
+        apacheCamelConfigurer.configure(destinations,"vm://localhost");
     }
 
     @Override
     public void start() {
         try {
-            stockExchangeBootstrapper.start();
+            apacheCamelConfigurer.start();
         } catch (StockExchangeStartupException e) {
             log.error(STARTUP_EXCEPTION_MESSAGE,e);
         }

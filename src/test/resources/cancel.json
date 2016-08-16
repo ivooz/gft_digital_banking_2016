@@ -1,0 +1,7 @@
+{
+  "messageType": "CANCEL",
+  "id": 4,
+  "timestamp": 4,
+  "broker": "b001",
+  "cancelledOrderId": 2
+}

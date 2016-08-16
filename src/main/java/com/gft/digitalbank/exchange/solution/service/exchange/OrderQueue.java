@@ -29,7 +29,7 @@ public class OrderQueue {
      * @param side
      * @return the top Order
      */
-    public Optional<Order> getNextOrder(@NonNull Side side) {
+    public Optional<Order> pollNextOrder(@NonNull Side side) {
         Optional<Order> orderOptional;
         while (true) {
             orderOptional = pollOrder(side);
@@ -66,7 +66,7 @@ public class OrderQueue {
     }
 
     /**
-     * Pushes Order onto the proper queue.
+     * Pushes Order onto the queue associated with its Side.
      *
      * @param order to add
      */

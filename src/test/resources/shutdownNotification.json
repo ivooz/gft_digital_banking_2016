@@ -1,0 +1,6 @@
+{
+  "messageType": "SHUTDOWN_NOTIFICATION",
+  "id": 4,
+  "timestamp": 4,
+  "broker": "b001"
+}

@@ -2,6 +2,7 @@ package com.gft.digitalbank.exchange.solution.service.scheduling;
 
 import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
+import lombok.NonNull;
 
 /**
  * Responsible for creation of SchedulingTasks.
@@ -15,5 +16,5 @@ public interface SchedulingTaskFactory<M extends TradingMessage> {
      * @param processingTask to be sheduled
      * @return the created SchedulingTask
      */
-    SchedulingTask<M> create(ProcessingTask<M> processingTask);
+    SchedulingTask<M> create(@NonNull ProcessingTask<M> processingTask);
 }

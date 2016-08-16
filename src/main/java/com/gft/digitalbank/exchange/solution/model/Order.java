@@ -1,6 +1,5 @@
 package com.gft.digitalbank.exchange.solution.model;
 
-import com.google.common.base.Preconditions;
 import lombok.*;
 
 /**
@@ -57,7 +56,7 @@ public class Order extends TradingMessage implements Comparable<Order> {
      *
      * @return
      */
-    public boolean isFullyProcessed() {
+    public boolean isFullyTraded() {
         return getAmount() == 0;
     }
 

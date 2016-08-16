@@ -1,0 +1,11 @@
+{
+  "messageType": "MODIFICATION",
+  "id": 3,
+  "timestamp": 3,
+  "broker": "b001",
+  "modifiedOrderId": 1,
+  "details": {
+    "amount": 10,
+    "price": 90
+  }
+}

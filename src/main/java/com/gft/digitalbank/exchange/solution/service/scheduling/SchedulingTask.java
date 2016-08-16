@@ -13,7 +13,7 @@ import lombok.NonNull;
  *
  * Created by Ivo Zieliński on 2016-07-01.
  */
-public abstract class SchedulingTask<E extends TradingMessage> implements Comparable<SchedulingTask> {
+public abstract class SchedulingTask<E extends TradingMessage> {
 
     protected final ProductExchangeIndex productExchangeIndex;
     protected final IdProductIndex idProductIndex;
@@ -43,15 +43,5 @@ public abstract class SchedulingTask<E extends TradingMessage> implements Compar
      */
     public E getTradingMessage() {
         return processingTask.getTradingMessage();
-    }
-
-    /**
-     * Tasks are ordered according to the timestamp of the ProcessingTask's TradingMessage. Lower timestamps have priority.
-     * @param schedulingTask
-     * @return
-     */
-    @Override
-    public int compareTo(@NonNull SchedulingTask schedulingTask) {
-        return (int) (this.getTradingMessage().getTimestamp() - schedulingTask.getTradingMessage().getTimestamp());
     }
 }
