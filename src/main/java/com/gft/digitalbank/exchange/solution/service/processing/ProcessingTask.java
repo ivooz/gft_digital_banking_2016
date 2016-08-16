@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Represents the unit of work associated with applying the TradingMessage to ProductExchange.
  * It is meant to be used in PriorityQueues so that tasks can be properly ordered.
- *
+ * <p>
  * Created by Ivo Zieliński on 2016-07-01.
  */
 @Slf4j
@@ -35,16 +35,11 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
      * Initializes the process of applying the TradingMessage against the ProductExchange.
      */
     public void run() {
-        Preconditions.checkState(productExchange!=null, PRODUCT_EXCHANGE_NOT_SET_EXCEPTION_MESSAGE);
-        try {
-            tradingMessageProcessor.processTradingMessage(tradingMessage, productExchange);
-        } catch (OrderProcessingException ex) {
-            log.error(CANNOT_PROCESS_TASK_EXCEPTION_MESSAGE,ex);
-        }
+        Preconditions.checkState(productExchange != null, PRODUCT_EXCHANGE_NOT_SET_EXCEPTION_MESSAGE);
+        tradingMessageProcessor.processTradingMessage(tradingMessage, productExchange);
     }
 
     /**
-     *
      * @return the TradingMessage that the ProcessingTask is to apply
      */
     public E getTradingMessage() {
@@ -54,12 +49,13 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
     /**
      * The tasks are ordered according to the timestamp of their underlying TradingMessage. Messages with lower
      * timestamp (earlier) have priority.
+     *
      * @param otherProcessingTask to compare against
      * @return
      */
     @Override
     public int compareTo(@NonNull ProcessingTask otherProcessingTask) {
-        if(this == otherProcessingTask) {
+        if (this == otherProcessingTask) {
             return 0;
         }
         return (int) (this.getTradingMessage().getTimestamp() - otherProcessingTask.getTradingMessage().getTimestamp());
@@ -68,6 +64,7 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
     /**
      * Sets the ProductExchange to apply the TradingMessage against. This cannot be done during the ProcessingTask
      * creation as it is not always immediately known to which ProductExchange the ProcessingTask pertains.
+     *
      * @param productExchange
      */
     public void setProductExchange(@NonNull ProductExchange productExchange) {

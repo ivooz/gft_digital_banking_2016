@@ -8,12 +8,11 @@ import lombok.NoArgsConstructor;
  * Created by Ivo Zieliński on 2016-06-27.
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class TradingMessage {
 
     private int id;
     private long timestamp;
     private String broker;
-
 }

@@ -9,8 +9,7 @@ import lombok.NonNull;
 import java.util.Optional;
 
 /**
- * @inheritDoc
- * Created by iozi on 2016-06-30.
+ * @inheritDoc Created by iozi on 2016-06-30.
  */
 @Singleton
 public class CancelExecutionTaskProcessor implements TradingMessageProcessor<Cancel> {
@@ -19,7 +18,7 @@ public class CancelExecutionTaskProcessor implements TradingMessageProcessor<Can
      * @inheritDoc
      */
     @Override
-    public void processTradingMessage(@NonNull Cancel cancel,@NonNull ProductExchange productExchange) {
+    public void processTradingMessage(@NonNull Cancel cancel, @NonNull ProductExchange productExchange) {
         Optional<Order> orderToCancel = productExchange.getById(cancel.getCancelledOrderId());
         if (!orderToCancel.isPresent()) {
             //The Order has already been cancelled or fully processed

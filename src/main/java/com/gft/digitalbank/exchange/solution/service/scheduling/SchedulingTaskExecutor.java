@@ -15,7 +15,6 @@ import lombok.NonNull;
 public class SchedulingTaskExecutor {
 
     /**
-     *
      * @param schedulingTask to be executed
      * @throws OrderNotFoundException when the SchedulingTask could not be executed properly
      */

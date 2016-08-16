@@ -2,38 +2,42 @@ package com.gft.digitalbank.exchange.solution.service.exchange;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
-import com.gft.digitalbank.exchange.solution.utils.AsyncTaskRunner;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Matchers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.IntStream;
 
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Ivo on 12/08/16.
  */
 @Category(UnitTest.class)
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(JUnitParamsRunner.class)
 public class ProcessingTaskExecutorServiceTest {
 
     private ProcessingTaskExecutorService sut;
-    private AsyncTaskRunner asyncTaskRunner;
-
-    @Mock
-    ProductExchange productExchange;
+    private ProductExchange productExchange;
 
     @Before
     public void initialize() {
+        productExchange = Mockito.mock(ProductExchange.class);
         this.sut = new ProcessingTaskExecutorService(productExchange);
-        this.asyncTaskRunner = new AsyncTaskRunner();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void noArgConstructor_whenPassedNull_shouldThrowNullPointerException() {
+        new ProcessingTaskExecutorService(null);
     }
 
     @Test(expected = NullPointerException.class)
@@ -41,9 +45,22 @@ public class ProcessingTaskExecutorServiceTest {
         sut.enqueueProcessingTask(null);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void noArgConstructor_whenPassedNull_shouldThrowNullPointerException() {
-        new ProcessingTaskExecutorService(null);
+    @Test
+    @Parameters(method = "taskCounts")
+    public void shutdownAndAwaitTermination_whenCalled_shouldFinishAllTasksBeforeReturning(int taskCount) {
+        List<ProcessingTask> processingTasks = new CopyOnWriteArrayList<>();
+        IntStream.range(0, taskCount).parallel()
+                .forEach(value -> {
+                    ProcessingTask processingTask = Mockito.mock(ProcessingTask.class);
+                    processingTasks.add(processingTask);
+                    sut.enqueueProcessingTask(processingTask);
+                });
+        try {
+            sut.shutdownAndAwaitTermination();
+        } catch (ExchangeShutdownException e) {
+            fail(e.getMessage());
+        }
+        processingTasks.forEach(processingTask -> Mockito.verify(processingTask, times(1)).run());
     }
 
     @Test
@@ -55,15 +72,15 @@ public class ProcessingTaskExecutorServiceTest {
         } catch (ExchangeShutdownException e) {
             fail(e.getMessage());
         }
-        Mockito.verify(processingTask,times(1)).run();
+        Mockito.verify(processingTask, times(1)).run();
     }
 
     @Test
     public void enqueueProcessingTask_whenPassedAProcessingTasksAndThenShutdown_theTaskWithHigherPriorityShouldBeExecutedFirst() {
         ProcessingTask processingTaskWithHighPriority = Mockito.mock(ProcessingTask.class);
         ProcessingTask processingTaskWithLowPriority = Mockito.mock(ProcessingTask.class);
-        Mockito.when(processingTaskWithHighPriority.compareTo(Matchers.anyObject())).thenReturn(-1);
-        Mockito.when(processingTaskWithLowPriority.compareTo(Matchers.anyObject())).thenReturn(1);
+        when(processingTaskWithHighPriority.compareTo(Matchers.anyObject())).thenReturn(-1);
+        when(processingTaskWithLowPriority.compareTo(Matchers.anyObject())).thenReturn(1);
         InOrder inOrder = inOrder(processingTaskWithHighPriority, processingTaskWithLowPriority);
         sut.enqueueProcessingTask(processingTaskWithHighPriority);
         sut.enqueueProcessingTask(processingTaskWithLowPriority);
@@ -74,5 +91,11 @@ public class ProcessingTaskExecutorServiceTest {
         }
         inOrder.verify(processingTaskWithHighPriority).run();
         inOrder.verify(processingTaskWithLowPriority).run();
+    }
+
+    private Object[] taskCounts() {
+        return new Object[]{
+                1, 2, 4, 8, 16, 32, 64, 128, 256
+        };
     }
 }

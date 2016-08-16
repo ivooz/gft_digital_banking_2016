@@ -1,6 +1,8 @@
 package com.gft.digitalbank.exchange.solution.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
 
 /**
  * Represents the Order message.
@@ -8,19 +10,25 @@ import lombok.*;
  * Created by Ivo Zieliński on 2016-06-27.
  */
 @Data
-@AllArgsConstructor
-@EqualsAndHashCode
-@NoArgsConstructor
 public class Order extends TradingMessage implements Comparable<Order> {
 
+    @NonNull
     private String client;
+
+    @NonNull
     private Side side;
+
+    @NonNull
     private String product;
+
     private Details details;
+
+    @NonNull
     private boolean scheduledForDeletion;
 
     @Builder
-    public Order(int id, long timestamp, String broker, String client, Side side, String product, Details details, boolean scheduledForDeletion) {
+    private Order(int id, long timestamp, @NonNull String broker, @NonNull String client, @NonNull Side side, @NonNull String product,
+                  @NonNull Details details, boolean scheduledForDeletion) {
         super(id, timestamp, broker);
         this.client = client;
         this.side = side;
@@ -78,11 +86,13 @@ public class Order extends TradingMessage implements Comparable<Order> {
             return EQUAL;
         }
 
-        int comparison = getPrice() - otherOrder.getPrice();
-        if (comparison > 0) {
-            return this.side == Side.BUY ? BEFORE : AFTER;
-        } else if (comparison < 0) {
-            return this.side == Side.BUY ? AFTER : BEFORE;
+        if (this.getSide() == otherOrder.getSide()) {
+            int comparison = getPrice() - otherOrder.getPrice();
+            if (comparison > 0) {
+                return this.side == Side.BUY ? BEFORE : AFTER;
+            } else if (comparison < 0) {
+                return this.side == Side.BUY ? AFTER : BEFORE;
+            }
         }
         return (int) (this.getTimestamp() - otherOrder.getTimestamp());
     }

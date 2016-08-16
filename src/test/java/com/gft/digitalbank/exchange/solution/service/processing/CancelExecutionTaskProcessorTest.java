@@ -14,9 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Optional;
 
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Ivo on 14/08/16.
@@ -25,7 +23,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CancelExecutionTaskProcessorTest {
 
-    private static final int CANCELLED_ORDER_ID=1;
+    private static final int CANCELLED_ORDER_ID = 1;
     private static final String BROKER = "broker";
     private static final String OTHER_BROKER = "broker2";
 
@@ -77,8 +75,8 @@ public class CancelExecutionTaskProcessorTest {
         when(productExchange.getById(CANCELLED_ORDER_ID)).thenReturn(Optional.of(orderToCancel));
         when(orderToCancel.getBroker()).thenReturn(BROKER);
         when(cancel.getBroker()).thenReturn(BROKER);
-        sut.processTradingMessage(cancel,productExchange);
-        Mockito.verify(productExchange,times(1)).remove(orderToCancel);
+        sut.processTradingMessage(cancel, productExchange);
+        Mockito.verify(productExchange, times(1)).remove(orderToCancel);
     }
 
     @Test
@@ -87,15 +85,15 @@ public class CancelExecutionTaskProcessorTest {
         when(productExchange.getById(CANCELLED_ORDER_ID)).thenReturn(Optional.of(orderToCancel));
         when(orderToCancel.getBroker()).thenReturn(OTHER_BROKER);
         when(cancel.getBroker()).thenReturn(BROKER);
-        sut.processTradingMessage(cancel,productExchange);
-        Mockito.verify(productExchange,never()).remove(orderToCancel);
+        sut.processTradingMessage(cancel, productExchange);
+        Mockito.verify(productExchange, never()).remove(orderToCancel);
     }
 
     @Test
     public void processTradingMessage_whenPassedCancelAndOrderIsNotQueued_itShouldNotCancelTheOrder() {
         when(cancel.getCancelledOrderId()).thenReturn(CANCELLED_ORDER_ID);
         when(productExchange.getById(CANCELLED_ORDER_ID)).thenReturn(Optional.empty());
-        sut.processTradingMessage(cancel,productExchange);
-        Mockito.verify(productExchange,never()).remove(orderToCancel);
+        sut.processTradingMessage(cancel, productExchange);
+        Mockito.verify(productExchange, never()).remove(orderToCancel);
     }
 }

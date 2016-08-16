@@ -17,7 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -49,10 +49,9 @@ public class CancelSchedulingTaskTest {
     Cancel cancel;
 
 
-
     @Before
     public void initialize() {
-        sut = new CancelSchedulingTask(productExchangeIndex,idProductIndex,processingTask);
+        sut = new CancelSchedulingTask(productExchangeIndex, idProductIndex, processingTask);
         when(processingTask.getTradingMessage()).thenReturn(cancel);
         when(cancel.getCancelledOrderId()).thenReturn(ORDER_ID);
     }
@@ -72,9 +71,8 @@ public class CancelSchedulingTaskTest {
         } catch (OrderNotFoundException e) {
             fail(e.getMessage());
         }
-        Mockito.verify(productExchange,times(1)).enqueueTask(processingTask);
+        Mockito.verify(productExchange, times(1)).enqueueTask(processingTask);
     }
-
 
 
 }

@@ -2,11 +2,9 @@ package com.gft.digitalbank.exchange.solution.config;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.After;
-import org.junit.Before;
 
 import java.util.Arrays;
 

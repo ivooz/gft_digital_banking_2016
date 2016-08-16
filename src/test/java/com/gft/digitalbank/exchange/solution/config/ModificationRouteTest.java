@@ -1,7 +1,6 @@
 package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.service.scheduling.CancelSchedulingTask;
 import com.gft.digitalbank.exchange.solution.service.scheduling.ModificationSchedulingTask;
 import com.gft.digitalbank.exchange.solution.utils.ResourceLoader;
 import org.apache.camel.EndpointInject;
@@ -58,7 +57,7 @@ public class ModificationRouteTest extends CamelRouteTest {
         }
         schedulingTasksEndpoint.assertIsSatisfied();
         Object bodyReceived = schedulingTasksEndpoint.getExchanges().get(0).getIn().getBody();
-        assertThat(bodyReceived,is(instanceOf(ModificationSchedulingTask.class)));
+        assertThat(bodyReceived, is(instanceOf(ModificationSchedulingTask.class)));
         context.stop();
     }
 }

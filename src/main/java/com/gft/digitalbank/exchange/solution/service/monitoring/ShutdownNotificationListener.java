@@ -1,6 +1,7 @@
 package com.gft.digitalbank.exchange.solution.service.monitoring;
 
 import com.gft.digitalbank.exchange.listener.ProcessingListener;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.NonNull;
@@ -12,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Responsible for monitoring whether the trading session is finished, initializing the shutdown procedures and relaying
  * the gathered results to the ProcessingListener.
- *
+ * <p>
  * Created by Ivo Zieliński on 2016-06-29.
  */
 @Slf4j
@@ -38,21 +39,26 @@ public class ShutdownNotificationListener {
      * and the processing results are passed to the ProcessingListener.
      */
     public CompletableFuture<Void> handleShutdownNotification() {
+        //TODO test
+        Preconditions.checkState(processingListener != null);
+        Preconditions.checkState(brokerCount != null);
         return CompletableFuture.runAsync(() -> {
             int currentCount = brokerCount.decrementAndGet();
             if (currentCount == 0) {
                 try {
                     processingFinisher.finishProcessing();
                 } catch (ProcessingShutdownException e) {
-                    log.error(SHUTDOWN_EXCEPTION_MESSAGE,e);
+                    log.error(SHUTDOWN_EXCEPTION_MESSAGE, e);
+                } finally {
+                    processingListener.processingDone(resultGatherer.gatherResults());
                 }
-                processingListener.processingDone(resultGatherer.gatherResults());
             }
         });
     }
 
     /**
      * Sets the ProcessingListener to which the processing results are passed after the shutdown procedure.
+     *
      * @param processingListener
      */
     public void setProcessingListener(@NonNull ProcessingListener processingListener) {

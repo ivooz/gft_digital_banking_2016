@@ -1,16 +1,13 @@
 package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.model.Cancel;
 import com.gft.digitalbank.exchange.solution.service.scheduling.CancelSchedulingTask;
-import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTask;
 import com.gft.digitalbank.exchange.solution.utils.ResourceLoader;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -19,7 +16,6 @@ import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.Is.isA;
 
 
 /**
@@ -62,7 +58,7 @@ public class CancelRouteTest extends CamelRouteTest {
         }
         schedulingTasksEndpoint.assertIsSatisfied();
         Object bodyReceived = schedulingTasksEndpoint.getExchanges().get(0).getIn().getBody();
-        assertThat(bodyReceived,is(instanceOf(CancelSchedulingTask.class)));
+        assertThat(bodyReceived, is(instanceOf(CancelSchedulingTask.class)));
         context.stop();
     }
 }

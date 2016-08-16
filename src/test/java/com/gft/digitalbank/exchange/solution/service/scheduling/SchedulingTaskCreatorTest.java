@@ -42,21 +42,21 @@ public class SchedulingTaskCreatorTest {
     public void createSchedulingTask_whenOfTypedAsOrder_shouldCreateTypedSchedulingTaskEncapsulatingTheMessage() {
         Order order = Mockito.mock(Order.class);
         SchedulingTask<Order> schedulingTask = orderSchedulingTaskCreator.createSchedulingTask(order);
-        assertThat(schedulingTask.getTradingMessage(),is(sameInstance(order)));
+        assertThat(schedulingTask.getTradingMessage(), is(sameInstance(order)));
     }
 
     @Test
     public void createSchedulingTask_whenOfTypedAsModification_shouldCreateTypedSchedulingTaskEncapsulatingTheMessage() {
         Modification modification = Mockito.mock(Modification.class);
         SchedulingTask<Modification> schedulingTask = modificationSchedulingTaskCreator.createSchedulingTask(modification);
-        assertThat(schedulingTask.getTradingMessage(),is(sameInstance(modification)));
+        assertThat(schedulingTask.getTradingMessage(), is(sameInstance(modification)));
     }
 
     @Test
     public void createSchedulingTask_whenOfTypedAsCancel_shouldCreateTypedSchedulingTaskEncapsulatingTheMessage() {
         Cancel cancel = Mockito.mock(Cancel.class);
         SchedulingTask<Cancel> schedulingTask = cancelSchedulingTaskCreator.createSchedulingTask(cancel);
-        assertThat(schedulingTask.getTradingMessage(),is(sameInstance(cancel)));
+        assertThat(schedulingTask.getTradingMessage(), is(sameInstance(cancel)));
     }
 
     @Test(expected = NullPointerException.class)

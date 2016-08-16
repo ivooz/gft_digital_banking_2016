@@ -2,7 +2,6 @@ package com.gft.digitalbank.exchange.solution.service.exchange;
 
 import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.model.Order;
-import com.gft.digitalbank.exchange.solution.service.processing.OrderProcessingException;
 import com.gft.digitalbank.exchange.solution.service.processing.TransactionFactory;
 import com.google.common.base.Preconditions;
 import lombok.NonNull;
@@ -28,7 +27,7 @@ public class ProductTransactionLedger {
      * Saves the created Transaction for later retrieval.
      *
      * @param processedOrder the currently handled order
-     * @param orderFromQueue   order retrieved from the queue
+     * @param orderFromQueue order retrieved from the queue
      */
     public void executeTransaction(@NonNull Order processedOrder, @NonNull Order orderFromQueue) {
         Preconditions.checkState(processedOrder.getSide() != orderFromQueue.getSide(),

@@ -3,7 +3,6 @@ package com.gft.digitalbank.exchange.solution.service.exchange;
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
-import com.gft.digitalbank.exchange.solution.util.Procedure;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -20,7 +19,6 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 /**

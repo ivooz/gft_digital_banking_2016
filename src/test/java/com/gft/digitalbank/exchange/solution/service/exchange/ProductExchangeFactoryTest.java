@@ -9,7 +9,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by Ivo on 13/08/16.
@@ -29,7 +29,7 @@ public class ProductExchangeFactoryTest {
     @Test
     public void createProductExchange_whenCalled_shouldCreateProductExchangeWithProperProductName() {
         ProductExchange productExchange = sut.createProductExchange(PRODUCT_NAME);
-        assertThat(productExchange,is(not(nullValue())));
-        assertThat(productExchange.getProductName(),is(equalTo(PRODUCT_NAME)));
+        assertThat(productExchange, is(not(nullValue())));
+        assertThat(productExchange.getProductName(), is(equalTo(PRODUCT_NAME)));
     }
 }

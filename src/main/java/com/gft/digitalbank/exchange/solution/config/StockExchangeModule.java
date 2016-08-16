@@ -30,7 +30,7 @@ public class StockExchangeModule extends CamelModuleWithMatchingRoutes {
     private static final String UNABLE_TO_LOAD_PROPERTIES_FILE = "Unable to load properties file";
 
     @Override
-    protected void configure() {
+    public void configure() {
         super.configure();
         try {
             bindGenericProcessors();

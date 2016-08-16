@@ -1,7 +1,6 @@
 package com.gft.digitalbank.exchange.solution.service.scheduling;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.model.Cancel;
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
@@ -51,7 +50,7 @@ public class ModifySchedulingTaskTest {
 
     @Before
     public void initialize() {
-        sut = new ModificationSchedulingTask(productExchangeIndex,idProductIndex,processingTask);
+        sut = new ModificationSchedulingTask(productExchangeIndex, idProductIndex, processingTask);
         when(processingTask.getTradingMessage()).thenReturn(modification);
         when(modification.getModifiedOrderId()).thenReturn(ORDER_ID);
     }
@@ -71,9 +70,8 @@ public class ModifySchedulingTaskTest {
         } catch (OrderNotFoundException e) {
             fail(e.getMessage());
         }
-        Mockito.verify(productExchange,times(1)).enqueueTask(processingTask);
+        Mockito.verify(productExchange, times(1)).enqueueTask(processingTask);
     }
-
 
 
 }

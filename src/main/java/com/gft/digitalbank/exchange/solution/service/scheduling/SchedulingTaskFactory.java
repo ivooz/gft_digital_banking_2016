@@ -6,13 +6,14 @@ import lombok.NonNull;
 
 /**
  * Responsible for creation of SchedulingTasks.
- *
+ * <p>
  * Created by Ivo Zieliński on 2016-06-28.
  */
 public interface SchedulingTaskFactory<M extends TradingMessage> {
 
     /**
      * Creates the SchedulingTask for a given ProcessingTask
+     *
      * @param processingTask to be sheduled
      * @return the created SchedulingTask
      */

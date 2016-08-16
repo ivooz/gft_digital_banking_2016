@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Indexes ProductExchanges on their product name.
- *
+ * <p>
  * Created by Ivo Zieliński on 2016-06-28.
  */
 @Singleton
@@ -29,6 +29,7 @@ public class ProductExchangeIndex {
 
     /**
      * Retrieves the ProductExchange with the given product name
+     *
      * @param productName
      * @return
      */

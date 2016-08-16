@@ -1,5 +1,6 @@
 package com.gft.digitalbank.exchange.solution.utils;
 
+import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.model.Details;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
@@ -30,6 +31,10 @@ public class PojoFactory {
         order.setId(counter);
         order.setTimestamp(counter);
         return order;
+    }
+
+    public Details createDetails() {
+        return cloner.deepClone(prototype.getDetails());
     }
 
     public Order createNextOrderWithAmountAndSide(int amount, Side side) {
@@ -68,6 +73,11 @@ public class PojoFactory {
         order.setTimestamp(timestamp);
         order.getDetails().setPrice(price);
         return order;
+    }
+
+    public Transaction createNextTransaction() {
+        return Transaction.builder().amount(1).brokerBuy("broker").brokerSell("brokerSell").id(++counter).clientBuy("clientBuy")
+                .clientSell("clientSell").price(1).product("product").build();
     }
 
     public Pair<Order, Order> createIdenticalBuyAndSellOrders() {

@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 /**
@@ -36,7 +36,7 @@ public class SchedulingTaskExecutorTest {
             fail(e.getMessage());
         }
         try {
-            Mockito.verify(schedulingTask,times(1)).execute();
+            Mockito.verify(schedulingTask, times(1)).execute();
         } catch (OrderNotFoundException e) {
             fail(e.getMessage());
         }

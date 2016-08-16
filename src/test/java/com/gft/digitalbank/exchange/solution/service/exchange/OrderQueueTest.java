@@ -43,11 +43,21 @@ public class OrderQueueTest {
         sut.pushOrder(null);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void peekNextOrder_whenPassedNull_shouldThrowNullPointerException() {
+        sut.peekNextOrder(null);
+    }
+
     @Parameters(method = "buyAndSellSides")
     @Test
     public void peekNextOrder_whenQueueIsEmpty_itShouldReturnEmptyOptionalsForSide(Side side) {
         Optional<Order> orderOptional = sut.peekNextOrder(side);
         assertThat(orderOptional, is(equalTo(Optional.empty())));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void pollNextOrder_whenPassedNull_shouldThrowNullPointerException() {
+        sut.pollNextOrder(null);
     }
 
     @Parameters(method = "buyAndSellSides")
@@ -60,7 +70,7 @@ public class OrderQueueTest {
     @Parameters(method = "buyAndSellSides")
     @Test
     public void pollOrder_whenOnlyOrdersScheduledForDeletionAreAdded_itShouldReturnEmptyOptional(Side side) {
-        addOrdersScheduledForDeletionWithSidesToQueue(side,10);
+        addOrdersScheduledForDeletionWithSidesToQueue(side, 10);
         Optional<Order> orderOptional = sut.pollNextOrder(side);
         assertThat(orderOptional, is(equalTo(Optional.empty())));
     }
@@ -68,7 +78,7 @@ public class OrderQueueTest {
     @Parameters(method = "buyAndSellSides")
     @Test
     public void peekOrder_whenOnlyOrdersScheduledForDeletionAreAdded_itShouldReturnEmptyOptional(Side side) {
-        addOrdersScheduledForDeletionWithSidesToQueue(side,10);
+        addOrdersScheduledForDeletionWithSidesToQueue(side, 10);
         Optional<Order> orderOptional = sut.peekNextOrder(side);
         assertThat(orderOptional, is(equalTo(Optional.empty())));
     }
@@ -133,11 +143,11 @@ public class OrderQueueTest {
             (Side side, List<Pair<Integer, Integer>> priceAndTimestampPairs) {
         priceAndTimestampPairs.stream()
                 .forEach(pair -> sut.pushOrder(pojoFactory
-                        .buildOrderWithTimestampPriceAndSide(side,pair.getKey(),pair.getValue())));
+                        .buildOrderWithTimestampPriceAndSide(side, pair.getKey(), pair.getValue())));
         int minTimestamp = priceAndTimestampPairs.stream().mapToInt(Pair::getKey)
                 .min().getAsInt();
         Order order = sut.pollNextOrder(side).get();
-        assertThat(order.getTimestamp(), is(equalTo((long)minTimestamp)));
+        assertThat(order.getTimestamp(), is(equalTo((long) minTimestamp)));
     }
 
 
@@ -152,15 +162,15 @@ public class OrderQueueTest {
     }
 
     private void addOrdersScheduledForDeletionWithSidesToQueue(Side side, int count) {
-        IntStream.range(0,count)
+        IntStream.range(0, count)
                 .forEach(price -> sut.pushOrder(pojoFactory.createOrderScheduledForDeletion(side)));
     }
 
 
     private Object buyAndSellSides() {
-        return new Object[] {
-            Side.BUY,
-            Side.SELL
+        return new Object[]{
+                Side.BUY,
+                Side.SELL
         };
     }
 

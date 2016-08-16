@@ -2,7 +2,7 @@ package com.gft.digitalbank.exchange.solution;
 
 import com.gft.digitalbank.exchange.Exchange;
 import com.gft.digitalbank.exchange.listener.ProcessingListener;
-import com.gft.digitalbank.exchange.solution.config.ApacheCamelConfigurer;
+import com.gft.digitalbank.exchange.solution.config.CamelConfigurer;
 import com.gft.digitalbank.exchange.solution.config.StockExchangeModule;
 import com.gft.digitalbank.exchange.solution.config.StockExchangeStartupException;
 import com.google.inject.Guice;
@@ -17,31 +17,37 @@ import java.util.List;
 @Slf4j
 public class StockExchange implements Exchange {
 
+    private static final String BROKER_URL = "vm://localhost";
     private static final String STARTUP_EXCEPTION_MESSAGE = "Could not start StockExchange.";
+    private static final String UNABLE_TO_CONFIGURE_APACHE_CAMEL_MESSAGE = "Unable to configure Apache Camel";
 
-    private final ApacheCamelConfigurer apacheCamelConfigurer;
+    private final CamelConfigurer camelConfigurer;
 
     public StockExchange() {
         Injector injector = Guice.createInjector(new StockExchangeModule());
-        this.apacheCamelConfigurer = injector.getInstance(ApacheCamelConfigurer.class);
+        this.camelConfigurer = injector.getInstance(CamelConfigurer.class);
     }
 
     @Override
     public void register(ProcessingListener processingListener) {
-        apacheCamelConfigurer.registerProcessingListener(processingListener);
+        camelConfigurer.registerProcessingListener(processingListener);
     }
 
     @Override
     public void setDestinations(List<String> destinations) {
-        apacheCamelConfigurer.configure(destinations,"vm://localhost");
+        try {
+            camelConfigurer.configure(destinations, BROKER_URL);
+        } catch (StockExchangeStartupException ex) {
+            log.error(UNABLE_TO_CONFIGURE_APACHE_CAMEL_MESSAGE, ex);
+        }
     }
 
     @Override
     public void start() {
         try {
-            apacheCamelConfigurer.start();
+            camelConfigurer.start();
         } catch (StockExchangeStartupException e) {
-            log.error(STARTUP_EXCEPTION_MESSAGE,e);
+            log.error(STARTUP_EXCEPTION_MESSAGE, e);
         }
     }
 }

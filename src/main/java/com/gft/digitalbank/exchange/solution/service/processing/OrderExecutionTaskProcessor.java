@@ -9,8 +9,7 @@ import lombok.NonNull;
 import java.util.Optional;
 
 /**
- * @inheritDoc
- * Defines the logic of matching an incoming Order message with those residing in OrderQueues.
+ * @inheritDoc Defines the logic of matching an incoming Order message with those residing in OrderQueues.
  * <p>
  * Created by Ivo Zieliński on 2016-07-05.
  */
@@ -18,18 +17,14 @@ import java.util.Optional;
 public class OrderExecutionTaskProcessor implements TradingMessageProcessor<Order> {
 
     /**
-     * @inheritDoc
-     *
-     * Applies an incoming Order message to the ProductExchange. Initiates the Transaction execution as long as there is
+     * @param processedOrder  the new Order that handled
+     * @param productExchange to apply the Order message against
+     * @inheritDoc Applies an incoming Order message to the ProductExchange. Initiates the Transaction execution as long as there is
      * a matching Order in the ProductExchange queues.
      * If no matching Order is found it is enqueued.
      * Processed Order that are partially traded with no more matching enqueued Orders are also queued.
-     *
-     * @param processedOrder  the new Order that handled
-     * @param productExchange to apply the Order message against
-     * @throws OrderProcessingException
      */
-    public void processTradingMessage(@NonNull Order processedOrder, @NonNull ProductExchange productExchange) throws OrderProcessingException {
+    public void processTradingMessage(@NonNull Order processedOrder, @NonNull ProductExchange productExchange) {
         Side processedOrderSide = processedOrder.getSide();
         Side passiveOrderSide = processedOrderSide.opposite();
 
@@ -53,7 +48,7 @@ public class OrderExecutionTaskProcessor implements TradingMessageProcessor<Orde
         }
     }
 
-    private boolean ordersMatch(Order processedOrder, Order matchedOrder) throws OrderProcessingException {
+    private boolean ordersMatch(Order processedOrder, Order matchedOrder) {
         int comparison = processedOrder.getPrice() - matchedOrder.getPrice();
         return processedOrder.getSide() == Side.BUY ? comparison >= 0 : comparison <= 0;
     }

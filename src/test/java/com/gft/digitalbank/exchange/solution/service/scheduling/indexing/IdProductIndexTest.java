@@ -10,7 +10,7 @@ import java.util.Optional;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by Ivo on 14/08/16.
@@ -30,23 +30,21 @@ public class IdProductIndexTest {
 
     @Test(expected = NullPointerException.class)
     public void put_whenNullOrderPassed_shouldThrowNullPointerException() {
-        sut.put(ID,null);
+        sut.put(ID, null);
     }
 
     @Test
     public void put_whenNamePassed_itShouldBeRetrieveableViaGet() {
-        sut.put(ID,PRODUCT_NAME);
+        sut.put(ID, PRODUCT_NAME);
         Optional<String> productName = sut.get(ID);
-        assertThat(productName.get(),is(equalTo(PRODUCT_NAME)));
+        assertThat(productName.get(), is(equalTo(PRODUCT_NAME)));
     }
 
     @Test
     public void put_whenNameNotPassed_itShouldReturnEmptyOptional() {
         Optional<String> productName = sut.get(ID);
-        assertThat(productName,is(sameInstance(Optional.empty())));
+        assertThat(productName, is(sameInstance(Optional.empty())));
     }
-
-
 
 
 }

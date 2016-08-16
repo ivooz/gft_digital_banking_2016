@@ -3,7 +3,6 @@ package com.gft.digitalbank.exchange.solution.service.exchange;
 import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
-import com.gft.digitalbank.exchange.solution.service.processing.OrderProcessingException;
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
 import com.google.common.base.Preconditions;
 import lombok.NonNull;
@@ -59,6 +58,7 @@ public class ProductExchange {
      * The passed  Order will be removed from the cache as there is no point of modifying or cancelling a 'fully traded'
      * Order.
      * The Order will be lazily removed from the OrderQueue.
+     *
      * @param order to remove
      */
     public void remove(@NonNull Order order) {
@@ -82,9 +82,8 @@ public class ProductExchange {
      * currently enqueued ProcessingTasks from the ProcessingTasks queue.
      *
      * @throws ExchangeShutdownException if there are problems with shutting down ExecutorService
-     * @throws OrderProcessingException  if there are problems executing the remaining ProcessingTasks
      */
-    public void executeRemainingTasksAndShutDown() throws ExchangeShutdownException, OrderProcessingException {
+    public void executeRemainingTasksAndShutDown() throws ExchangeShutdownException {
         taskExecutor.shutdownAndAwaitTermination();
         executeTasksWhile(ProcessingTaskQueue::isNotEmpty);
     }
@@ -95,12 +94,11 @@ public class ProductExchange {
      * the ProcessingTask with the lowest timestamp is passed to the ExecutorService.
      *
      * @param processingTask to enqueueOrder
-     *
      */
     public void enqueueTask(@NonNull ProcessingTask processingTask) {
         processingTaskQueue.enqueueTask(processingTask);
         synchronized (processingTaskQueue) {
-            if(processingTaskQueue.isFull()) {
+            if (processingTaskQueue.isFull()) {
                 taskExecutor.enqueueProcessingTask(processingTaskQueue.getNextTaskToExecute().get());
             }
         }
@@ -150,6 +148,7 @@ public class ProductExchange {
 
     /**
      * Retrieves the name of the product that the ProductExchange is associated.
+     *
      * @return the underlying product name
      */
     public String getProductName() {
@@ -158,13 +157,14 @@ public class ProductExchange {
 
     /**
      * Retieves the current history of Transactions concerning the associated product.
+     *
      * @return the history
      */
     public List<Transaction> getTransactions() {
         return productTransactionLedger.getTransactions();
     }
 
-    private void executeTasksWhile(Predicate<ProcessingTaskQueue> taskQueuePredicate) throws OrderProcessingException {
+    private void executeTasksWhile(Predicate<ProcessingTaskQueue> taskQueuePredicate) {
         while (taskQueuePredicate.test(processingTaskQueue)) {
             Optional<ProcessingTask> nextTaskToExecute = processingTaskQueue.getNextTaskToExecute();
             ProcessingTask processingTask = nextTaskToExecute.get();

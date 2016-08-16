@@ -18,6 +18,8 @@ import java.util.function.Function;
  */
 public class OrderQueue {
 
+    private static final String ILLEGAL_SIDE_MESSAGE = "Illegal side:";
+
     private final PriorityQueue<Order> buyOrders = new PriorityQueue<>();
     private final PriorityQueue<Order> sellOrders = new PriorityQueue<>();
 
@@ -92,8 +94,9 @@ public class OrderQueue {
                 return Optional.ofNullable(function.apply(buyOrders));
             case SELL:
                 return Optional.ofNullable(function.apply(sellOrders));
+            default:
+                throw new IllegalArgumentException(ILLEGAL_SIDE_MESSAGE + side);
         }
-        return Optional.empty();
     }
 
     private void consumeQueue(Side side, Consumer<PriorityQueue<Order>> consumer) {
@@ -104,6 +107,8 @@ public class OrderQueue {
             case SELL:
                 consumer.accept(sellOrders);
                 break;
+            default:
+                throw new IllegalArgumentException(ILLEGAL_SIDE_MESSAGE + side);
         }
     }
 }

@@ -10,8 +10,7 @@ import lombok.NonNull;
 import java.util.Optional;
 
 /**
- * @inheritDoc
- * Created by Ivo Zieliński on 2016-06-30.
+ * @inheritDoc Created by Ivo Zieliński on 2016-06-30.
  */
 @Singleton
 public class ModificationExecutionTaskProcessor implements TradingMessageProcessor<Modification> {
@@ -27,8 +26,7 @@ public class ModificationExecutionTaskProcessor implements TradingMessageProcess
      * @inheritDoc
      */
     @Override
-    public void processTradingMessage(@NonNull Modification modification,@NonNull ProductExchange productExchange)
-            throws OrderProcessingException {
+    public void processTradingMessage(@NonNull Modification modification, @NonNull ProductExchange productExchange) {
         Optional<Order> orderToModify = productExchange.getById(modification.getModifiedOrderId());
         if (!orderToModify.isPresent()) {
             //The order has already been fully processed or cancelled
@@ -45,6 +43,6 @@ public class ModificationExecutionTaskProcessor implements TradingMessageProcess
         productExchange.remove(order);
         copy.setTimestamp(modification.getTimestamp());
         //We treat the modified Order just like an incoming new Order.
-        orderTradingMessageProcessor.processTradingMessage(copy,productExchange);
+        orderTradingMessageProcessor.processTradingMessage(copy, productExchange);
     }
 }

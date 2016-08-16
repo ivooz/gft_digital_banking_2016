@@ -8,7 +8,7 @@ import static com.gft.digitalbank.exchange.solution.model.Side.BUY;
 import static com.gft.digitalbank.exchange.solution.model.Side.SELL;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by iozi on 2016-08-11.
@@ -18,12 +18,12 @@ public class SideTest {
 
     @Test
     public void opposite_whenCalledForBuy_shouldReturnSell() {
-        assertThat(BUY.opposite(),is(sameInstance(Side.SELL)));
+        assertThat(BUY.opposite(), is(sameInstance(Side.SELL)));
     }
 
     @Test
     public void opposite_whenCalledForSell_shouldReturnBuy() {
-        assertThat(SELL.opposite(),is(sameInstance(Side.BUY)));
+        assertThat(SELL.opposite(), is(sameInstance(Side.BUY)));
     }
 
 }

@@ -12,6 +12,8 @@ import org.apache.camel.CamelContext;
 @Singleton
 public class ProcessingFinisher {
 
+    private static final String CAMEL_EXCEPTION_MESSAGE = "Encountered a problem while stopping Camel.";
+
     private final TasksExecutionFinisher tasksExecutionFinisher;
     private final CamelContext camelContext;
 
@@ -31,7 +33,7 @@ public class ProcessingFinisher {
         try {
             camelContext.stop();
         } catch (Exception ex) {
-            throw new ProcessingShutdownException("Encountered a problem while stopping Camel.", ex);
+            throw new ProcessingShutdownException(CAMEL_EXCEPTION_MESSAGE, ex);
         } finally {
             tasksExecutionFinisher.finishAllTasks();
         }

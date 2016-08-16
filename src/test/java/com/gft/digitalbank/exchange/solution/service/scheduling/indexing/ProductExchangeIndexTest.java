@@ -15,10 +15,9 @@ import java.util.Collection;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.hamcrest.EasyMock2Matchers.equalTo;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
@@ -53,28 +52,28 @@ public class ProductExchangeIndexTest {
     @Test
     public void getProductExchange_whenPassedProductNameOfNonExistingExchange_thenNewExchangeShallBeCreatedAndReturned() {
         ProductExchange productExchangeFromIndex = sut.getProductExchange(PRODUCT_NAME);
-        Mockito.verify(productExchangeFactory,times(1)).createProductExchange(PRODUCT_NAME);
-        assertThat(productExchangeFromIndex,is(sameInstance(productExchange)));
+        Mockito.verify(productExchangeFactory, times(1)).createProductExchange(PRODUCT_NAME);
+        assertThat(productExchangeFromIndex, is(sameInstance(productExchange)));
     }
 
     @Test
     public void getProductExchange_whenPassedProductNameOfExistingExchange_thenNoNewExchangeShallBeCreatedAndExistingExchangeReturned() {
         sut.getProductExchange(PRODUCT_NAME);
         ProductExchange productExchangeFromIndex = sut.getProductExchange(PRODUCT_NAME);
-        Mockito.verify(productExchangeFactory,times(1)).createProductExchange(PRODUCT_NAME);
-        assertThat(productExchangeFromIndex,is(sameInstance(productExchange)));
+        Mockito.verify(productExchangeFactory, times(1)).createProductExchange(PRODUCT_NAME);
+        assertThat(productExchangeFromIndex, is(sameInstance(productExchange)));
     }
 
     @Test
     public void getAllExchanges_whenGetNeverCalled_shouldReturnEmptyList() {
         Collection<ProductExchange> allExchanges = sut.getAllExchanges();
-        assertThat(allExchanges,is(empty()));
+        assertThat(allExchanges, is(empty()));
     }
 
     @Test
     public void getAllExchanges_whenGetCalled_thenTheCreatedProductExchangeShouldBeInTheReturnedList() {
         sut.getProductExchange(PRODUCT_NAME);
         Collection<ProductExchange> allExchanges = sut.getAllExchanges();
-        assertThat(allExchanges,hasItem(productExchange));
+        assertThat(allExchanges, hasItem(productExchange));
     }
 }

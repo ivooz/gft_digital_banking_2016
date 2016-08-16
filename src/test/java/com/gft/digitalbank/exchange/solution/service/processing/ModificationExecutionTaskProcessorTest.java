@@ -1,24 +1,20 @@
 package com.gft.digitalbank.exchange.solution.service.processing;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.model.Details;
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 import com.gft.digitalbank.exchange.solution.utils.PojoFactory;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.internal.matchers.Or;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Optional;
 
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 /**
@@ -60,20 +56,17 @@ public class ModificationExecutionTaskProcessorTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void processTradingMessage_whenPassedNullCancel_shouldThrowNullPointerException()
-            throws OrderProcessingException {
+    public void processTradingMessage_whenPassedNullCancel_shouldThrowNullPointerException() {
         sut.processTradingMessage(null, productExchange);
     }
 
     @Test(expected = NullPointerException.class)
-    public void processTradingMessage_whenPassedNullProductExchange_shouldThrowNullPointerException()
-            throws OrderProcessingException {
+    public void processTradingMessage_whenPassedNullProductExchange_shouldThrowNullPointerException() {
         sut.processTradingMessage(modification, null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void processTradingMessage_whenPassedNulls_shouldThrowNullPointerException()
-            throws OrderProcessingException {
+    public void processTradingMessage_whenPassedNulls_shouldThrowNullPointerException() {
         sut.processTradingMessage(null, null);
     }
 
@@ -81,53 +74,26 @@ public class ModificationExecutionTaskProcessorTest {
     public void processTradingMessage_whenPassedModificationAndOrderIsQueuedAndBrokersMatch_itShouldResubmitAModifiedOrderCopy() {
         when(productExchange.getById(MODIFIED_ORDER_ID)).thenReturn(Optional.of(orderToModify));
         when(modification.getBroker()).thenReturn(BROKER);
-        try {
-            sut.processTradingMessage(modification,productExchange);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        } catch (OrderProcessingException e) {
-            e.printStackTrace();
-        }
-        try {
-            Mockito.verify(orderExecutionTaskProcessor,times(1))
-                    .processTradingMessage(Mockito.any(Order.class),eq(productExchange));
-        } catch (OrderProcessingException e) {
-            fail(e.getMessage());
-        }
+        sut.processTradingMessage(modification, productExchange);
+        Mockito.verify(orderExecutionTaskProcessor, times(1))
+                .processTradingMessage(Mockito.any(Order.class), eq(productExchange));
     }
 
     @Test
     public void processTradingMessage_whenPassedModificationAndOrderIsQueuedAndBrokersDontMatch_itShouldNotResubmitTheOrder() {
         when(productExchange.getById(MODIFIED_ORDER_ID)).thenReturn(Optional.of(orderToModify));
         when(modification.getBroker()).thenReturn(OTHER_BROKER);
-        try {
-            sut.processTradingMessage(modification,productExchange);
-        } catch (OrderProcessingException e) {
-            fail(e.getMessage());
-        }
-        try {
-            Mockito.verify(orderExecutionTaskProcessor,never())
-                    .processTradingMessage(Mockito.any(Order.class),eq(productExchange));
-        } catch (OrderProcessingException e) {
-            fail(e.getMessage());
-        }
+        sut.processTradingMessage(modification, productExchange);
+        Mockito.verify(orderExecutionTaskProcessor, never())
+                .processTradingMessage(Mockito.any(Order.class), eq(productExchange));
     }
 
     @Test
     public void processTradingMessage_whenPassedModificationAndOrderIsNotQueued_itShouldNotResubmitTheOrder() {
         when(productExchange.getById(MODIFIED_ORDER_ID)).thenReturn(Optional.empty());
         when(modification.getBroker()).thenReturn(BROKER);
-        try {
-            sut.processTradingMessage(modification,productExchange);
-        } catch (OrderProcessingException e) {
-            fail(e.getMessage());
-        }
-        try {
-            Mockito.verify(orderExecutionTaskProcessor,never())
-                    .processTradingMessage(Mockito.any(Order.class),eq(productExchange));
-        } catch (OrderProcessingException e) {
-            fail(e.getMessage());
-        }
+        sut.processTradingMessage(modification, productExchange);
+        Mockito.verify(orderExecutionTaskProcessor, never())
+                .processTradingMessage(Mockito.any(Order.class), eq(productExchange));
     }
 }

@@ -4,10 +4,8 @@ import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
-import com.gft.digitalbank.exchange.solution.service.processing.OrderProcessingException;
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
 import com.gft.digitalbank.exchange.solution.utils.PojoFactory;
-import com.sun.org.apache.xpath.internal.operations.Or;
 import javafx.util.Pair;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -27,11 +25,8 @@ import java.util.stream.IntStream;
 import static junit.framework.TestCase.fail;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 
@@ -116,7 +111,7 @@ public class ProductExchangeTest {
                 .forEach(task -> sut.enqueueTask(task));
         try {
             sut.executeRemainingTasksAndShutDown();
-        } catch (ExchangeShutdownException | OrderProcessingException e) {
+        } catch (ExchangeShutdownException e) {
             fail(e.getMessage());
         }
         processingTasksToEnqueue.stream()
@@ -171,9 +166,10 @@ public class ProductExchangeTest {
                     Order lowPriorityOrder = Mockito.mock(Order.class);
                     when(lowPriorityOrder.compareTo(Matchers.anyObject())).thenReturn(1);
                     when(lowPriorityOrder.isScheduledForDeletion()).thenReturn(false);
-                    if(sut==null) {
+                    if (sut == null) {
 
-                        sut.enqueueOrder(lowPriorityOrder);}
+                        sut.enqueueOrder(lowPriorityOrder);
+                    }
                     when(lowPriorityOrder.getSide()).thenReturn(side);
                 });
         Order order = sut.peekNextOrder(side).get();
@@ -206,13 +202,13 @@ public class ProductExchangeTest {
     }
 
     public void executeTransaction_whenMatchingOrdersPassed_shouldCreateATransactionAndScheduleOrderFromQueueForDeletion(Pair<Order, Order> orderPairs) {
-        Pair<Order,Order> matchingOrders = pojoFactory.createIdenticalBuyAndSellOrders();
+        Pair<Order, Order> matchingOrders = pojoFactory.createIdenticalBuyAndSellOrders();
         Order processedOrder = matchingOrders.getKey();
         Order orderFromQueue = matchingOrders.getValue();
-        sut.executeTransaction(processedOrder,orderFromQueue);
-        assertThat(sut.getTransactions().size(),is(equalTo(5)));
-        assertThat(orderFromQueue.isScheduledForDeletion(),is(equalTo(true)));
-        assertThat(orderFromQueue.isFullyTraded(),is(equalTo(true)));
+        sut.executeTransaction(processedOrder, orderFromQueue);
+        assertThat(sut.getTransactions().size(), is(equalTo(5)));
+        assertThat(orderFromQueue.isScheduledForDeletion(), is(equalTo(true)));
+        assertThat(orderFromQueue.isFullyTraded(), is(equalTo(true)));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -225,12 +221,12 @@ public class ProductExchangeTest {
 
     @Test
     public void executeTransaction_whenMatchingOrdersPassedWithOrderFromQueueWithBiggerAmount_shouldNotMarkOrderFromQueueAsScheduledForDeletion() {
-        Pair<Order,Order> matchingOrders = pojoFactory.createIdenticalBuyAndSellOrders();
+        Pair<Order, Order> matchingOrders = pojoFactory.createIdenticalBuyAndSellOrders();
         Order processedOrder = matchingOrders.getKey();
         Order orderFromQueue = matchingOrders.getValue();
-        orderFromQueue.getDetails().setAmount(orderFromQueue.getAmount()+1);
-        sut.executeTransaction(processedOrder,orderFromQueue);
-        assertThat(orderFromQueue.isScheduledForDeletion(),is(equalTo(false)));
+        orderFromQueue.getDetails().setAmount(orderFromQueue.getAmount() + 1);
+        sut.executeTransaction(processedOrder, orderFromQueue);
+        assertThat(orderFromQueue.isScheduledForDeletion(), is(equalTo(false)));
     }
 
     @Test(expected = NullPointerException.class)
@@ -256,25 +252,25 @@ public class ProductExchangeTest {
     @Test
     public void getProductName_whenCalled_shouldReturnProductName() {
         String productName = sut.getProductName();
-        assertThat(productName,is(equalTo(PRODUCT_NAME)));
+        assertThat(productName, is(equalTo(PRODUCT_NAME)));
     }
 
     @Test
     public void getTransactions_whenCalled_shouldReturnAnEmptyList() {
         List<Transaction> transactions = sut.getTransactions();
-        assertThat(transactions,is(empty()));
+        assertThat(transactions, is(empty()));
     }
 
     @Test
     @Parameters(method = "taskCounts")
     public void getTransactions_afterManyTransactionsWereExecuted_shouldReturnAListOfProperSize(int transactionCount) {
-        IntStream.range(0,transactionCount)
+        IntStream.range(0, transactionCount)
                 .forEach(index -> {
                     Pair<Order, Order> matchingOrders = pojoFactory.createIdenticalBuyAndSellOrders();
-                    sut.executeTransaction(matchingOrders.getKey(),matchingOrders.getValue());
+                    sut.executeTransaction(matchingOrders.getKey(), matchingOrders.getValue());
                 });
         List<Transaction> transactions = sut.getTransactions();
-        assertThat(transactions.size(),is(CoreMatchers.equalTo(transactionCount)));
+        assertThat(transactions.size(), is(CoreMatchers.equalTo(transactionCount)));
     }
 
     private Object sidesAndCounts() {

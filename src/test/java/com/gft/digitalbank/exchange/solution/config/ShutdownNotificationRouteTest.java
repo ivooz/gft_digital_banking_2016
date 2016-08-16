@@ -1,24 +1,8 @@
 package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.service.scheduling.ModificationSchedulingTask;
 import com.gft.digitalbank.exchange.solution.utils.ResourceLoader;
-import org.apache.camel.EndpointInject;
-import org.apache.camel.Produce;
-import org.apache.camel.ProducerTemplate;
-import org.apache.camel.builder.AdviceWithRouteBuilder;
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.mock.MockEndpoint;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.mockito.Mockito;
-
-import java.io.IOException;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.times;
 
 /**
  * Created by Ivo on 15/08/16.
@@ -29,7 +13,7 @@ public class ShutdownNotificationRouteTest extends CamelRouteTest {
 
     @Override
     public void mockEndpoints() throws Exception {
-        
+
     }
 
 //    @Produce(uri = CamelRouteBuilder.SHUTDOWN_NOTIFICATIONS_ENDPOINT_NAME)

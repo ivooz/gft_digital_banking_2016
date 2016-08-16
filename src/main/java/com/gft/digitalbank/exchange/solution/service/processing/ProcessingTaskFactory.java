@@ -8,7 +8,7 @@ import lombok.NonNull;
 
 /**
  * Responsible for creation of ProcessingTasks.
- *
+ * <p>
  * Created by Ivo Zieliński on 2016-06-28.
  */
 @Singleton
@@ -22,7 +22,6 @@ public class ProcessingTaskFactory<E extends TradingMessage> {
     }
 
     /**
-     *
      * @param message for the ProcessingTask to execute
      * @return
      */

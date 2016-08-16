@@ -51,19 +51,19 @@ public class SchedulingTaskFactoryTest {
     @Test
     public void create_whenOfTypedAsOrder_shouldCreateTypedSchedulingTaskEncapsulatingTheMessage() {
         SchedulingTask<Order> schedulingTask = orderSchedulingTaskFactory.create(processingTask);
-        assertThat(schedulingTask.getTradingMessage(),is(sameInstance(tradingMessage)));
+        assertThat(schedulingTask.getTradingMessage(), is(sameInstance(tradingMessage)));
     }
 
     @Test
     public void create_whenOfTypedAsModification_shouldCreateTypedSchedulingTaskEncapsulatingTheMessage() {
         SchedulingTask<Modification> schedulingTask = modificationSchedulingTaskFactory.create(processingTask);
-        assertThat(schedulingTask.getTradingMessage(),is(sameInstance(tradingMessage)));
+        assertThat(schedulingTask.getTradingMessage(), is(sameInstance(tradingMessage)));
     }
 
     @Test
     public void create_whenOfTypedAsCancel_shouldCreateTypedSchedulingTaskEncapsulatingTheMessage() {
         SchedulingTask<Cancel> schedulingTask = cancelSchedulingTaskFactory.create(processingTask);
-        assertThat(schedulingTask.getTradingMessage(),is(sameInstance(tradingMessage)));
+        assertThat(schedulingTask.getTradingMessage(), is(sameInstance(tradingMessage)));
     }
 
     @Test(expected = ProvisionException.class)

@@ -1,7 +1,6 @@
 package com.gft.digitalbank.exchange.solution.service.exchange;
 
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
-import com.gft.digitalbank.exchange.solution.util.Procedure;
 import lombok.NonNull;
 
 import java.util.Optional;
@@ -48,7 +47,7 @@ public class ProcessingTaskQueue {
     public Optional<ProcessingTask> getNextTaskToExecute() {
         return Optional.ofNullable(tasksToExecute.poll());
     }
-    
+
     /**
      * Checks whether the queue is full, which means that is the buffer size was exceeded and the the ProcessingTask
      * execution should begin.

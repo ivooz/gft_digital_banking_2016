@@ -7,7 +7,7 @@ import lombok.NonNull;
 
 /**
  * Responsible for converting Orders into OrderEntry objects that are expected by the ProcessingListener.
- *
+ * <p>
  * Created by Ivo Zieliński on 2016-06-30.
  */
 @Singleton
@@ -15,6 +15,7 @@ public class OrderEntryConverter {
 
     /**
      * Maps Order to OrderEntry
+     *
      * @param order to map
      * @return mapped OrderEntry
      */

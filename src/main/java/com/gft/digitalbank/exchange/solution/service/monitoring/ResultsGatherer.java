@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Responsible for extracting the results of TradingMessage procsssing from ProductExchanges and converting them
  * to format expected by the ProcessingListener.
- *
+ * <p>
  * Created by Ivo Zieliński on 2016-06-29.
  */
 @Singleton
@@ -39,6 +39,8 @@ public class ResultsGatherer {
 
     /**
      * Gathers all the OrderBooks and Transactions from the ProductExchanges applying conversions if necessary.
+     * Transactions are ordered chronologically with ids starting from 1 for the earliest Transaction.
+     * BookOrders are ordered according to their position in queue with ids starting from 1 for the top Order.
      *
      * @return result of the message processing
      */

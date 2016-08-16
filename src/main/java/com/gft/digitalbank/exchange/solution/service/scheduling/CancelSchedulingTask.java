@@ -1,7 +1,6 @@
 package com.gft.digitalbank.exchange.solution.service.scheduling;
 
 import com.gft.digitalbank.exchange.solution.model.Cancel;
-import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
 import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.IdProductIndex;
 import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.ProductExchangeIndex;
@@ -11,8 +10,7 @@ import com.google.inject.assistedinject.Assisted;
 import java.util.Optional;
 
 /**
- * @inheritDoc
- * Created by Ivo Zieliński on 2016-06-28.
+ * @inheritDoc Created by Ivo Zieliński on 2016-06-28.
  */
 public class CancelSchedulingTask extends SchedulingTask<Cancel> {
 

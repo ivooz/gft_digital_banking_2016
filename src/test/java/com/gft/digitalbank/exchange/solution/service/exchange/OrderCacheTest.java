@@ -35,7 +35,7 @@ public class OrderCacheTest {
         int orderId = order.getId();
         sut.add(order);
         Order orderFromCache = sut.getById(orderId).get();
-        assertThat(orderFromCache,is(sameInstance(order)));
+        assertThat(orderFromCache, is(sameInstance(order)));
     }
 
     @Test(expected = NullPointerException.class)
@@ -50,7 +50,7 @@ public class OrderCacheTest {
         sut.add(order);
         sut.remove(order);
         Optional<Order> optionalOrder = sut.getById(orderId);
-        assertThat(optionalOrder,is(equalTo(Optional.empty())));
+        assertThat(optionalOrder, is(equalTo(Optional.empty())));
     }
 
     @Test
@@ -58,6 +58,6 @@ public class OrderCacheTest {
         int givenId = 1;
         sut.getById(givenId);
         Optional<Order> optionalOrder = sut.getById(givenId);
-        assertThat(optionalOrder,is(equalTo(Optional.empty())));
+        assertThat(optionalOrder, is(equalTo(Optional.empty())));
     }
 }

@@ -10,7 +10,7 @@ import lombok.NonNull;
 /**
  * Responsible for creation of SchedulingTasks.
  * As SchedulingTaskFactory depends on ProcessingTaskFactory it encapsulates both of them.
- *
+ * <p>
  * Created by Ivo Zieliński on 2016-06-28.
  */
 @Singleton
@@ -28,6 +28,7 @@ public class SchedulingTaskCreator<E extends TradingMessage> {
 
     /**
      * Creates a SchedulingTask  for a TradingMessage's ProcessingTask.
+     *
      * @param message
      * @return
      */
