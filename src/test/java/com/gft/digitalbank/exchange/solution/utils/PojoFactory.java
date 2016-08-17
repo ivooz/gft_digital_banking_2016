@@ -2,6 +2,7 @@ package com.gft.digitalbank.exchange.solution.utils;
 
 import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.model.Details;
+import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
 import com.rits.cloning.Cloner;
@@ -12,11 +13,12 @@ import javafx.util.Pair;
  */
 public class PojoFactory {
 
+    public static final int MODIFIED_ORDER_ID = 5;
     private int counter;
 
     private Order prototype = Order.builder().broker("broker")
             .client("client")
-            .details(Details.builder().amount(1).price(1).build())
+            .details(createDetailsWithAmountAndPrice(1, 1))
             .id(0)
             .side(Side.BUY)
             .timestamp(0)
@@ -73,6 +75,14 @@ public class PojoFactory {
         order.setTimestamp(timestamp);
         order.getDetails().setPrice(price);
         return order;
+    }
+
+    public Modification createModification(int modifiedOrderId, int amount, int price) {
+        return new Modification(modifiedOrderId, createDetailsWithAmountAndPrice(amount, price));
+    }
+
+    public Details createDetailsWithAmountAndPrice(int amount, int price) {
+        return Details.builder().amount(amount).price(price).build();
     }
 
     public Transaction createNextTransaction() {

@@ -46,6 +46,16 @@ public class ShutdownNotificationListenerTest {
         sut = new ShutdownNotificationListener(resultsGatherer, processingFinisher);
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void handleShutdownNotification_whenProcessingListenerNotSet_shouldThrowIllegalStateException() {
+        sut.handleShutdownNotification();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void handleShutdownNotification_whenBrokerCounterNotSet_shouldThrowIllegalStateException() {
+        sut.handleShutdownNotification();
+    }
+
     @Test
     public void handleShutdownNotification_whenProcessingFinisherThrowsException_processingListenerShouldBeCalledAnyway()
             throws ProcessingShutdownException, ExecutionException, InterruptedException {

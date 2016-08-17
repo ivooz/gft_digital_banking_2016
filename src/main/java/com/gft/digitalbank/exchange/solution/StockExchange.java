@@ -7,6 +7,7 @@ import com.gft.digitalbank.exchange.solution.config.StockExchangeModule;
 import com.gft.digitalbank.exchange.solution.config.StockExchangeStartupException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -29,12 +30,12 @@ public class StockExchange implements Exchange {
     }
 
     @Override
-    public void register(ProcessingListener processingListener) {
+    public void register(@NonNull ProcessingListener processingListener) {
         camelConfigurer.registerProcessingListener(processingListener);
     }
 
     @Override
-    public void setDestinations(List<String> destinations) {
+    public void setDestinations(@NonNull List<String> destinations) {
         try {
             camelConfigurer.configure(destinations, BROKER_URL);
         } catch (StockExchangeStartupException ex) {

@@ -19,23 +19,21 @@ public class TransactionFactory {
      * Creates a Transaction from two Orders. Orders are not modified.
      *
      * @param processedOrder that is being handled
-     * @param passiveOrder   retrieved from the queue
+     * @param orderFromQueue
      * @param amountTraded   of the product
      * @param id             of the Transaction
      * @return the resulting Transaction
      */
-    public Transaction createTransaction(@NonNull Order processedOrder, @NonNull Order passiveOrder,
+    public Transaction createTransaction(@NonNull Order processedOrder, @NonNull Order orderFromQueue,
                                          int amountTraded, int id) {
-        Preconditions.checkState(processedOrder.getSide() != passiveOrder.getSide(),
-                CANNOT_TRANSACT_ORDERS_OF_THE_SAME_TYPE);
         boolean processedOrderIsBuying = processedOrder.getSide() == Side.BUY;
         return Transaction.builder().amount(amountTraded)
-                .brokerBuy(processedOrderIsBuying ? processedOrder.getBroker() : passiveOrder.getBroker())
-                .brokerSell(processedOrderIsBuying ? passiveOrder.getBroker() : processedOrder.getBroker())
-                .clientBuy(processedOrderIsBuying ? processedOrder.getClient() : passiveOrder.getClient())
-                .clientSell(processedOrderIsBuying ? passiveOrder.getClient() : processedOrder.getClient())
+                .brokerBuy(processedOrderIsBuying ? processedOrder.getBroker() : orderFromQueue.getBroker())
+                .brokerSell(processedOrderIsBuying ? orderFromQueue.getBroker() : processedOrder.getBroker())
+                .clientBuy(processedOrderIsBuying ? processedOrder.getClient() : orderFromQueue.getClient())
+                .clientSell(processedOrderIsBuying ? orderFromQueue.getClient() : processedOrder.getClient())
                 .product(processedOrder.getProduct())
-                .price(passiveOrder.getPrice())
+                .price(orderFromQueue.getPrice())
                 .id(id).build();
     }
 }

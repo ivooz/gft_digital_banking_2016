@@ -11,9 +11,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
+import org.mockito.internal.util.reflection.Whitebox;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.fail;
@@ -61,6 +63,15 @@ public class ProcessingTaskExecutorServiceTest {
             fail(e.getMessage());
         }
         processingTasks.forEach(processingTask -> Mockito.verify(processingTask, times(1)).run());
+    }
+
+    @Test(expected = ExchangeShutdownException.class)
+    public void shutdownAndAwaitTermination_whenExecutorThrowsException_itShouldBeWrappedAndRethrown()
+            throws InterruptedException, ExchangeShutdownException {
+        ThreadPoolExecutor threadPoolExecutor = Mockito.mock(ThreadPoolExecutor.class);
+        doThrow(InterruptedException.class).when(threadPoolExecutor).awaitTermination(anyLong(),anyObject());
+        Whitebox.setInternalState(sut,"taskExecutor",threadPoolExecutor);
+        sut.shutdownAndAwaitTermination();
     }
 
     @Test

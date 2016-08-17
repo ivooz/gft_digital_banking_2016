@@ -39,6 +39,7 @@ public class OrderRouteTest extends CamelRouteTest {
                 interceptSendToEndpoint(CamelRouteBuilder.SCHEDULING_TASKS_ENDPOINT_NAME)
                         .skipSendToOriginalEndpoint()
                         .to(MOCK_SCHEDULING_TASKS_ENDPOINT_NAME);
+
             }
         };
         context.getRouteDefinition(CamelRouteBuilder.ORDERS_ROUTE_ID)

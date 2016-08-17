@@ -1,6 +1,7 @@
 package com.gft.digitalbank.exchange.solution.service.exchange;
 
 import com.gft.digitalbank.exchange.model.Transaction;
+import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
 import com.gft.digitalbank.exchange.solution.utils.PojoFactory;
@@ -9,6 +10,7 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
@@ -22,6 +24,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by Ivo on 12/08/16.
  */
+@Category(UnitTest.class)
 @RunWith(JUnitParamsRunner.class)
 public class ProductTransactionLedgerTest {
 

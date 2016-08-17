@@ -12,8 +12,8 @@ import lombok.NonNull;
 public class Modification extends TradingMessage {
 
     @NonNull
-    private int modifiedOrderId;
+    private final int modifiedOrderId;
 
     @NonNull
-    private Details details;
+    private final Details details;
 }

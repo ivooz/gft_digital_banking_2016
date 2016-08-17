@@ -2,6 +2,7 @@ package com.gft.digitalbank.exchange.solution.service.scheduling;
 
 import com.google.inject.Singleton;
 import lombok.NonNull;
+import org.apache.camel.Handler;
 
 /**
  * Responsible for execution of SchedulingTasks.
@@ -18,6 +19,7 @@ public class SchedulingTaskExecutor {
      * @param schedulingTask to be executed
      * @throws OrderNotFoundException when the SchedulingTask could not be executed properly
      */
+    @Handler
     public void executeSchedulingTask(@NonNull SchedulingTask schedulingTask) throws OrderNotFoundException {
         schedulingTask.execute();
     }

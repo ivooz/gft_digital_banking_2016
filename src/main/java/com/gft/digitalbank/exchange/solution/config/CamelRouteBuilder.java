@@ -4,6 +4,7 @@ import com.gft.digitalbank.exchange.solution.model.Cancel;
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationListener;
+import com.gft.digitalbank.exchange.solution.service.scheduling.OrderNotFoundException;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskCreator;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskExecutor;
 import com.google.common.base.Preconditions;
@@ -41,13 +42,11 @@ public class CamelRouteBuilder extends RouteBuilder {
 
     private static final String ACTIVEMQ_QUEUE_PREFIX = "activemq:queue:";
     private static final String ORDER_IDENTIFYING_JSONPATH = "$[?(@.messageType=='ORDER')]";
-    private static final String SCHEDULING_TASK_CREATION_METHOD_NAME = "createSchedulingTask";
     private static final JsonLibrary UNMARSHALLING_LIBRARY = JsonLibrary.Gson;
     private static final String MODIFICATION_IDENTIFYING_JSONPATH = "$[?(@.messageType=='MODIFICATION')]";
     private static final String CANCEL_IDENTIFYING_JSONPATH = "$[?(@.messageType=='CANCEL')]";
     private static final String SHUTDOWN_NOTIFICATION_IDENTIFYING_JSONPATH = "$[?(@.messageType=='SHUTDOWN_NOTIFICATION')]";
     private static final String SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME = "handleShutdownNotification";
-    private static final String SCHEDULING_TASK_EXECUTOR_METHOD_NAME = "executeSchedulingTask";
     private static final String CANNOT_CONFIGURE_ROUTES_WITHOUT_QUEUE_DESTINATIONS = "Cannot configure routes without queue destinations.";
 
 
@@ -78,10 +77,12 @@ public class CamelRouteBuilder extends RouteBuilder {
         this.redeliveryDelayOnFailure = redeliveryDelayOnFailure;
     }
 
+
     /**
      * Configures the Camel routes given the previously supplied list of destinations.
      */
     public void configure() {
+
         Preconditions.checkState(destinations != null, CANNOT_CONFIGURE_ROUTES_WITHOUT_QUEUE_DESTINATIONS);
         defineErrorHandling();
         defineRoutes();
@@ -118,7 +119,7 @@ public class CamelRouteBuilder extends RouteBuilder {
         from(ORDERS_ENDPOINT_NAME)
                 .routeId(ORDERS_ROUTE_ID)
                 .unmarshal().json(UNMARSHALLING_LIBRARY, Order.class)
-                .bean(orderSchedulingTaskCreator, SCHEDULING_TASK_CREATION_METHOD_NAME)
+                .bean(orderSchedulingTaskCreator)
                 .to(SCHEDULING_TASKS_ENDPOINT_NAME);
     }
 
@@ -126,7 +127,7 @@ public class CamelRouteBuilder extends RouteBuilder {
         from(MODIFICATIONS_ENDPOINT_NAME)
                 .routeId(MODIFICATIONS_ROUTE_ID)
                 .unmarshal().json(UNMARSHALLING_LIBRARY, Modification.class)
-                .bean(modificationSchedulingTaskCreator, SCHEDULING_TASK_CREATION_METHOD_NAME)
+                .bean(modificationSchedulingTaskCreator)
                 .to(SCHEDULING_TASKS_ENDPOINT_NAME);
     }
 
@@ -134,7 +135,7 @@ public class CamelRouteBuilder extends RouteBuilder {
         from(CANCELS_ENDPOINT_NAME)
                 .routeId(CANCELS_ROUTE_ID)
                 .unmarshal().json(UNMARSHALLING_LIBRARY, Cancel.class)
-                .bean(cancelSchedulingTaskCreator, SCHEDULING_TASK_CREATION_METHOD_NAME)
+                .bean(cancelSchedulingTaskCreator)
                 .to(SCHEDULING_TASKS_ENDPOINT_NAME);
     }
 
@@ -146,7 +147,7 @@ public class CamelRouteBuilder extends RouteBuilder {
     private void defineSchedulingTaskExecutionRoute() {
         from(SCHEDULING_TASKS_ENDPOINT_NAME)
                 .routeId(SHUTDOWN_ROUTE_ID)
-                .bean(schedulingTaskExecutor, SCHEDULING_TASK_EXECUTOR_METHOD_NAME);
+                .bean(schedulingTaskExecutor);
     }
 
     private String[] convertDestinationsToQueueUrls() {
@@ -162,6 +163,18 @@ public class CamelRouteBuilder extends RouteBuilder {
                 .maximumRedeliveries(maximumRedeliveriesOnFailure)
                 .redeliveryDelay(redeliveryDelayOnFailure)
                 .retryAttemptedLogLevel(LoggingLevel.INFO));
+
+        onException(OrderNotFoundException.class)
+                .maximumRedeliveries(maximumRedeliveriesOnFailure)
+                .redeliveryDelay(redeliveryDelayOnFailure);
+
     }
 
+    public int getMaximumRedeliveriesOnFailure() {
+        return maximumRedeliveriesOnFailure;
+    }
+
+    public int getRedeliveryDelayOnFailure() {
+        return redeliveryDelayOnFailure;
+    }
 }

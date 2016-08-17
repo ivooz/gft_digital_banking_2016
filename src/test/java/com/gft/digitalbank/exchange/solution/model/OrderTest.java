@@ -12,6 +12,8 @@ import org.junit.runner.RunWith;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -21,6 +23,10 @@ import static org.junit.Assert.assertThat;
 @RunWith(JUnitParamsRunner.class)
 public class OrderTest {
 
+    public static final String CLIENT = "CLIENT";
+    public static final String PRODUCT = "PR";
+    public static final int PRICE = 5;
+    public static final int AMOUNT = 5;
     private Order sut;
     private PojoFactory pojoFactory;
 
@@ -118,6 +124,38 @@ public class OrderTest {
     @Test
     public void compareTo_whenComparedToItself_returnsZero() {
         assertThat(sut.compareTo(sut), is(equalTo(0)));
+    }
+
+    @Test
+    @Parameters(method = "buyAndSellSides")
+    public void getSetSide_whenSetToValue_thenGetShouldReturnThatValue(Side side) {
+        sut.setSide(side);
+        assertEquals(side,sut.getSide());
+    }
+
+    @Test
+    public void getSetClient_whenSetToValue_thenGetShouldReturnThatValue() {
+        sut.setClient(CLIENT);
+        assertEquals(CLIENT,sut.getClient());
+    }
+
+    @Test
+    public void getSetDetails_whenSetToValue_thenGetShouldReturnThatValue() {
+        Details details = pojoFactory.createDetails();
+        sut.setDetails(details);
+        assertThat(sut.getDetails(),is(sameInstance(details)));
+    }
+
+    @Test
+    public void getPrice_whenSetToValue_thenGetShouldReturnThatValue() {
+        sut.getDetails().setPrice(PRICE);
+        assertEquals(PRICE,sut.getPrice());
+    }
+
+    @Test
+    public void getAmount_whenSetToValue_thenGetShouldReturnThatValue() {
+        sut.getDetails().setAmount(AMOUNT);
+        assertEquals(AMOUNT,sut.getAmount());
     }
 
     private Object buyAndSellSides() {
