@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 public class ProductExchange {
 
     private static final String ENQUEUED_ORDER_SCHEDULED_FOR_DELETION_EXCEPTION_MESSAGE = "Enqueued Order must not be marked as scheduled for deletion.";
-    public static final String SAME_SIDE_ORDERS_EXCEPTION_MESSAGE = "Attempting to match orders of the same type!";
+    private static final String SAME_SIDE_ORDERS_EXCEPTION_MESSAGE = "Attempting to match orders of the same type!";
 
     private final String productName;
     private final ProductTransactionLedger productTransactionLedger;
@@ -70,7 +70,7 @@ public class ProductExchange {
      * Retrieves and Order from the cache by its id.
      * Returns and empty Optional if Order has already been 'fully traded' or cancelled, and consequently removed from cache.
      *
-     * @param id
+     * @param id of the retrieved Order
      * @return Order optional
      */
     public Optional<Order> getById(int id) {
@@ -97,9 +97,11 @@ public class ProductExchange {
      */
     public void enqueueTask(@NonNull ProcessingTask processingTask) {
         processingTaskQueue.enqueueTask(processingTask);
-        synchronized (processingTaskQueue) {
-            if (processingTaskQueue.isFull()) {
-                taskExecutor.enqueueProcessingTask(processingTaskQueue.getNextTaskToExecute().get());
+        if (processingTaskQueue.isFull()) {
+            synchronized (processingTaskQueue) {
+                if (processingTaskQueue.isFull()) {
+                    taskExecutor.enqueueProcessingTask(processingTaskQueue.getNextTaskToExecute().get());
+                }
             }
         }
     }
@@ -110,7 +112,7 @@ public class ProductExchange {
      * For sell Orders the Order with the lowest price is returned.
      *
      * @param side of the retrieved Order
-     * @return
+     * @return top Order from the queue
      */
     public Optional<Order> peekNextOrder(@NonNull Side side) {
         return orderQueue.peekNextOrder(side);
@@ -122,7 +124,7 @@ public class ProductExchange {
      * For sell Orders the Order with the lowest price is returned.
      *
      * @param side of the retrieved Order
-     * @return
+     * @return removed top Order from the queue
      */
     public Optional<Order> pollNextOrder(@NonNull Side side) {
         return orderQueue.pollNextOrder(side);
@@ -156,7 +158,7 @@ public class ProductExchange {
     }
 
     /**
-     * Retieves the current history of Transactions concerning the associated product.
+     * Retrieves the current history of Transactions concerning the associated product.
      *
      * @return the history
      */

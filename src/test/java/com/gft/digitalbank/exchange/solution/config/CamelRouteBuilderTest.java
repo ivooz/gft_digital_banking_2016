@@ -18,7 +18,7 @@ import java.lang.IllegalStateException;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Created by iozi on 2016-08-17.
+ * Created by Ivo Zieliński on 2016-08-17.
  */
 @Category(UnitTest.class)
 @RunWith(MockitoJUnitRunner.class)

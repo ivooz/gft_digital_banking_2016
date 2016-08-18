@@ -17,8 +17,8 @@ import static org.junit.Assert.assertThat;
 @Category(UnitTest.class)
 public class ProductExchangeFactoryTest {
 
-    private final static int BUFFER_SIZE = 5;
-    private final String PRODUCT_NAME = "product";
+    private static final int BUFFER_SIZE = 5;
+    private static final String PRODUCT_NAME = "product";
     private ProductExchangeFactory sut;
 
     @Before

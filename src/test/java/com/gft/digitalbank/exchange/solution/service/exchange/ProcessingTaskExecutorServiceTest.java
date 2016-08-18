@@ -29,11 +29,10 @@ import static org.mockito.Mockito.*;
 public class ProcessingTaskExecutorServiceTest {
 
     private ProcessingTaskExecutorService sut;
-    private ProductExchange productExchange;
 
     @Before
     public void initialize() {
-        productExchange = Mockito.mock(ProductExchange.class);
+        ProductExchange productExchange = Mockito.mock(ProductExchange.class);
         this.sut = new ProcessingTaskExecutorService(productExchange);
     }
 

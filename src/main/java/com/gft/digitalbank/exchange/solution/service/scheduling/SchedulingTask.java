@@ -39,7 +39,7 @@ public abstract class SchedulingTask<E extends TradingMessage> {
     /**
      * Retrieves the TradingMessage to be handled by the scheduled ProcessingTask.
      *
-     * @return
+     * @return the TradingMessage whose processing is to be scheduled
      */
     public E getTradingMessage() {
         return processingTask.getTradingMessage();

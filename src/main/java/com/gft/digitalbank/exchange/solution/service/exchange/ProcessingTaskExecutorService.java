@@ -38,7 +38,7 @@ public class ProcessingTaskExecutorService {
     /**
      * Shuts down and waits till currently executed task terminates.
      *
-     * @throws ExchangeShutdownException
+     * @throws ExchangeShutdownException when InterruptedException is thrown from the ExecutorService
      */
     public void shutdownAndAwaitTermination() throws ExchangeShutdownException {
         taskExecutor.shutdown();

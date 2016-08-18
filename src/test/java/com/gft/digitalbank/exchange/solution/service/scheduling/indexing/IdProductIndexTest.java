@@ -34,7 +34,7 @@ public class IdProductIndexTest {
     }
 
     @Test
-    public void put_whenNamePassed_itShouldBeRetrieveableViaGet() {
+    public void put_whenNamePassed_itShouldBeRetrievableViaGet() {
         sut.put(ID, PRODUCT_NAME);
         Optional<String> productName = sut.get(ID);
         assertThat(productName.get(), is(equalTo(PRODUCT_NAME)));

@@ -7,13 +7,14 @@ import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.After;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by Ivo on 15/08/16.
  */
 public abstract class CamelRouteTest extends CamelTestSupport {
 
-    protected static final String MOCK_ENDPOINT_PREFIX = "mock:";
+    private static final String MOCK_ENDPOINT_PREFIX = "mock:";
 
     protected static final String MOCK_ORDERS_ENDPOINT_NAME =
             MOCK_ENDPOINT_PREFIX + CamelRouteBuilder.ORDERS_ENDPOINT_NAME;
@@ -37,7 +38,7 @@ public abstract class CamelRouteTest extends CamelTestSupport {
     protected RouteBuilder createRouteBuilder() throws Exception {
         Injector injector = Guice.createInjector(new StockExchangeModule());
         CamelRouteBuilder camelRouteBuilder = injector.getInstance(CamelRouteBuilder.class);
-        camelRouteBuilder.setDestinations(Arrays.asList());
+        camelRouteBuilder.setDestinations(Collections.emptyList());
         camelRouteBuilder.setContext(context);
         return camelRouteBuilder;
     }

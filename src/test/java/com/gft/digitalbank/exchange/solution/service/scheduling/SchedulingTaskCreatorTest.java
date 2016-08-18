@@ -24,13 +24,13 @@ import static org.hamcrest.core.Is.is;
 public class SchedulingTaskCreatorTest {
 
     @Inject
-    SchedulingTaskCreator<Order> orderSchedulingTaskCreator;
+    private SchedulingTaskCreator<Order> orderSchedulingTaskCreator;
 
     @Inject
-    SchedulingTaskCreator<Modification> modificationSchedulingTaskCreator;
+    private SchedulingTaskCreator<Modification> modificationSchedulingTaskCreator;
 
     @Inject
-    SchedulingTaskCreator<Cancel> cancelSchedulingTaskCreator;
+    private SchedulingTaskCreator<Cancel> cancelSchedulingTaskCreator;
 
     @Before
     public void initialize() {

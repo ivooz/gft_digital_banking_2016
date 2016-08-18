@@ -20,7 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Singleton
 public class ShutdownNotificationListener {
 
-    public static final String SHUTDOWN_EXCEPTION_MESSAGE = "Encountered problems when shutting down processing session.";
+    private static final String SHUTDOWN_EXCEPTION_MESSAGE = "Encountered problems when shutting down processing session.";
+
     private final ResultsGatherer resultGatherer;
     private final ProcessingFinisher processingFinisher;
 
@@ -59,7 +60,7 @@ public class ShutdownNotificationListener {
     /**
      * Sets the ProcessingListener to which the processing results are passed after the shutdown procedure.
      *
-     * @param processingListener
+     * @param processingListener which will be notified of the ShutdownNotification message event
      */
     public void setProcessingListener(@NonNull ProcessingListener processingListener) {
         this.processingListener = processingListener;
@@ -69,7 +70,7 @@ public class ShutdownNotificationListener {
      * Lets the ProcessingMonitor know how many brokers there are, so it can start the shutdown procedure after a specific
      * amount of ShutdownNotifications has been received.
      *
-     * @param brokerCount
+     * @param brokerCount which is used to check wheter all brokers were closed
      */
     public void setBrokerCount(int brokerCount) {
         this.brokerCount = new AtomicInteger(brokerCount);

@@ -2,7 +2,7 @@ package com.gft.digitalbank.exchange.solution.service.monitoring;
 
 import com.gft.digitalbank.exchange.solution.service.exchange.ExchangeShutdownException;
 import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.ProductExchangeIndex;
-import com.gft.digitalbank.exchange.solution.util.OptionalException;
+import com.gft.digitalbank.exchange.solution.util.ExceptionOptional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -28,19 +28,19 @@ public class TasksExecutionFinisher {
      * Shuts down ExecutorServices and initiates the processing of all the outstanding ProcessingTasks
      * from the ProductExchange ProcessingTasksQueues.
      *
-     * @return list of exceptions that occured during the execution
+     * @return list of exceptions that occurred during the execution
      */
     public List<Exception> finishAllTasks() {
         return productExchangeIndex.getAllExchanges().parallelStream()
                 .map(productExchange -> {
                     try {
                         productExchange.executeRemainingTasksAndShutDown();
-                        return OptionalException.empty();
+                        return ExceptionOptional.empty();
                     } catch (ExchangeShutdownException ex) {
-                        return OptionalException.of(ex);
+                        return ExceptionOptional.of(ex);
                     }
-                }).filter(OptionalException::isPresent)
-                .map(OptionalException::get)
+                }).filter(ExceptionOptional::isPresent)
+                .map(ExceptionOptional::get)
                 .collect(Collectors.toList());
     }
 }

@@ -42,7 +42,7 @@ public class ProcessingTaskQueue {
      * Returns the next Optional ProcessingTask from the queue according to the timestamp of the TradingMessage they wrap.
      * The task is removed from the queue.
      *
-     * @return
+     * @return the next ProcessingTask that should be executed
      */
     public Optional<ProcessingTask> getNextTaskToExecute() {
         return Optional.ofNullable(tasksToExecute.poll());

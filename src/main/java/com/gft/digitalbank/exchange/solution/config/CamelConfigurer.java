@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Responsible for setting up Camel components and routes
  * <p>
- * Created by iozi on 2016-08-11.
+ * Created by Ivo Zieliński on 2016-08-11.
  */
 @Slf4j
 @Singleton
@@ -25,7 +25,7 @@ public class CamelConfigurer {
 
     private static final String MQ_COMPONENT_NAME = "activemq";
     private static final String UNABLE_TO_ADD_CAMEL_ROUTES_EXCEPTION_MESSAGE = "Unable to add Camel routes";
-    public static final String UNABLE_TO_START_CAMEL_CONTEXT_EXCEPTION_MESSAGE = "Unable to start Camel context";
+    private static final String UNABLE_TO_START_CAMEL_CONTEXT_EXCEPTION_MESSAGE = "Unable to start Camel context";
 
     private final CamelContext camelContext;
     private final CamelRouteBuilder camelRouteBuilder;
@@ -46,7 +46,7 @@ public class CamelConfigurer {
      *
      * @param destinations AMQ queue names
      * @param brokerURL    for the AMQ connection
-     * @throws StockExchangeStartupException
+     * @throws StockExchangeStartupException when there are problems with starting Camel
      */
     public void configure(@NonNull List<String> destinations, @NonNull String brokerURL) throws StockExchangeStartupException {
         JmsComponent activeMQComponent = ActiveMQComponent.activeMQComponent(brokerURL);
@@ -75,7 +75,7 @@ public class CamelConfigurer {
     /**
      * Starts cCamel context
      *
-     * @throws StockExchangeStartupException
+     * @throws StockExchangeStartupException when there is a problem with starting Camel
      */
     public void start() throws StockExchangeStartupException {
         try {

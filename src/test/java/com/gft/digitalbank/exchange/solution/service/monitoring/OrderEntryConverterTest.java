@@ -13,7 +13,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
- * Created by iozi on 2016-08-10.
+ * Created by Ivo Zieliński on 2016-08-10.
  */
 @Category({UnitTest.class})
 public class OrderEntryConverterTest {

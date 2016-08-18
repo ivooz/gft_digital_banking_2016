@@ -18,10 +18,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertTrue;
@@ -33,7 +30,7 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by iozi on 2016-08-16.
+ * Created by Ivo Zieliński on 2016-08-16.
  */
 @RunWith(JUnitParamsRunner.class)
 @Category(UnitTest.class)
@@ -43,20 +40,19 @@ public class ResultsGathererTest {
 
     private ResultsGatherer sut;
     private ProductExchangeIndex productExchangeIndex;
-    private OrderEntryConverter orderEntryConverter;
     private PojoFactory pojoFactory;
 
     @Before
     public void initialize() {
         productExchangeIndex = Mockito.mock(ProductExchangeIndex.class);
-        orderEntryConverter = new OrderEntryConverter();
+        OrderEntryConverter orderEntryConverter = new OrderEntryConverter();
         sut = new ResultsGatherer(productExchangeIndex, orderEntryConverter);
         pojoFactory = new PojoFactory();
     }
 
     @Test
     public void gatherResults_whenNoProductExchanges_thenSolutionResultsShouldBeEmpty() {
-        when(productExchangeIndex.getAllExchanges()).thenReturn(Arrays.asList());
+        when(productExchangeIndex.getAllExchanges()).thenReturn(Collections.emptyList());
         SolutionResult solutionResult = sut.gatherResults();
         assertThat(solutionResult.getOrderBooks(), is(empty()));
         assertThat(solutionResult.getTransactions(), is(empty()));
@@ -65,7 +61,7 @@ public class ResultsGathererTest {
     @Test
     public void gatherResults_whenProductExchangesHaveNoTransactionsAndOrders_thenSolutionResultsShouldBeEmpty() {
         ProductExchange productExchange = Mockito.mock(ProductExchange.class);
-        when(productExchange.getTransactions()).thenReturn(Arrays.asList());
+        when(productExchange.getTransactions()).thenReturn(Collections.emptyList());
         SolutionResult solutionResult = sut.gatherResults();
         assertThat(solutionResult.getOrderBooks(), is(empty()));
         assertThat(solutionResult.getTransactions(), is(empty()));
@@ -75,8 +71,8 @@ public class ResultsGathererTest {
     @Parameters(method = "orderCountsAndSides")
     public void gatherResults_whenProductExchangeReturnsManyOrders_theyShouldHaveIdEqualToTheirPositionInQueueStartingFromOne(int orderCountBuy, int orderCountSell) {
         ProductExchange productExchange = Mockito.mock(ProductExchange.class);
-        when(productExchangeIndex.getAllExchanges()).thenReturn(Arrays.asList(productExchange));
-        when(productExchange.getTransactions()).thenReturn(Arrays.asList());
+        when(productExchangeIndex.getAllExchanges()).thenReturn(Collections.singletonList(productExchange));
+        when(productExchange.getTransactions()).thenReturn(Collections.emptyList());
         List<Order> buyOrders = mockTradingOrders(orderCountBuy, productExchange, Side.BUY);
         List<Order> sellOrders = mockTradingOrders(orderCountSell, productExchange, Side.SELL);
         when(productExchange.getProductName()).thenReturn(PRODUCT_NAME);
@@ -99,7 +95,7 @@ public class ResultsGathererTest {
         when(productExchange.getProductName()).thenReturn(PRODUCT_NAME);
         when(productExchange.getTransactions()).thenReturn(transactions);
         when(productExchange.pollNextOrder(anyObject())).thenReturn(Optional.empty());
-        when(productExchangeIndex.getAllExchanges()).thenReturn(Arrays.asList(productExchange));
+        when(productExchangeIndex.getAllExchanges()).thenReturn(Collections.singletonList(productExchange));
         SolutionResult solutionResult = sut.gatherResults();
         assertThat(solutionResult.getTransactions().size(), is(equalTo(transactions.size())));
     }
@@ -125,7 +121,7 @@ public class ResultsGathererTest {
     }
 
     private boolean orderEqualsOrderEntry(Order order, OrderEntry orderEntry) {
-        if (order.getBroker() != orderEntry.getBroker()) {
+        if (!order.getBroker().equals(orderEntry.getBroker())) {
             return false;
         }
         if (order.getDetails().getAmount() != orderEntry.getAmount()) {
@@ -134,7 +130,7 @@ public class ResultsGathererTest {
         if (order.getDetails().getPrice() != orderEntry.getPrice()) {
             return false;
         }
-        if (order.getClient() != orderEntry.getClient()) {
+        if (!order.getClient().equals(orderEntry.getClient())) {
             return false;
         }
         return true;

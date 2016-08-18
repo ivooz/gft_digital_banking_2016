@@ -4,6 +4,7 @@ import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 import com.google.common.base.Preconditions;
 import com.google.inject.assistedinject.Assisted;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +19,6 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
 
     private static final String PRODUCT_EXCHANGE_NOT_SET_EXCEPTION_MESSAGE =
             "Cannot process TradingMessage without the ProductExchange!";
-    public static final String CANNOT_PROCESS_TASK_EXCEPTION_MESSAGE = "Cannot properly conclude the processing task.";
 
     private final TradingMessageProcessor<E> tradingMessageProcessor;
     private final E tradingMessage;
@@ -51,7 +51,7 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
      * timestamp (earlier) have priority.
      *
      * @param otherProcessingTask to compare against
-     * @return
+     * @return the ordering
      */
     @Override
     public int compareTo(@NonNull ProcessingTask otherProcessingTask) {
@@ -65,9 +65,24 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
      * Sets the ProductExchange to apply the TradingMessage against. This cannot be done during the ProcessingTask
      * creation as it is not always immediately known to which ProductExchange the ProcessingTask pertains.
      *
-     * @param productExchange
+     * @param productExchange that the task will be executed against
      */
     public void setProductExchange(@NonNull ProductExchange productExchange) {
         this.productExchange = productExchange;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProcessingTask)) return false;
+
+        ProcessingTask<?> that = (ProcessingTask<?>) o;
+
+        return tradingMessage.equals(that.tradingMessage);
+    }
+
+    @Override
+    public int hashCode() {
+        return tradingMessage.hashCode();
     }
 }

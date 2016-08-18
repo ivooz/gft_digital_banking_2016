@@ -28,7 +28,7 @@ public class OrderQueue {
      * If the retrieved order has been marked for deletion by a Cancel or has been 'fully traded', it will be ignored
      * and the next Order will be retrieved.
      *
-     * @param side
+     * @param side of the queue to poll
      * @return the top Order
      */
     public Optional<Order> pollNextOrder(@NonNull Side side) {
@@ -49,7 +49,7 @@ public class OrderQueue {
      * If the retrieved order has been marked for deletion by a Cancel or has been 'fully traded', it will be ignored
      * and the next Order will be peeked.
      *
-     * @param side
+     * @param side of the queue to peek
      * @return the top Order
      */
     public Optional<Order> peekNextOrder(@NonNull Side side) {
@@ -77,15 +77,15 @@ public class OrderQueue {
     }
 
     private Optional<Order> peekOrder(Side side) {
-        return applyToQueue(side, queue -> queue.peek());
+        return applyToQueue(side, PriorityQueue::peek);
     }
 
     private Optional<Order> pollOrder(Side side) {
-        return applyToQueue(side, queue -> queue.poll());
+        return applyToQueue(side, PriorityQueue::poll);
     }
 
     private void discardTopOrder(Side side) {
-        consumeQueue(side, queue -> queue.poll());
+        consumeQueue(side, PriorityQueue::poll);
     }
 
     private Optional<Order> applyToQueue(Side side, Function<PriorityQueue<Order>, Order> function) {

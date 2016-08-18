@@ -11,7 +11,7 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 /**
- * Created by iozi on 2016-08-11.
+ * Created by Ivo Zieliński on 2016-08-11.
  */
 @Category(UnitTest.class)
 public class SideTest {

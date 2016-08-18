@@ -10,21 +10,20 @@ import org.junit.experimental.categories.Category;
 import static org.junit.Assert.*;
 
 /**
- * Created by iozi on 2016-08-17.
+ * Created by Ivo Zieliński on 2016-08-17.
  */
 @Category(UnitTest.class)
 public class ModificationTest {
 
-    public static final int MODIFIED_ORDER_ID = 5;
-    public static final int PRICE = 5;
-    public static final int AMOUNT = 5;
+    private static final int MODIFIED_ORDER_ID = 5;
+    private static final int PRICE = 5;
+    private static final int AMOUNT = 5;
 
     private Modification sut;
-    private PojoFactory pojoFactory;
 
     @Before
     public void initialize() {
-        pojoFactory = new PojoFactory();
+        PojoFactory pojoFactory = new PojoFactory();
         sut = pojoFactory.createModification(PojoFactory.MODIFIED_ORDER_ID, AMOUNT, PRICE);
     }
 

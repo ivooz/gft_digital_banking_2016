@@ -8,12 +8,12 @@ import org.junit.experimental.categories.Category;
 import static org.junit.Assert.*;
 
 /**
- * Created by iozi on 2016-08-17.
+ * Created by Ivo Zieliński on 2016-08-17.
  */
 @Category(UnitTest.class)
 public class CancelTest {
 
-    public static final int ID = 5;
+    private static final int ID = 5;
     private Cancel sut;
 
     @Before

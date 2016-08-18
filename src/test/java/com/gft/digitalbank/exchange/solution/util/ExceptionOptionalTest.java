@@ -9,28 +9,28 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 /**
- * Created by iozi on 2016-08-16.
+ * Created by Ivo Zieliński on 2016-08-16.
  */
 @Category(UnitTest.class)
-public class OptionalExceptionTest {
+public class ExceptionOptionalTest {
 
 
     @Test
     public void empty_whenCreatedViaThisMethod_shouldHaveNotExceptionPresent() {
-        OptionalException optionalException = OptionalException.empty();
-        assertFalse(optionalException.isPresent());
+        ExceptionOptional exceptionOptional = ExceptionOptional.empty();
+        assertFalse(exceptionOptional.isPresent());
     }
 
     @Test
     public void of_whenPassedAnException_shouldHaveNotExceptionPresent() {
         Exception exception = new Exception();
-        OptionalException optionalException = OptionalException.of(exception);
-        assertThat(optionalException.get(),is(sameInstance(exception)));
+        ExceptionOptional exceptionOptional = ExceptionOptional.of(exception);
+        assertThat(exceptionOptional.get(),is(sameInstance(exception)));
     }
 
     @Test(expected = NullPointerException.class)
     public void of_whenPassedNull_shouldThrowNullPointerException() {
-        OptionalException.of(null);
+        ExceptionOptional.of(null);
     }
 
 }

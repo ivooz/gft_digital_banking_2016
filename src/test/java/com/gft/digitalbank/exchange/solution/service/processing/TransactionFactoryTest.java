@@ -13,13 +13,14 @@ import org.mockito.Mockito;
 import static org.junit.Assert.*;
 
 /**
- * Created by iozi on 2016-08-17.
+ * Created by Ivo Zieliński on 2016-08-17.
  */
 @Category(UnitTest.class)
 public class TransactionFactoryTest {
 
-    public static final int AMOUNT_TRADED = 1;
-    public static final int ID = 1;
+    private static final int AMOUNT_TRADED = 1;
+    private static final int ID = 1;
+
     private TransactionFactory sut;
     private PojoFactory pojoFactory;
 

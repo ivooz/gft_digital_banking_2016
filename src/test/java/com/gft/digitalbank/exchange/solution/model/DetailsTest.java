@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
- * Created by iozi on 2016-08-11.
+ * Created by Ivo Zieliński on 2016-08-11.
  */
 @Category(UnitTest.class)
 public class DetailsTest {
@@ -19,11 +19,10 @@ public class DetailsTest {
     private static final int AMOUNT = 5;
     private static final int PRICE = 5;
     private Details sut;
-    private PojoFactory pojoFactory;
 
     @Before
     public void initialize() {
-        pojoFactory = new PojoFactory();
+        PojoFactory pojoFactory = new PojoFactory();
         this.sut = pojoFactory.createDetails();
     }
 

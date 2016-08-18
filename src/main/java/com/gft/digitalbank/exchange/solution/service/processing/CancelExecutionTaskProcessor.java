@@ -9,7 +9,7 @@ import lombok.NonNull;
 import java.util.Optional;
 
 /**
- * @inheritDoc Created by iozi on 2016-06-30.
+ * @inheritDoc Created by Ivo Zieliński on 2016-06-30.
  */
 @Singleton
 public class CancelExecutionTaskProcessor implements TradingMessageProcessor<Cancel> {

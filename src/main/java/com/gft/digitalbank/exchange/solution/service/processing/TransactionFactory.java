@@ -19,7 +19,7 @@ public class TransactionFactory {
      * Creates a Transaction from two Orders. Orders are not modified.
      *
      * @param processedOrder that is being handled
-     * @param orderFromQueue
+     * @param orderFromQueue that was matched
      * @param amountTraded   of the product
      * @param id             of the Transaction
      * @return the resulting Transaction

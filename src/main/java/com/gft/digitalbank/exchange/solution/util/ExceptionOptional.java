@@ -10,27 +10,27 @@ import java.util.Optional;
  * <p>
  * Created by Ivo Zieliński on 2016-08-02.
  */
-public class OptionalException {
+public class ExceptionOptional {
 
     private Optional<Exception> exception;
 
-    private OptionalException(Optional<Exception> exception) {
+    private ExceptionOptional(Optional<Exception> exception) {
         this.exception = exception;
     }
 
     /**
      * @return an empty Optional
      */
-    public static OptionalException empty() {
-        return new OptionalException(Optional.empty());
+    public static ExceptionOptional empty() {
+        return new ExceptionOptional(Optional.empty());
     }
 
     /**
      * @param exception to be wrapped
      * @return Exception wrapped in the Optional
      */
-    public static OptionalException of(@NonNull Exception exception) {
-        return new OptionalException(Optional.of(exception));
+    public static ExceptionOptional of(@NonNull Exception exception) {
+        return new ExceptionOptional(Optional.of(exception));
     }
 
     /**

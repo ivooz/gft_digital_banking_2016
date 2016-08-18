@@ -1,6 +1,7 @@
 package com.gft.digitalbank.exchange.solution.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 /**
@@ -8,6 +9,7 @@ import lombok.NonNull;
  * <p>
  * Created by Ivo Zieliński on 2016-06-27.
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class Modification extends TradingMessage {
 

@@ -30,8 +30,8 @@ public class SchedulingTaskCreator<E extends TradingMessage> {
     /**
      * Creates a SchedulingTask  for a TradingMessage's ProcessingTask.
      *
-     * @param message
-     * @return
+     * @param message whose processing is to be scheduled by the created task
+     * @return SchedulingTask
      */
     @Handler
     public SchedulingTask<E> createSchedulingTask(@NonNull E message) {

@@ -22,19 +22,19 @@ public class CamelDynamicRoutingTest extends CamelRouteTest {
     private final ResourceLoader resourceLoader = new ResourceLoader();
 
     @Produce(uri = CamelRouteBuilder.AMQ_MESSAGE_ENDPOINT)
-    protected ProducerTemplate template;
+    private ProducerTemplate template;
 
     @EndpointInject(uri = MOCK_ORDERS_ENDPOINT_NAME)
-    protected MockEndpoint ordersEndpoint;
+    private MockEndpoint ordersEndpoint;
 
     @EndpointInject(uri = MOCK_CANCELS_ENDPOINT_NAME)
-    protected MockEndpoint cancelsEndpoint;
+    private MockEndpoint cancelsEndpoint;
 
     @EndpointInject(uri = MOCK_MODIFICATIONS_ENDPOINT_NAME)
-    protected MockEndpoint modificationsEndpoint;
+    private MockEndpoint modificationsEndpoint;
 
     @EndpointInject(uri = MOCK_SHUTDOWN_NOTIFICATIONS_ENDPOINT_NAME)
-    protected MockEndpoint shutdownNotificationsEndpoint;
+    private MockEndpoint shutdownNotificationsEndpoint;
 
     @Before
     @Override

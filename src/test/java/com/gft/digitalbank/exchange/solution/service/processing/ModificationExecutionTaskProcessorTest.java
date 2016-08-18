@@ -30,7 +30,6 @@ public class ModificationExecutionTaskProcessorTest {
     private static final String OTHER_BROKER = "broker2";
 
     private ModificationExecutionTaskProcessor sut;
-    private PojoFactory pojoFactory;
     private Order orderToModify;
 
     @Mock
@@ -46,7 +45,7 @@ public class ModificationExecutionTaskProcessorTest {
     @Before
     public void initialize() {
         sut = new ModificationExecutionTaskProcessor(orderExecutionTaskProcessor);
-        pojoFactory = new PojoFactory();
+        PojoFactory pojoFactory = new PojoFactory();
         orderToModify = pojoFactory.createNextOrder();
         orderToModify.setTimestamp(TIMESTAMP);
         orderToModify.setBroker(BROKER);

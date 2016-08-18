@@ -2,6 +2,7 @@ package com.gft.digitalbank.exchange.solution.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 /**
@@ -9,6 +10,7 @@ import lombok.NonNull;
  * <p>
  * Created by Ivo Zieliński on 2016-06-27.
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class Order extends TradingMessage implements Comparable<Order> {
 
@@ -40,7 +42,7 @@ public class Order extends TradingMessage implements Comparable<Order> {
     /**
      * Copying constructor.
      *
-     * @param order
+     * @param order to be copied
      */
     public Order(Order order) {
         super(order.getId(), order.getTimestamp(), order.getBroker());
@@ -62,7 +64,7 @@ public class Order extends TradingMessage implements Comparable<Order> {
     /**
      * The amount to buy/sell has been fulfilled.
      *
-     * @return
+     * @return if amount equals 0
      */
     public boolean isFullyTraded() {
         return getAmount() == 0;
@@ -73,8 +75,8 @@ public class Order extends TradingMessage implements Comparable<Order> {
      * A sell order with lower price has precedence.
      * If prices are equal, the one with smaller timestamp has precedence.
      *
-     * @param otherOrder
-     * @return
+     * @param otherOrder to be compared
+     * @return the ordering
      */
     @Override
     public int compareTo(@NonNull Order otherOrder) {

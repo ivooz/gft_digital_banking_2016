@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Matchers.anyObject;
@@ -20,13 +21,13 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 
 /**
- * Created by iozi on 2016-08-16.
+ * Created by Ivo Zieliński on 2016-08-16.
  */
 @Category(UnitTest.class)
 @RunWith(MockitoJUnitRunner.class)
 public class CamelConfigurerTest {
 
-    public static final String BROKER_URL = "vm://localhost";
+    private static final String BROKER_URL = "vm://localhost";
     private CamelConfigurer sut;
 
     @Mock
@@ -53,7 +54,7 @@ public class CamelConfigurerTest {
 
     @Test(expected = NullPointerException.class)
     public void configure_whenPasseNullBrokerUrl_shouldThrowNullPointerException() throws Exception {
-        sut.configure(Arrays.asList(),null);
+        sut.configure(Collections.emptyList(),null);
     }
 
     @Test(expected = NullPointerException.class)
@@ -63,7 +64,7 @@ public class CamelConfigurerTest {
 
     @Test
     public void configure_whenDestinationsAndBrokerUrlPassed_shouldAddAMQComponentAndRoutesAndBrokerCount() throws Exception{
-        List<String> destinations = Arrays.asList();
+        List<String> destinations = Collections.emptyList();
         sut.configure(destinations, BROKER_URL);
         Mockito.verify(camelContext,times(1)).addComponent(anyObject(),anyObject());
         Mockito.verify(shutdownNotificationListener,times(1)).setBrokerCount(destinations.size());
@@ -73,7 +74,7 @@ public class CamelConfigurerTest {
     @Test(expected = StockExchangeStartupException.class)
     public void configure_whenCamelContextThrowsExceptionDuringAddingRoutes_shouldWrapAndRethrow() throws Exception{
         doThrow(Exception.class).when(camelContext).addRoutes(anyObject());
-        sut.configure(Arrays.asList(), BROKER_URL);
+        sut.configure(Collections.emptyList(), BROKER_URL);
     }
 
     @Test

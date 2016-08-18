@@ -30,8 +30,8 @@ public class ProductExchangeIndex {
     /**
      * Retrieves the ProductExchange with the given product name
      *
-     * @param productName
-     * @return
+     * @param productName of the ProductExchange to retrieve
+     * @return ProductExchange with the given name
      */
     public ProductExchange getProductExchange(@NonNull String productName) {
         ProductExchange productExchange = productExchangeMap.get(productName);

@@ -3,7 +3,7 @@ package com.gft.digitalbank.exchange.solution.config;
 /**
  * Signifies StockExchange startup problems.
  * <p>
- * Created by iozi on 2016-08-11.
+ * Created by Ivo Zieliński on 2016-08-11.
  */
 public class StockExchangeStartupException extends Exception {
 

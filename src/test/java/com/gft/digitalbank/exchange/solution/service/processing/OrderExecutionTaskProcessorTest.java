@@ -39,13 +39,11 @@ public class OrderExecutionTaskProcessorTest {
     private ProductExchange productExchange;
     private PojoFactory pojoFactory;
 
-    private ProductExchangeFactory productExchangeFactory;
-
     @Before
     public void initialize() {
         sut = new OrderExecutionTaskProcessor();
         pojoFactory = new PojoFactory();
-        productExchangeFactory = new ProductExchangeFactory(BUFFER_SIZE);
+        ProductExchangeFactory productExchangeFactory = new ProductExchangeFactory(BUFFER_SIZE);
         productExchange = productExchangeFactory.createProductExchange(PRODUCT_NAME);
     }
 
@@ -72,21 +70,19 @@ public class OrderExecutionTaskProcessorTest {
                 .range(0, transactionCount)
                 .mapToObj(index -> pojoFactory.createIdenticalBuyAndSellOrders())
                 .collect(Collectors.toList());
-        matchingOrdersList.stream()
-                .forEach(matchingOrderPair -> {
-                    Order processedOrder = matchingOrderPair.getKey();
-                    Order enqueuedOrder = matchingOrderPair.getValue();
-                    productExchange.enqueueOrder(enqueuedOrder);
-                    sut.processTradingMessage(processedOrder, productExchange);
+        matchingOrdersList.forEach(matchingOrderPair -> {
+            Order processedOrder = matchingOrderPair.getKey();
+            Order enqueuedOrder = matchingOrderPair.getValue();
+            productExchange.enqueueOrder(enqueuedOrder);
+            sut.processTradingMessage(processedOrder, productExchange);
 
-                });
-        matchingOrdersList.stream()
-                .forEach(matchingOrderPair -> {
-                    Order processedOrder = matchingOrderPair.getKey();
-                    Order enqueuedOrder = matchingOrderPair.getValue();
-                    assertThat(enqueuedOrder.isFullyTraded(), is(equalTo(true)));
-                    assertThat(processedOrder.isFullyTraded(), is(equalTo(true)));
-                });
+        });
+        matchingOrdersList.forEach(matchingOrderPair -> {
+            Order processedOrder = matchingOrderPair.getKey();
+            Order enqueuedOrder = matchingOrderPair.getValue();
+            assertThat(enqueuedOrder.isFullyTraded(), is(equalTo(true)));
+            assertThat(processedOrder.isFullyTraded(), is(equalTo(true)));
+        });
         Optional<Order> orderInQueue = productExchange.peekNextOrder(Side.BUY);
         assertThat(orderInQueue, is(sameInstance(Optional.empty())));
         orderInQueue = productExchange.peekNextOrder(Side.SELL);

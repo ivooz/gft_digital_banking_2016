@@ -24,7 +24,7 @@ public class OrderCache {
     /**
      * Adds the order to the cache. It can be later retrieved by its id.
      *
-     * @param order
+     * @param order to be added
      */
     public void add(@NonNull Order order) {
         orderCache.put(order.getId(), order);
@@ -43,7 +43,7 @@ public class OrderCache {
     /**
      * Retrieves the Order from the cache by its id.
      *
-     * @param id
+     * @param id of the retrieved Order
      * @return cached Order
      */
     public Optional<Order> getById(int id) {

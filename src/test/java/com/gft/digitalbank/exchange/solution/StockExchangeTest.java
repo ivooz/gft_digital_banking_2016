@@ -15,6 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by iozi on 2016-08-17.
+ * Created by Ivo Zieliński on 2016-08-17.
  */
 @Category(UnitTest.class)
 @RunWith(MockitoJUnitRunner.class)
@@ -64,7 +65,7 @@ public class StockExchangeTest {
 
     @Test
     public void setDestinations_whenPassedListOfDestinations_shouldPassItToCamelConfigurer()  {
-        List<String> destinations = Arrays.asList();
+        List<String> destinations = Collections.emptyList();
         sut.setDestinations(destinations);
         try {
             Mockito.verify(camelConfigurer,times(1)).configure(eq(destinations),anyObject());
@@ -75,7 +76,7 @@ public class StockExchangeTest {
 
     @Test
     public void setDestinations_whenCamelConfigurerThrowsException_itShouldNotBeRethrown() throws StockExchangeStartupException {
-        List<String> destinations = Arrays.asList();
+        List<String> destinations = Collections.emptyList();
         doThrow(StockExchangeStartupException.class)
                 .when(camelConfigurer).configure(eq(destinations),anyObject());
         sut.setDestinations(destinations);

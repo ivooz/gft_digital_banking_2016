@@ -23,7 +23,7 @@ public class ProcessingTaskFactory<E extends TradingMessage> {
 
     /**
      * @param message for the ProcessingTask to execute
-     * @return
+     * @return the created ProcessingTask
      */
     @Provides
     public ProcessingTask<E> createProcessingTask(@NonNull E message) {

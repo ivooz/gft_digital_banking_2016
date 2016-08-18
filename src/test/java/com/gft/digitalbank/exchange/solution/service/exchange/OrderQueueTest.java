@@ -141,9 +141,8 @@ public class OrderQueueTest {
     @Test
     public void pollNextOrder_whenBuyOrdersWithTheSamePriceAdded_returnsTheOneWithLowestTimestamp
             (Side side, List<Pair<Integer, Integer>> priceAndTimestampPairs) {
-        priceAndTimestampPairs.stream()
-                .forEach(pair -> sut.pushOrder(pojoFactory
-                        .buildOrderWithTimestampPriceAndSide(side, pair.getKey(), pair.getValue())));
+        priceAndTimestampPairs.forEach(pair -> sut.pushOrder(pojoFactory
+                .buildOrderWithTimestampPriceAndSide(side, pair.getKey(), pair.getValue())));
         int minTimestamp = priceAndTimestampPairs.stream().mapToInt(Pair::getKey)
                 .min().getAsInt();
         Order order = sut.pollNextOrder(side).get();

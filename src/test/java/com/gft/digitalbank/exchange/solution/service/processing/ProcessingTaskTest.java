@@ -96,8 +96,8 @@ public class ProcessingTaskTest {
         Order lowerPriorityOrder = Mockito.mock(Order.class);
         when(lowerPriorityOrder.getTimestamp()).thenReturn(2L);
         when(order.getTimestamp()).thenReturn(1L);
-        ProcessingTask<Order> lowerPriortyTask = new ProcessingTask<>(tradingMessageProcessor, lowerPriorityOrder);
-        int comparison = sut.compareTo(lowerPriortyTask);
+        ProcessingTask<Order> lowerPriorityTask = new ProcessingTask<>(tradingMessageProcessor, lowerPriorityOrder);
+        int comparison = sut.compareTo(lowerPriorityTask);
         assertThat(comparison, is(lessThan(0)));
     }
 

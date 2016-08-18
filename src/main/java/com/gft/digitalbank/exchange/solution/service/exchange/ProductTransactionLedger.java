@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class ProductTransactionLedger {
 
-    public static final String SAME_ORDER_TYPE_EXCEPTION_MESSAGE = "Cannot transact Orders of the same type!";
+    private static final String SAME_ORDER_TYPE_EXCEPTION_MESSAGE = "Cannot transact Orders of the same type!";
     private final TransactionFactory transactionFactory = new TransactionFactory();
     private final List<Transaction> transactions = new ArrayList<>();
 

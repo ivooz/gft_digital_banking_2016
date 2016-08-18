@@ -16,10 +16,13 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
+import org.mockito.internal.util.reflection.Whitebox;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.fail;
@@ -114,14 +117,13 @@ public class ProductExchangeTest {
         } catch (ExchangeShutdownException e) {
             fail(e.getMessage());
         }
-        processingTasksToEnqueue.stream()
-                .forEach(processingTask -> Mockito.verify(processingTask).run());
+        processingTasksToEnqueue.forEach(processingTask -> Mockito.verify(processingTask).run());
     }
 
     @Test
     @Parameters(method = "taskCounts")
     public void enqueueTask_whenMultipleTasksAddedConcurrently_onlyHighPriorityTasksShouldBeExecutedWhenBufferOverflows
-            (int processingTaskCount) {
+            (int processingTaskCount) throws InterruptedException {
         int tasksThatShouldBeExecuted = Math.max(0, processingTaskCount - (PROCESSING_TASK_BUFFER_SIZE - 1));
         List<ProcessingTask> lowPriorityTasks = new ArrayList<>();
         IntStream.range(0, processingTaskCount - tasksThatShouldBeExecuted)
@@ -137,14 +139,17 @@ public class ProductExchangeTest {
                     when(mock.compareTo(Matchers.anyObject())).thenReturn(-1);
                     highPriorityTasks.add(mock);
                 });
-        lowPriorityTasks.parallelStream().forEach(task -> sut.enqueueTask(task));
-        highPriorityTasks.parallelStream().forEach(task -> sut.enqueueTask(task));
-        try {
-            //Need to wait for task execution
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        lowPriorityTasks.parallelStream().forEach(task ->
+                sut.enqueueTask(task)
+        );
+        highPriorityTasks.parallelStream().forEach(task ->
+                sut.enqueueTask(task)
+        );
+        //Make sure the task executor finishes all outstanding tasks
+        ProcessingTaskExecutorService processingTaskExecutorService = (ProcessingTaskExecutorService) Whitebox.getInternalState(sut, "taskExecutor");
+        ThreadPoolExecutor taskExecutor = (ThreadPoolExecutor) Whitebox.getInternalState(processingTaskExecutorService, "taskExecutor");
+        taskExecutor.shutdown();
+        taskExecutor.awaitTermination(5, TimeUnit.SECONDS);
         lowPriorityTasks.forEach(processingTask -> Mockito.verify(processingTask, never()).run());
         highPriorityTasks.forEach(processingTask -> Mockito.verify(processingTask).run());
     }

@@ -49,7 +49,6 @@ public class CamelRouteBuilder extends RouteBuilder {
     private static final String SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME = "handleShutdownNotification";
     private static final String CANNOT_CONFIGURE_ROUTES_WITHOUT_QUEUE_DESTINATIONS = "Cannot configure routes without queue destinations.";
 
-
     private final ShutdownNotificationListener shutdownNotificationListener;
     private final SchedulingTaskCreator<Order> orderSchedulingTaskCreator;
     private final SchedulingTaskCreator<Cancel> cancelSchedulingTaskCreator;
@@ -100,7 +99,7 @@ public class CamelRouteBuilder extends RouteBuilder {
         defineSchedulingTaskExecutionRoute();
     }
 
-    public void defineDynamicRouting() {
+    private void defineDynamicRouting() {
         from(AMQ_MESSAGE_ENDPOINT)
                 .routeId(DYNAMIC_ROUTING_ROUTE_ID)
                 .choice()
@@ -158,11 +157,11 @@ public class CamelRouteBuilder extends RouteBuilder {
     }
 
     private void defineErrorHandling() {
-        errorHandler(defaultErrorHandler()
-                .allowRedeliveryWhileStopping(true)
-                .maximumRedeliveries(maximumRedeliveriesOnFailure)
-                .redeliveryDelay(redeliveryDelayOnFailure)
-                .retryAttemptedLogLevel(LoggingLevel.INFO));
+//        errorHandler(defaultErrorHandler()
+//                .allowRedeliveryWhileStopping(true)
+//                .maximumRedeliveries(maximumRedeliveriesOnFailure)
+//                .redeliveryDelay(redeliveryDelayOnFailure)
+//                .retryAttemptedLogLevel(LoggingLevel.INFO));
 
         onException(OrderNotFoundException.class)
                 .maximumRedeliveries(maximumRedeliveriesOnFailure)

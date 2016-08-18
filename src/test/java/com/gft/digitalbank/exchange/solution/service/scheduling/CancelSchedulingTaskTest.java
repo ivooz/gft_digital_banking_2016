@@ -28,8 +28,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CancelSchedulingTaskTest {
 
-    public static final String PRODUCT_NAME = "product";
-    public static final int ORDER_ID = 5;
+    private static final String PRODUCT_NAME = "product";
+    private static final int ORDER_ID = 5;
 
     private CancelSchedulingTask sut;
 

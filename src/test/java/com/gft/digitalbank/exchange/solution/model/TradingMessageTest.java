@@ -9,7 +9,7 @@ import org.junit.experimental.categories.Category;
 import static org.junit.Assert.*;
 
 /**
- * Created by iozi on 2016-08-17.
+ * Created by Ivo Zieliński on 2016-08-17.
  */
 @Category(UnitTest.class)
 public class TradingMessageTest {
@@ -19,11 +19,10 @@ public class TradingMessageTest {
     private static final int TIMESTAMP = 1;
     
     private TradingMessage sut;
-    private PojoFactory pojoFactory;
 
     @Before
     public void initialize() {
-        pojoFactory = new PojoFactory();
+        PojoFactory pojoFactory = new PojoFactory();
         sut = pojoFactory.createOrder();
     }
 

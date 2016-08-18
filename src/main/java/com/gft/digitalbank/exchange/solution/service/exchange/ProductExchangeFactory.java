@@ -23,7 +23,7 @@ public class ProductExchangeFactory {
      * Creates a new ProductExchange object
      *
      * @param productName for the ProductExchange
-     * @return
+     * @return the created ProductExchange
      */
     public ProductExchange createProductExchange(String productName) {
         return new ProductExchange(productName, processingTaskBufferSize);

@@ -7,7 +7,7 @@ import org.apache.camel.CamelContext;
 /**
  * Responsible for finishing processing of TradingMessages. Shuts down all the Camel routes and Threads.
  * <p>
- * Created by iozi on 2016-08-10.
+ * Created by Ivo Zieliński on 2016-08-10.
  */
 @Singleton
 public class ProcessingFinisher {
@@ -27,7 +27,7 @@ public class ProcessingFinisher {
      * Closes all the resources opened and initializes the procedure of finishing all the ProcessingTasks remaining in
      * the buffers.
      *
-     * @throws ProcessingShutdownException
+     * @throws ProcessingShutdownException when there are problems with starting Camel
      */
     public void finishProcessing() throws ProcessingShutdownException {
         try {

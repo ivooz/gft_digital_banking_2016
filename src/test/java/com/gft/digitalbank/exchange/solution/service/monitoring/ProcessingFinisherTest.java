@@ -15,7 +15,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 
 /**
- * Created by iozi on 2016-08-16.
+ * Created by Ivo Zieliński on 2016-08-16.
  */
 @Category(UnitTest.class)
 @RunWith(MockitoJUnitRunner.class)

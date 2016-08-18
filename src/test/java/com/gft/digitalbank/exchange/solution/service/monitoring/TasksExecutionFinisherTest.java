@@ -16,6 +16,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -46,7 +47,7 @@ public class TasksExecutionFinisherTest {
     @Test
     public void finishAllTasks_whenCalled_shouldRetrieveAllProductExchangesAndExecuteProcessFinishingProcedure() {
         ProductExchange productExchange = Mockito.mock(ProductExchange.class);
-        when(productExchangeIndex.getAllExchanges()).thenReturn(Arrays.asList(productExchange));
+        when(productExchangeIndex.getAllExchanges()).thenReturn(Collections.singletonList(productExchange));
         sut.finishAllTasks();
         try {
             Mockito.verify(productExchange, times(1)).executeRemainingTasksAndShutDown();

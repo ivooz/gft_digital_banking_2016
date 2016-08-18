@@ -81,7 +81,7 @@ public class PojoFactory {
         return new Modification(modifiedOrderId, createDetailsWithAmountAndPrice(amount, price));
     }
 
-    public Details createDetailsWithAmountAndPrice(int amount, int price) {
+    private Details createDetailsWithAmountAndPrice(int amount, int price) {
         return Details.builder().amount(amount).price(price).build();
     }
 

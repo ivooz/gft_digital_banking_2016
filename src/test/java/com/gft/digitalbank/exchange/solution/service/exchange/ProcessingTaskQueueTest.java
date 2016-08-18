@@ -96,7 +96,7 @@ public class ProcessingTaskQueueTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void enequeueTask_whenPassedNull_shouldThrowNullPointerException() {
+    public void enqueueTask_whenPassedNull_shouldThrowNullPointerException() {
         sut.enqueueTask(null);
     }
 

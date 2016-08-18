@@ -17,16 +17,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
- * Created by iozi on 2016-08-11.
+ * Created by Ivo Zieliński on 2016-08-11.
  */
 @Category({UnitTest.class})
 @RunWith(JUnitParamsRunner.class)
 public class OrderTest {
 
-    public static final String CLIENT = "CLIENT";
+    private static final String CLIENT = "CLIENT";
     public static final String PRODUCT = "PR";
-    public static final int PRICE = 5;
-    public static final int AMOUNT = 5;
+    private static final int PRICE = 5;
+    private static final int AMOUNT = 5;
     private Order sut;
     private PojoFactory pojoFactory;
 
