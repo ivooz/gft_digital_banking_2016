@@ -1,4 +1,4 @@
-# Digital Bank Solution
+# Digital Banking Solution
 
 This document contains diagrams and component definitions explaining the program architecture.
 
@@ -6,11 +6,11 @@ This document contains diagrams and component definitions explaining the program
 ### Message routing
 
 All incoming messages are processed by Apache Camel.
-![Camel phase 1](https://bytebucket.org/gftcontest2016team35/contest2016team35/raw/master/images/messageRouting1)
+![Camel phase 1](https://bytebucket.org/gftcontest2016team35/contest2016team35/raw/master/images/messageRouting1.png)
 The messages are unmarshalled according to the value of MessageType field of the received json object. Trading message is the wrapped inside ProcessingTask, which in turn is wrapped in SchedulingTask.
-![Wrapping](https://bytebucket.org/gftcontest2016team35/contest2016team35/raw/master/images/messageWrapping)
+![Wrapping](https://bytebucket.org/gftcontest2016team35/contest2016team35/raw/master/images/messageWrapping.png)
 SchedulingTask represents a unit of work associated with routing the message to the ProductExchange of the specific product it refers to.
-![Camel phase 2](https://bytebucket.org/gftcontest2016team35/contest2016team35/raw/master/images/messageRouting2)
+![Camel phase 2](https://bytebucket.org/gftcontest2016team35/contest2016team35/raw/master/images/messageRouting.png)
 
 
 ### Processing Task Scheduling
