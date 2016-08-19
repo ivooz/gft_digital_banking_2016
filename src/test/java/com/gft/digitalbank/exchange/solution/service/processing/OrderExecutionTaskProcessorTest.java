@@ -6,7 +6,7 @@ import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchangeFactory;
-import com.gft.digitalbank.exchange.solution.utils.PojoFactory;
+import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
 import javafx.util.Pair;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -35,14 +35,14 @@ public class OrderExecutionTaskProcessorTest {
     private static final String PRODUCT_NAME = "product";
     private static final int BUFFER_SIZE = 5;
 
-    private OrderExecutionTaskProcessor sut;
+    private OrderProcessor sut;
     private ProductExchange productExchange;
-    private PojoFactory pojoFactory;
+    private OrderPojoFactory orderPojoFactory;
 
     @Before
     public void initialize() {
-        sut = new OrderExecutionTaskProcessor();
-        pojoFactory = new PojoFactory();
+        sut = new OrderProcessor();
+        orderPojoFactory = new OrderPojoFactory();
         ProductExchangeFactory productExchangeFactory = new ProductExchangeFactory(BUFFER_SIZE);
         productExchange = productExchangeFactory.createProductExchange(PRODUCT_NAME);
     }
@@ -54,7 +54,7 @@ public class OrderExecutionTaskProcessorTest {
 
     @Test(expected = NullPointerException.class)
     public void processTradingMessage_whenPassedNullProductExchange_shouldThrowNullPointerException() {
-        sut.processTradingMessage(pojoFactory.createNextOrder(), null);
+        sut.processTradingMessage(orderPojoFactory.createNextOrder(), null);
     }
 
     @Test(expected = NullPointerException.class)
@@ -68,7 +68,7 @@ public class OrderExecutionTaskProcessorTest {
             (int transactionCount) {
         List<Pair<Order, Order>> matchingOrdersList = IntStream
                 .range(0, transactionCount)
-                .mapToObj(index -> pojoFactory.createIdenticalBuyAndSellOrders())
+                .mapToObj(index -> orderPojoFactory.createIdenticalBuyAndSellOrders())
                 .collect(Collectors.toList());
         matchingOrdersList.forEach(matchingOrderPair -> {
             Order processedOrder = matchingOrderPair.getKey();
@@ -94,7 +94,7 @@ public class OrderExecutionTaskProcessorTest {
     @Test
     @Parameters(method = "buySellSides")
     public void processTradingMessage_whenNoMatchingOrderEnqueued_theProcessedOrderShouldBeEnqueued(Side side) {
-        Order processedOrder = pojoFactory.createNextOrderWithSide(side);
+        Order processedOrder = orderPojoFactory.createNextOrderWithSide(side);
         sut.processTradingMessage(processedOrder, productExchange);
         Optional<Order> orderInQueue = productExchange.peekNextOrder(side);
         assertThat(orderInQueue.get(), is(sameInstance(processedOrder)));
@@ -105,17 +105,13 @@ public class OrderExecutionTaskProcessorTest {
     public void processTradingMessage_whenMultipleSmallerMatchingOrderWithOppositeSideEnqueuedAndOrderPassed_thenOnlyOrdersWithAmountsSummingToProcessedOrderAmountShallBeTransacted
             (int enqueuedOrderCount, int enqueuedOrderAmount, int processedOrderAmount, Side processedOrderSide) {
         int expectedTransactionCount = Math.min(processedOrderAmount / enqueuedOrderAmount, enqueuedOrderCount);
-//        if ((expectedTransactionCount * enqueuedOrderAmount) < processedOrderAmount) {
-//            //There shall be one extra transaction partially consuming a queued Order
-//            expectedTransactionCount++;
-//        }
         IntStream.range(0, enqueuedOrderCount)
                 .forEach(value -> {
-                    Order orderToEnqueue = pojoFactory.createNextOrderWithAmountAndSide(enqueuedOrderAmount
+                    Order orderToEnqueue = orderPojoFactory.createNextOrderWithAmountAndSide(enqueuedOrderAmount
                             , processedOrderSide.opposite());
                     productExchange.enqueueOrder(orderToEnqueue);
                 });
-        Order processedOrder = pojoFactory.createNextOrderWithAmountAndSide(processedOrderAmount, processedOrderSide);
+        Order processedOrder = orderPojoFactory.createNextOrderWithAmountAndSide(processedOrderAmount, processedOrderSide);
         sut.processTradingMessage(processedOrder, productExchange);
         List<Transaction> transactions = productExchange.getTransactions();
         assertThat(transactions.size(), is(equalTo(expectedTransactionCount)));
@@ -124,10 +120,9 @@ public class OrderExecutionTaskProcessorTest {
     @Test
     @Parameters(method = "buySellSides")
     public void processTradingMessage_whenNoOrdersEnqueuedButDontMatch_theProcessedOrderShouldBeEnqueued(Side side) {
-        Order processedOrder = pojoFactory.createNextOrderWithSide(side);
-        Order orderInQueue = pojoFactory.createNextOrderWithSide(side.opposite());
-        int orderInQueuePrice = orderInQueue.getPrice();
-        processedOrder.getDetails().setPrice(side == Side.BUY ? orderInQueuePrice - 1 : orderInQueuePrice + 1);
+        int processedOrderPrice = side == Side.BUY ? OrderPojoFactory.DEFAULT_PRICE - 1 : OrderPojoFactory.DEFAULT_PRICE + 1;
+        Order processedOrder = orderPojoFactory.createOrderWithPriceAndSide(side,processedOrderPrice);
+        Order orderInQueue = orderPojoFactory.createNextOrderWithSide(side.opposite());
         productExchange.enqueueOrder(orderInQueue);
         sut.processTradingMessage(processedOrder, productExchange);
         orderInQueue = productExchange.peekNextOrder(side).get();

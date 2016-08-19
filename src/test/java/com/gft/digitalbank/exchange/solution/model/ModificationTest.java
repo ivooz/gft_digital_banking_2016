@@ -1,7 +1,8 @@
 package com.gft.digitalbank.exchange.solution.model;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.utils.PojoFactory;
+import com.gft.digitalbank.exchange.solution.utils.ModificationPojoFactory;
+import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -22,8 +23,8 @@ public class ModificationTest {
 
     @Before
     public void initialize() {
-        PojoFactory pojoFactory = new PojoFactory();
-        sut = pojoFactory.createModification(PojoFactory.MODIFIED_ORDER_ID, AMOUNT, PRICE);
+        ModificationPojoFactory modificationPojoFactory = new ModificationPojoFactory();
+        sut = modificationPojoFactory.createModificationWithModifiedOrderIdAmountAndPrice(OrderPojoFactory.MODIFIED_ORDER_ID, AMOUNT, PRICE);
     }
 
 

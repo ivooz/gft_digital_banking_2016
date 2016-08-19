@@ -21,13 +21,13 @@ import static org.mockito.Mockito.*;
  */
 @Category(UnitTest.class)
 @RunWith(MockitoJUnitRunner.class)
-public class CancelExecutionTaskProcessorTest {
+public class CancelProcessorTest {
 
     private static final int CANCELLED_ORDER_ID = 1;
     private static final String BROKER = "broker";
     private static final String OTHER_BROKER = "broker2";
 
-    private CancelExecutionTaskProcessor sut;
+    private CancelProcessor sut;
 
     @Mock
     private ProductExchange productExchange;
@@ -40,7 +40,7 @@ public class CancelExecutionTaskProcessorTest {
 
     @Before
     public void initialize() {
-        sut = new CancelExecutionTaskProcessor();
+        sut = new CancelProcessor();
     }
 
     @Test(expected = NullPointerException.class)

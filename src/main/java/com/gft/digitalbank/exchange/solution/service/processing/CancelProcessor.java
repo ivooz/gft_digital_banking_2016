@@ -12,7 +12,7 @@ import java.util.Optional;
  * @inheritDoc Created by Ivo Zieliński on 2016-06-30.
  */
 @Singleton
-public class CancelExecutionTaskProcessor implements TradingMessageProcessor<Cancel> {
+public class CancelProcessor implements TradingMessageProcessor<Cancel> {
 
     /**
      * @inheritDoc

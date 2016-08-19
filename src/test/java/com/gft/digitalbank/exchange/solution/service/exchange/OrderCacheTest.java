@@ -2,7 +2,7 @@ package com.gft.digitalbank.exchange.solution.service.exchange;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Order;
-import com.gft.digitalbank.exchange.solution.utils.PojoFactory;
+import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -21,17 +21,17 @@ import static org.hamcrest.core.Is.is;
 public class OrderCacheTest {
 
     private OrderCache sut;
-    private PojoFactory pojoFactory;
+    private OrderPojoFactory orderPojoFactory;
 
     @Before
     public void initialize() {
         this.sut = new OrderCache();
-        this.pojoFactory = new PojoFactory();
+        this.orderPojoFactory = new OrderPojoFactory();
     }
 
     @Test
     public void add_whenOrderAdded_itShouldBeRetrievableByItsId() {
-        Order order = pojoFactory.createNextOrder();
+        Order order = orderPojoFactory.createNextOrder();
         int orderId = order.getId();
         sut.add(order);
         Order orderFromCache = sut.getById(orderId).get();
@@ -45,7 +45,7 @@ public class OrderCacheTest {
 
     @Test
     public void remove_whenOrderRemoved_itShouldNoLongerBeRetrievable() {
-        Order order = pojoFactory.createNextOrder();
+        Order order = orderPojoFactory.createNextOrder();
         int orderId = order.getId();
         sut.add(order);
         sut.remove(order);

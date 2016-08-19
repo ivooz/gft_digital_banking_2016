@@ -3,7 +3,7 @@ package com.gft.digitalbank.exchange.solution.service.processing;
 import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Order;
-import com.gft.digitalbank.exchange.solution.utils.PojoFactory;
+import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
 import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,17 +16,17 @@ import static org.junit.Assert.assertEquals;
  * Created by Ivo Zieliński on 2016-08-17.
  */
 @Category(UnitTest.class)
-public class TransactionFactoryTest {
+public class TransactionPojoFactoryTest {
 
     private static final int AMOUNT_TRADED = 1;
     private static final int ID = 1;
 
     private TransactionFactory sut;
-    private PojoFactory pojoFactory;
+    private OrderPojoFactory orderPojoFactory;
 
     @Before
     public void initialize() {
-        pojoFactory = new PojoFactory();
+        orderPojoFactory = new OrderPojoFactory();
         sut = new TransactionFactory();
     }
 
@@ -47,7 +47,7 @@ public class TransactionFactoryTest {
 
     @Test
     public void createTransaction_whenPassedTwoOrders_itShouldProduceValidTransaction() throws Exception {
-        Pair<Order, Order> identicalBuyAndSellOrders = pojoFactory.createIdenticalBuyAndSellOrders();
+        Pair<Order, Order> identicalBuyAndSellOrders = orderPojoFactory.createIdenticalBuyAndSellOrders();
         Order processedOrder = identicalBuyAndSellOrders.getKey();
         Order orderFromQueue = identicalBuyAndSellOrders.getValue();
         Transaction transaction = sut.createTransaction(processedOrder, orderFromQueue, AMOUNT_TRADED, ID);

@@ -5,7 +5,7 @@ import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
 import com.gft.digitalbank.exchange.solution.service.processing.ProcessingTask;
-import com.gft.digitalbank.exchange.solution.utils.PojoFactory;
+import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
 import javafx.util.Pair;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -44,12 +44,12 @@ public class ProductExchangeTest {
     private static final String PRODUCT_NAME = "product";
 
     private ProductExchange sut;
-    private PojoFactory pojoFactory;
+    private OrderPojoFactory orderPojoFactory;
 
     @Before
     public void initialize() {
         sut = new ProductExchange(PRODUCT_NAME, PROCESSING_TASK_BUFFER_SIZE);
-        pojoFactory = new PojoFactory();
+        orderPojoFactory = new OrderPojoFactory();
     }
 
     @Test(expected = NullPointerException.class)
@@ -60,7 +60,7 @@ public class ProductExchangeTest {
     @Test(expected = IllegalArgumentException.class)
     @Parameters(method = "buyAndSellSides")
     public void enqueueOrder_whenPassedOrderScheduledFormDeletion_shouldThrowIllegalArgumentException(Side side) {
-        Order order = pojoFactory.createNextOrderWithSide(side);
+        Order order = orderPojoFactory.createNextOrderWithSide(side);
         order.setScheduledForDeletion(true);
         sut.enqueueOrder(order);
     }
@@ -68,7 +68,7 @@ public class ProductExchangeTest {
     @Test
     @Parameters(method = "buyAndSellSides")
     public void enqueueOrder_whenPassedOrder_itShouldBeRetrievableFromQueueAndCache(Side side) {
-        Order enqueuedOrder = pojoFactory.createNextOrderWithSide(side);
+        Order enqueuedOrder = orderPojoFactory.createNextOrderWithSide(side);
         sut.enqueueOrder(enqueuedOrder);
         Order orderFromCache = sut.getById(enqueuedOrder.getId()).get();
         assertThat(orderFromCache, is(sameInstance(enqueuedOrder)));
@@ -79,7 +79,7 @@ public class ProductExchangeTest {
     @Test
     @Parameters(method = "buyAndSellSides")
     public void remove_whenPassedOrder_itShouldBeNoLongerRetrievableFromCacheAndQueue(Side side) {
-        Order order = pojoFactory.createNextOrderWithSide(side);
+        Order order = orderPojoFactory.createNextOrderWithSide(side);
         sut.enqueueOrder(order);
         sut.remove(order);
         Optional<Order> orderOptional = sut.getById(order.getId());
@@ -97,7 +97,7 @@ public class ProductExchangeTest {
     @Test
     @Parameters(method = "buyAndSellSides")
     public void getById_whenOrderWasEnqueue_itShouldBeRetrievableByItsId(Side side) {
-        Order order = pojoFactory.createNextOrderWithSide(side);
+        Order order = orderPojoFactory.createNextOrderWithSide(side);
         sut.enqueueOrder(order);
         Order orderOptional = sut.getById(order.getId()).get();
         assertThat(orderOptional, is(sameInstance(order)));
@@ -207,7 +207,7 @@ public class ProductExchangeTest {
     }
 
     public void executeTransaction_whenMatchingOrdersPassed_shouldCreateATransactionAndScheduleOrderFromQueueForDeletion(Pair<Order, Order> orderPairs) {
-        Pair<Order, Order> matchingOrders = pojoFactory.createIdenticalBuyAndSellOrders();
+        Pair<Order, Order> matchingOrders = orderPojoFactory.createIdenticalBuyAndSellOrders();
         Order processedOrder = matchingOrders.getKey();
         Order orderFromQueue = matchingOrders.getValue();
         sut.executeTransaction(processedOrder, orderFromQueue);
@@ -219,14 +219,14 @@ public class ProductExchangeTest {
     @Test(expected = IllegalArgumentException.class)
     @Parameters(method = "buyAndSellSides")
     public void executeTransaction_whenOrdersOfTheSameSidePassed_shouldThrowIllegalArgumentException(Side side) {
-        Order firstOrder = pojoFactory.createNextOrderWithSide(side);
-        Order secondOrder = pojoFactory.createNextOrderWithSide(side);
+        Order firstOrder = orderPojoFactory.createNextOrderWithSide(side);
+        Order secondOrder = orderPojoFactory.createNextOrderWithSide(side);
         sut.executeTransaction(firstOrder, secondOrder);
     }
 
     @Test
     public void executeTransaction_whenMatchingOrdersPassedWithOrderFromQueueWithBiggerAmount_shouldNotMarkOrderFromQueueAsScheduledForDeletion() {
-        Pair<Order, Order> matchingOrders = pojoFactory.createIdenticalBuyAndSellOrders();
+        Pair<Order, Order> matchingOrders = orderPojoFactory.createIdenticalBuyAndSellOrders();
         Order processedOrder = matchingOrders.getKey();
         Order orderFromQueue = matchingOrders.getValue();
         orderFromQueue.getDetails().setAmount(orderFromQueue.getAmount() + 1);
@@ -271,7 +271,7 @@ public class ProductExchangeTest {
     public void getTransactions_afterManyTransactionsWereExecuted_shouldReturnAListOfProperSize(int transactionCount) {
         IntStream.range(0, transactionCount)
                 .forEach(index -> {
-                    Pair<Order, Order> matchingOrders = pojoFactory.createIdenticalBuyAndSellOrders();
+                    Pair<Order, Order> matchingOrders = orderPojoFactory.createIdenticalBuyAndSellOrders();
                     sut.executeTransaction(matchingOrders.getKey(), matchingOrders.getValue());
                 });
         List<Transaction> transactions = sut.getTransactions();

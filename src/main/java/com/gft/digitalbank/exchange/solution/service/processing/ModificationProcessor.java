@@ -13,12 +13,12 @@ import java.util.Optional;
  * @inheritDoc Created by Ivo Zieliński on 2016-06-30.
  */
 @Singleton
-public class ModificationExecutionTaskProcessor implements TradingMessageProcessor<Modification> {
+public class ModificationProcessor implements TradingMessageProcessor<Modification> {
 
     private final TradingMessageProcessor<Order> orderTradingMessageProcessor;
 
     @Inject
-    public ModificationExecutionTaskProcessor(TradingMessageProcessor<Order> orderTradingMessageProcessor) {
+    public ModificationProcessor(TradingMessageProcessor<Order> orderTradingMessageProcessor) {
         this.orderTradingMessageProcessor = orderTradingMessageProcessor;
     }
 
@@ -36,12 +36,11 @@ public class ModificationExecutionTaskProcessor implements TradingMessageProcess
         if (!modification.getBroker().equals(order.getBroker())) {
             return;
         }
-        Order copy = new Order(order);
+        Order copy = new Order(order,modification.getTimestamp());
         copy.setDetails(modification.getDetails());
         //Copy is created and the old Order is eagerly removed from the cache so that we don't have to search OrderQueues
         //for it. It will be lazily removed during retrieval.
         productExchange.remove(order);
-        copy.setTimestamp(modification.getTimestamp());
         //We treat the modified Order just like an incoming new Order.
         orderTradingMessageProcessor.processTradingMessage(copy, productExchange);
     }

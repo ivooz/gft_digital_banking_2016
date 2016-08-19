@@ -1,7 +1,9 @@
 package com.gft.digitalbank.exchange.solution.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 
 /**
  * Represents the Cancel message.
@@ -12,5 +14,11 @@ import lombok.EqualsAndHashCode;
 @Data
 public class Cancel extends TradingMessage {
 
-    private int cancelledOrderId;
+    private final int cancelledOrderId;
+
+    @Builder
+    public Cancel(int id, long timestamp, @NonNull String broker, int cancelledOrderId) {
+        super(id, timestamp, broker);
+        this.cancelledOrderId = cancelledOrderId;
+    }
 }

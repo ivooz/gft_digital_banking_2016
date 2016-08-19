@@ -19,11 +19,11 @@ public class OrderEntryConverter {
      * @param order to map
      * @return mapped OrderEntry
      */
-    public OrderEntry convertToOrderEntry(@NonNull Order order) {
+    public OrderEntry convertToOrderEntry(@NonNull Order order, int id) {
         return OrderEntry.builder().amount(order.getDetails().getAmount())
                 .broker(order.getBroker())
                 .client(order.getClient())
-                .id(order.getId())
+                .id(id)
                 .price(order.getPrice()).build();
     }
 }

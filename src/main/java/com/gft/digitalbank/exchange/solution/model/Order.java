@@ -14,23 +14,15 @@ import lombok.NonNull;
 @Data
 public class Order extends TradingMessage implements Comparable<Order> {
 
-    @NonNull
-    private String client;
-
-    @NonNull
-    private Side side;
-
-    @NonNull
-    private String product;
-
+    private final String client;
+    private final Side side;
+    private final String product;
     private Details details;
-
-    @NonNull
     private boolean scheduledForDeletion;
 
     @Builder
-    private Order(int id, long timestamp, @NonNull String broker, @NonNull String client, @NonNull Side side, @NonNull String product,
-                  @NonNull Details details, boolean scheduledForDeletion) {
+    public Order(int id, long timestamp, @NonNull String broker, @NonNull String client, @NonNull Side side, @NonNull String product,
+                 @NonNull Details details, boolean scheduledForDeletion) {
         super(id, timestamp, broker);
         this.client = client;
         this.side = side;
@@ -44,13 +36,9 @@ public class Order extends TradingMessage implements Comparable<Order> {
      *
      * @param order to be copied
      */
-    public Order(Order order) {
-        super(order.getId(), order.getTimestamp(), order.getBroker());
-        this.client = order.client;
-        this.side = order.side;
-        this.product = order.product;
-        this.scheduledForDeletion = order.scheduledForDeletion;
-        this.details = new Details(order.details);
+    public Order(@NonNull Order order, long timestamp) {
+        this(order.getId(), timestamp, order.getBroker(), order.getClient(), order.getSide(), order.getProduct(),
+                new Details(order.getDetails()), order.scheduledForDeletion);
     }
 
     public int getPrice() {
@@ -84,7 +72,7 @@ public class Order extends TradingMessage implements Comparable<Order> {
         final int EQUAL = 0;
         final int AFTER = 1;
 
-        if (this == otherOrder) {
+        if (this.equals(otherOrder)) {
             return EQUAL;
         }
 

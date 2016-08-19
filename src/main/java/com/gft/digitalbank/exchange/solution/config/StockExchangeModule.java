@@ -3,9 +3,9 @@ package com.gft.digitalbank.exchange.solution.config;
 import com.gft.digitalbank.exchange.solution.model.Cancel;
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.Order;
-import com.gft.digitalbank.exchange.solution.service.processing.CancelExecutionTaskProcessor;
-import com.gft.digitalbank.exchange.solution.service.processing.ModificationExecutionTaskProcessor;
-import com.gft.digitalbank.exchange.solution.service.processing.OrderExecutionTaskProcessor;
+import com.gft.digitalbank.exchange.solution.service.processing.CancelProcessor;
+import com.gft.digitalbank.exchange.solution.service.processing.ModificationProcessor;
+import com.gft.digitalbank.exchange.solution.service.processing.OrderProcessor;
 import com.gft.digitalbank.exchange.solution.service.processing.TradingMessageProcessor;
 import com.gft.digitalbank.exchange.solution.service.scheduling.*;
 import com.google.inject.TypeLiteral;
@@ -45,11 +45,11 @@ public class StockExchangeModule extends CamelModuleWithMatchingRoutes {
     private void bindGenericProcessors() throws IOException {
         Names.bindProperties(binder(), getProperties());
         bind(new TypeLiteral<TradingMessageProcessor<Order>>() {
-        }).to(OrderExecutionTaskProcessor.class);
+        }).to(OrderProcessor.class);
         bind(new TypeLiteral<TradingMessageProcessor<Cancel>>() {
-        }).to(CancelExecutionTaskProcessor.class);
+        }).to(CancelProcessor.class);
         bind(new TypeLiteral<TradingMessageProcessor<Modification>>() {
-        }).to(ModificationExecutionTaskProcessor.class);
+        }).to(ModificationProcessor.class);
     }
 
     private void bindGenericFactories() {

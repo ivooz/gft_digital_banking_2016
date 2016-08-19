@@ -14,7 +14,7 @@ import java.util.Optional;
  * Created by Ivo Zieliński on 2016-07-05.
  */
 @Singleton
-public class OrderExecutionTaskProcessor implements TradingMessageProcessor<Order> {
+public class OrderProcessor implements TradingMessageProcessor<Order> {
 
     /**
      * @param processedOrder  the new Order that handled

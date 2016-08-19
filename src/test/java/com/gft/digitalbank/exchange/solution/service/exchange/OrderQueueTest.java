@@ -4,7 +4,7 @@ import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
 import com.gft.digitalbank.exchange.solution.utils.PairListBuilder;
-import com.gft.digitalbank.exchange.solution.utils.PojoFactory;
+import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
 import com.gft.digitalbank.exchange.solution.utils.RandomIntPairListFactory;
 import javafx.util.Pair;
 import junitparams.JUnitParamsRunner;
@@ -30,12 +30,12 @@ import static org.hamcrest.core.Is.is;
 public class OrderQueueTest {
 
     private OrderQueue sut;
-    private PojoFactory pojoFactory;
+    private OrderPojoFactory orderPojoFactory;
 
     @Before
     public void initialize() {
         this.sut = new OrderQueue();
-        this.pojoFactory = new PojoFactory();
+        this.orderPojoFactory = new OrderPojoFactory();
     }
 
     @Test(expected = NullPointerException.class)
@@ -141,8 +141,8 @@ public class OrderQueueTest {
     @Test
     public void pollNextOrder_whenBuyOrdersWithTheSamePriceAdded_returnsTheOneWithLowestTimestamp
             (Side side, List<Pair<Integer, Integer>> priceAndTimestampPairs) {
-        priceAndTimestampPairs.forEach(pair -> sut.pushOrder(pojoFactory
-                .buildOrderWithTimestampPriceAndSide(side, pair.getKey(), pair.getValue())));
+        priceAndTimestampPairs.forEach(pair -> sut.pushOrder(orderPojoFactory
+                .createOrderWithTimestampPriceAndSide(side, pair.getKey(), pair.getValue())));
         int minTimestamp = priceAndTimestampPairs.stream().mapToInt(Pair::getKey)
                 .min().getAsInt();
         Order order = sut.pollNextOrder(side).get();
@@ -157,12 +157,12 @@ public class OrderQueueTest {
 
     private void addOrdersWithPricesToQueue(Side side, int[] prices) {
         IntStream.of(prices)
-                .forEach(price -> sut.pushOrder(pojoFactory.buildOrderWithPriceAndSide(side, price)));
+                .forEach(price -> sut.pushOrder(orderPojoFactory.createOrderWithPriceAndSide(side, price)));
     }
 
     private void addOrdersScheduledForDeletionWithSidesToQueue(Side side, int count) {
         IntStream.range(0, count)
-                .forEach(price -> sut.pushOrder(pojoFactory.createOrderScheduledForDeletion(side)));
+                .forEach(price -> sut.pushOrder(orderPojoFactory.createOrderScheduledForDeletionWithSide(side)));
     }
 
 

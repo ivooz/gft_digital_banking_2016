@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 @Singleton
-public class ShutdownNotificationListener {
+public class ShutdownNotificationProcessor {
 
     private static final String SHUTDOWN_EXCEPTION_MESSAGE = "Encountered problems when shutting down processing session.";
 
@@ -30,8 +30,8 @@ public class ShutdownNotificationListener {
     private ProcessingListener processingListener;
 
     @Inject
-    public ShutdownNotificationListener(ResultsGatherer resultGatherer,
-                                        ProcessingFinisher processingFinisher) {
+    public ShutdownNotificationProcessor(ResultsGatherer resultGatherer,
+                                         ProcessingFinisher processingFinisher) {
         this.resultGatherer = resultGatherer;
         this.processingFinisher = processingFinisher;
     }

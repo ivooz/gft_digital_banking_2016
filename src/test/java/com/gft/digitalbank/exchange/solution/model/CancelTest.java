@@ -1,6 +1,7 @@
 package com.gft.digitalbank.exchange.solution.model;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
+import com.gft.digitalbank.exchange.solution.utils.CancelPojoFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -15,15 +16,17 @@ public class CancelTest {
 
     private static final int ID = 5;
     private Cancel sut;
+    private CancelPojoFactory cancelPojoFactory;
 
     @Before
     public void initialize() {
-        sut = new Cancel();
+        cancelPojoFactory = new CancelPojoFactory();
+        sut = cancelPojoFactory.createDefaultCancel();
     }
 
     @Test
     public void getSetCancelledOrderId_whenSetToValue_thenGetShouldReturnThatValue() throws Exception {
-        sut.setCancelledOrderId(ID);
+        sut = cancelPojoFactory.createCancelWithCancelledOrderId(ID);
         assertEquals(ID, sut.getCancelledOrderId());
     }
 }

@@ -27,10 +27,10 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
  */
 @Category(UnitTest.class)
 @RunWith(MockitoJUnitRunner.class)
-public class ShutdownNotificationListenerTest {
+public class ShutdownNotificationProcessorTest {
 
     private static final int BROKER_COUNT = 5;
-    private ShutdownNotificationListener sut;
+    private ShutdownNotificationProcessor sut;
 
     @Mock
     private ResultsGatherer resultsGatherer;
@@ -43,7 +43,7 @@ public class ShutdownNotificationListenerTest {
 
     @Before
     public void initialize() {
-        sut = new ShutdownNotificationListener(resultsGatherer, processingFinisher);
+        sut = new ShutdownNotificationProcessor(resultsGatherer, processingFinisher);
     }
 
     @Test(expected = IllegalStateException.class)

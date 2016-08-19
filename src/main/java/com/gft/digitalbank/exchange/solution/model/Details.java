@@ -1,9 +1,6 @@
 package com.gft.digitalbank.exchange.solution.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * Represents the additional details associated with new Cancel, Order and Modification messages.
@@ -13,18 +10,17 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class Details {
 
     private int amount;
-    private int price;
+    private final int price;
 
     /**
      * Copying constructor
      *
      * @param details to copy
      */
-    public Details(Details details) {
+    public Details(@NonNull Details details) {
         this.amount = details.getAmount();
         this.price = details.getPrice();
     }

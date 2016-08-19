@@ -4,7 +4,7 @@ import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
-import com.gft.digitalbank.exchange.solution.utils.PojoFactory;
+import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
 import javafx.util.Pair;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -29,12 +29,12 @@ import static org.junit.Assert.assertThat;
 public class ProductTransactionLedgerTest {
 
     private ProductTransactionLedger sut;
-    private PojoFactory pojoFactory;
+    private OrderPojoFactory orderPojoFactory;
 
     @Before
     public void initialize() {
         sut = new ProductTransactionLedger();
-        pojoFactory = new PojoFactory();
+        orderPojoFactory = new OrderPojoFactory();
     }
 
     @Test
@@ -60,7 +60,7 @@ public class ProductTransactionLedgerTest {
 
     @Test
     public void executeTransaction_whenPassedTwoIdenticalOrdersWithOppositeSide_shouldResultInOneValidTransactionAndFullyTradedOrders() {
-        Pair<Order, Order> orders = pojoFactory.createIdenticalBuyAndSellOrders();
+        Pair<Order, Order> orders = orderPojoFactory.createIdenticalBuyAndSellOrders();
         Order buyOrder = orders.getKey();
         Order sellOrder = orders.getValue();
         sut.executeTransaction(buyOrder, sellOrder);
@@ -73,8 +73,8 @@ public class ProductTransactionLedgerTest {
     @Test(expected = IllegalArgumentException.class)
     @Parameters(method = "buyAndSellSides")
     public void executeTransaction_whenPassedOrdersOfTheSameSide_shouldThrowIllegalArgumentException(Side side) {
-        Order firstOrder = pojoFactory.createNextOrderWithSide(side);
-        Order secondOrder = pojoFactory.createNextOrderWithSide(side);
+        Order firstOrder = orderPojoFactory.createNextOrderWithSide(side);
+        Order secondOrder = orderPojoFactory.createNextOrderWithSide(side);
         sut.executeTransaction(firstOrder, secondOrder);
     }
 

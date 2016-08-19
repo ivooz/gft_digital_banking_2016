@@ -1,7 +1,7 @@
 package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.listener.ProcessingListener;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationListener;
+import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationProcessor;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.NonNull;
@@ -29,15 +29,15 @@ public class CamelConfigurer {
 
     private final CamelContext camelContext;
     private final CamelRouteBuilder camelRouteBuilder;
-    private final ShutdownNotificationListener shutdownNotificationListener;
+    private final ShutdownNotificationProcessor shutdownNotificationProcessor;
 
     @Inject
     public CamelConfigurer(CamelContext camelContext,
                            CamelRouteBuilder camelRouteBuilder,
-                           ShutdownNotificationListener shutdownNotificationListener) {
+                           ShutdownNotificationProcessor shutdownNotificationProcessor) {
         this.camelContext = camelContext;
         this.camelRouteBuilder = camelRouteBuilder;
-        this.shutdownNotificationListener = shutdownNotificationListener;
+        this.shutdownNotificationProcessor = shutdownNotificationProcessor;
     }
 
     /**
@@ -54,7 +54,7 @@ public class CamelConfigurer {
         configuration.setConsumerType(ConsumerType.Simple);
         camelContext.addComponent(MQ_COMPONENT_NAME, activeMQComponent);
         camelRouteBuilder.setDestinations(destinations);
-        shutdownNotificationListener.setBrokerCount(destinations.size());
+        shutdownNotificationProcessor.setBrokerCount(destinations.size());
         try {
             camelContext.addRoutes(camelRouteBuilder);
         } catch (Exception ex) {
@@ -69,7 +69,7 @@ public class CamelConfigurer {
      * @param processingListener to forward
      */
     public void registerProcessingListener(@NonNull ProcessingListener processingListener) {
-        this.shutdownNotificationListener.setProcessingListener(processingListener);
+        this.shutdownNotificationProcessor.setProcessingListener(processingListener);
     }
 
     /**

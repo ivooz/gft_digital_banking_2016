@@ -3,7 +3,7 @@ package com.gft.digitalbank.exchange.solution.config;
 import com.gft.digitalbank.exchange.solution.model.Cancel;
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.Order;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationListener;
+import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationProcessor;
 import com.gft.digitalbank.exchange.solution.service.scheduling.OrderNotFoundException;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskCreator;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskExecutor;
@@ -47,7 +47,7 @@ public class CamelRouteBuilder extends RouteBuilder {
     private static final String SHUTDOWN_NOTIFICATION_IDENTIFYING_JSONPATH = "$[?(@.messageType=='SHUTDOWN_NOTIFICATION')]";
     private static final String CANNOT_CONFIGURE_ROUTES_WITHOUT_QUEUE_DESTINATIONS = "Cannot configure routes without queue destinations.";
 
-    private final ShutdownNotificationListener shutdownNotificationListener;
+    private final ShutdownNotificationProcessor shutdownNotificationProcessor;
     private final SchedulingTaskCreator<Order> orderSchedulingTaskCreator;
     private final SchedulingTaskCreator<Cancel> cancelSchedulingTaskCreator;
     private final SchedulingTaskCreator<Modification> modificationSchedulingTaskCreator;
@@ -58,14 +58,14 @@ public class CamelRouteBuilder extends RouteBuilder {
     private List<String> destinations;
 
     @Inject
-    public CamelRouteBuilder(ShutdownNotificationListener shutdownNotificationListener,
+    public CamelRouteBuilder(ShutdownNotificationProcessor shutdownNotificationProcessor,
                              SchedulingTaskCreator<Order> orderSchedulingTaskCreator,
                              SchedulingTaskCreator<Cancel> cancelSchedulingTaskCreator,
                              SchedulingTaskCreator<Modification> modificationSchedulingTaskCreator,
                              SchedulingTaskExecutor schedulingTaskExecutor,
                              @Named("camel.failure.redeliveries") int maximumRedeliveriesOnFailure,
                              @Named("camel.failure.delay") int redeliveryDelayOnFailure) {
-        this.shutdownNotificationListener = shutdownNotificationListener;
+        this.shutdownNotificationProcessor = shutdownNotificationProcessor;
         this.orderSchedulingTaskCreator = orderSchedulingTaskCreator;
         this.cancelSchedulingTaskCreator = cancelSchedulingTaskCreator;
         this.modificationSchedulingTaskCreator = modificationSchedulingTaskCreator;
@@ -138,7 +138,7 @@ public class CamelRouteBuilder extends RouteBuilder {
 
     private void defineShutdownNotificationsRoute() {
         from(SHUTDOWN_NOTIFICATIONS_ENDPOINT_NAME)
-                .bean(shutdownNotificationListener).stop();
+                .bean(shutdownNotificationProcessor).stop();
     }
 
     private void defineSchedulingTaskExecutionRoute() {

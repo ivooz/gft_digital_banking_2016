@@ -77,8 +77,7 @@ public class ResultsGatherer {
         Optional<Order> orderOptional = productExchange.pollNextOrder(side);
         while (orderOptional.isPresent()) {
             Order order = orderOptional.get();
-            order.setId(index++);
-            orderEntries.add(orderEntryConverter.convertToOrderEntry(order));
+            orderEntries.add(orderEntryConverter.convertToOrderEntry(order,index++));
             orderOptional = productExchange.pollNextOrder(side);
         }
         return orderEntries;

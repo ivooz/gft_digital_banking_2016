@@ -1,7 +1,7 @@
 package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationListener;
+import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationProcessor;
 import com.gft.digitalbank.exchange.solution.utils.ResourceLoader;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
@@ -33,8 +33,8 @@ public class ShutdownNotificationRouteTest extends CamelRouteTest {
     @EndpointInject(uri = MOCK_SCHEDULING_TASKS_ENDPOINT_NAME)
     private MockEndpoint schedulingTasksEndpoint;
 
-    private ShutdownNotificationListener shutdownNotificationListener =
-            Mockito.mock(ShutdownNotificationListener.class);
+    private ShutdownNotificationProcessor shutdownNotificationProcessor =
+            Mockito.mock(ShutdownNotificationProcessor.class);
 
     @Before
     @Override
@@ -59,14 +59,14 @@ public class ShutdownNotificationRouteTest extends CamelRouteTest {
         } catch (IOException e) {
             fail(e.getMessage());
         }
-        Mockito.verify(shutdownNotificationListener, times(1)).handleShutdownNotification();
+        Mockito.verify(shutdownNotificationProcessor, times(1)).handleShutdownNotification();
         context.stop();
     }
 
     @Override
     protected RouteBuilder createRouteBuilder() throws Exception {
         CamelRouteBuilder routeBuilder = (CamelRouteBuilder) super.createRouteBuilder();
-        Whitebox.setInternalState(routeBuilder, "shutdownNotificationListener", shutdownNotificationListener);
+        Whitebox.setInternalState(routeBuilder, "shutdownNotificationProcessor", shutdownNotificationProcessor);
         return routeBuilder;
     }
 }

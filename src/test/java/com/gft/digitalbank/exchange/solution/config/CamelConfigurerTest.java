@@ -2,7 +2,7 @@ package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.listener.ProcessingListener;
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationListener;
+import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationProcessor;
 import org.apache.camel.CamelContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,14 +36,14 @@ public class CamelConfigurerTest {
     private CamelRouteBuilder camelRouteBuilder;
 
     @Mock
-    private ShutdownNotificationListener shutdownNotificationListener;
+    private ShutdownNotificationProcessor shutdownNotificationProcessor;
 
     @Mock
     private ProcessingListener processingListener;
 
     @Before
     public void initialize() {
-        sut = new CamelConfigurer(camelContext, camelRouteBuilder, shutdownNotificationListener);
+        sut = new CamelConfigurer(camelContext, camelRouteBuilder, shutdownNotificationProcessor);
     }
 
     @Test(expected = NullPointerException.class)
@@ -66,7 +66,7 @@ public class CamelConfigurerTest {
         List<String> destinations = Collections.emptyList();
         sut.configure(destinations, BROKER_URL);
         Mockito.verify(camelContext, times(1)).addComponent(anyObject(), anyObject());
-        Mockito.verify(shutdownNotificationListener, times(1)).setBrokerCount(destinations.size());
+        Mockito.verify(shutdownNotificationProcessor, times(1)).setBrokerCount(destinations.size());
 
     }
 
@@ -79,7 +79,7 @@ public class CamelConfigurerTest {
     @Test
     public void registerProcessingListener_whenPassedProcessingListener_shouldPassItToShutdownNotificationListener() throws Exception {
         sut.registerProcessingListener(processingListener);
-        Mockito.verify(shutdownNotificationListener, times(1)).setProcessingListener(processingListener);
+        Mockito.verify(shutdownNotificationProcessor, times(1)).setProcessingListener(processingListener);
     }
 
     @Test

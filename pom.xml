@@ -160,7 +160,7 @@
     </reporting>
     <profiles>
         <profile>
-            <id>unit-tests</id>
+            <id>unit</id>
             <properties>
                 <active.test.categories>
                     com.gft.digitalbank.exchange.solution.categories.UnitTest

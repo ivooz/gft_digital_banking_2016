@@ -7,8 +7,10 @@ import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
+import com.gft.digitalbank.exchange.solution.service.processing.TransactionFactory;
 import com.gft.digitalbank.exchange.solution.service.scheduling.indexing.ProductExchangeIndex;
-import com.gft.digitalbank.exchange.solution.utils.PojoFactory;
+import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
+import com.gft.digitalbank.exchange.solution.utils.TransactionPojoFactory;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
@@ -43,14 +45,16 @@ public class ResultsGathererTest {
 
     private ResultsGatherer sut;
     private ProductExchangeIndex productExchangeIndex;
-    private PojoFactory pojoFactory;
+    private OrderPojoFactory orderPojoFactory;
+    private TransactionPojoFactory transactionPojoFactory;
 
     @Before
     public void initialize() {
         productExchangeIndex = Mockito.mock(ProductExchangeIndex.class);
+        transactionPojoFactory = new TransactionPojoFactory();
         OrderEntryConverter orderEntryConverter = new OrderEntryConverter();
         sut = new ResultsGatherer(productExchangeIndex, orderEntryConverter);
-        pojoFactory = new PojoFactory();
+        orderPojoFactory = new OrderPojoFactory();
     }
 
     @Test
@@ -93,7 +97,7 @@ public class ResultsGathererTest {
     public void gatherResults_whenProductExchangeHasTransactions_theResultingSolutionShouldContainIdenticalCollection(int transactionCount) {
         List<Transaction> transactions = new ArrayList<>();
         IntStream.range(0, transactionCount)
-                .forEach(value -> transactions.add(pojoFactory.createNextTransaction()));
+                .forEach(value -> transactions.add(transactionPojoFactory.createNextTransaction()));
         ProductExchange productExchange = Mockito.mock(ProductExchange.class);
         when(productExchange.getProductName()).thenReturn(PRODUCT_NAME);
         when(productExchange.getTransactions()).thenReturn(transactions);
@@ -114,7 +118,7 @@ public class ResultsGathererTest {
     private List<Order> mockTradingOrders(int orderCountBuy, ProductExchange productExchange, Side side) {
         List<Order> orders = new ArrayList<>();
         IntStream.range(0, orderCountBuy)
-                .forEach(value -> orders.add(pojoFactory.createNextOrderWithSide(side)));
+                .forEach(value -> orders.add(orderPojoFactory.createNextOrderWithSide(side)));
         OngoingStubbing<Optional<Order>> ongoingStubbing = when(productExchange.pollNextOrder(side));
         for (int i = 0; i < orderCountBuy; i++) {
             ongoingStubbing = ongoingStubbing.thenReturn(Optional.of(orders.get(i)));

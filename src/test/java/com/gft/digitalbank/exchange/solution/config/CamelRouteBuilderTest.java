@@ -4,7 +4,7 @@ import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Cancel;
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.Order;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationListener;
+import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationProcessor;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskCreator;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskExecutor;
 import org.junit.Before;
@@ -29,7 +29,7 @@ public class CamelRouteBuilderTest {
     private CamelRouteBuilder sut;
 
     @Mock
-    ShutdownNotificationListener shutdownNotificationListener;
+    ShutdownNotificationProcessor shutdownNotificationProcessor;
 
     @Mock
     SchedulingTaskCreator<Order> orderSchedulingTaskCreator;
@@ -45,7 +45,7 @@ public class CamelRouteBuilderTest {
 
     @Before
     public void initialize() {
-        sut = new CamelRouteBuilder(shutdownNotificationListener, orderSchedulingTaskCreator, cancelSchedulingTaskCreator,
+        sut = new CamelRouteBuilder(shutdownNotificationProcessor, orderSchedulingTaskCreator, cancelSchedulingTaskCreator,
                 modificationSchedulingTaskCreator, schedulingTaskExecutor, MAXIMUM_REDELIVERIES_ON_FAILURE,
                 REDELIVERY_DELAY_ON_FAILURE);
     }
