@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Ivo Zieliński on 2016-08-17.
@@ -32,17 +32,17 @@ public class TransactionFactoryTest {
 
     @Test(expected = NullPointerException.class)
     public void createTransaction_whenPassedNullProcessedOrder_shouldThrowNullPointerException() throws Exception {
-        sut.createTransaction(null, Mockito.mock(Order.class),AMOUNT_TRADED,ID);
+        sut.createTransaction(null, Mockito.mock(Order.class), AMOUNT_TRADED, ID);
     }
 
     @Test(expected = NullPointerException.class)
     public void createTransaction_whenPassedNullOrderFromQueue_shouldThrowNullPointerException() throws Exception {
-        sut.createTransaction(Mockito.mock(Order.class),null,AMOUNT_TRADED,ID);
+        sut.createTransaction(Mockito.mock(Order.class), null, AMOUNT_TRADED, ID);
     }
 
     @Test(expected = NullPointerException.class)
     public void createTransaction_whenPassedNulls_shouldThrowNullPointerException() throws Exception {
-        sut.createTransaction(null, null,AMOUNT_TRADED,ID);
+        sut.createTransaction(null, null, AMOUNT_TRADED, ID);
     }
 
     @Test
@@ -51,13 +51,13 @@ public class TransactionFactoryTest {
         Order processedOrder = identicalBuyAndSellOrders.getKey();
         Order orderFromQueue = identicalBuyAndSellOrders.getValue();
         Transaction transaction = sut.createTransaction(processedOrder, orderFromQueue, AMOUNT_TRADED, ID);
-        assertEquals(transaction.getPrice(),orderFromQueue.getPrice());
-        assertEquals(transaction.getAmount(),AMOUNT_TRADED);
-        assertEquals(transaction.getId(),ID);
-        assertEquals(transaction.getBrokerBuy(),processedOrder.getBroker());
-        assertEquals(transaction.getBrokerSell(),orderFromQueue.getBroker());
-        assertEquals(transaction.getClientBuy(),processedOrder.getClient());
-        assertEquals(transaction.getClientSell(),orderFromQueue.getClient());
-        assertEquals(transaction.getProduct(),processedOrder.getProduct());
+        assertEquals(transaction.getPrice(), orderFromQueue.getPrice());
+        assertEquals(transaction.getAmount(), AMOUNT_TRADED);
+        assertEquals(transaction.getId(), ID);
+        assertEquals(transaction.getBrokerBuy(), processedOrder.getBroker());
+        assertEquals(transaction.getBrokerSell(), orderFromQueue.getBroker());
+        assertEquals(transaction.getClientBuy(), processedOrder.getClient());
+        assertEquals(transaction.getClientSell(), orderFromQueue.getClient());
+        assertEquals(transaction.getProduct(), processedOrder.getProduct());
     }
 }

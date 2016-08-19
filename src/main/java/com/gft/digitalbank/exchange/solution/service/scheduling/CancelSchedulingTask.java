@@ -26,7 +26,8 @@ public class CancelSchedulingTask extends SchedulingTask<Cancel> {
      */
     @Override
     public void execute() throws OrderNotFoundException {
-        Optional<String> productOptional = idProductIndex.get(processingTask.getTradingMessage().getCancelledOrderId());
+        int cancelledOrderId = processingTask.getTradingMessage().getCancelledOrderId();
+        Optional<String> productOptional = idProductIndex.get(cancelledOrderId);
         if (!productOptional.isPresent()) {
             throw new OrderNotFoundException();
         }

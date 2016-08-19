@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.Handler;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,8 +40,8 @@ public class ShutdownNotificationListener {
      * Counts the ShutdownNotification messages. When the counter reaches the Broker count, shutdown procedures are initiated
      * and the processing results are passed to the ProcessingListener.
      */
+    @Handler
     public CompletableFuture<Void> handleShutdownNotification() {
-        //TODO test
         Preconditions.checkState(processingListener != null);
         Preconditions.checkState(brokerCount != null);
         return CompletableFuture.runAsync(() -> {

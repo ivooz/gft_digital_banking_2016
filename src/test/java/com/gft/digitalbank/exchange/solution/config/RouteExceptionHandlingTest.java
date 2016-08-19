@@ -1,12 +1,9 @@
 package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.service.scheduling.CancelSchedulingTask;
 import com.gft.digitalbank.exchange.solution.service.scheduling.OrderNotFoundException;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTask;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskExecutor;
-import org.apache.camel.Produce;
-import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,8 +11,6 @@ import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -42,17 +37,17 @@ public class RouteExceptionHandlingTest extends CamelRouteTest {
 
     @Test
     public void exceptionHandling_whenSchedulingTaskExecutorThrowsException_theMessageShouldBeResubmitted() throws Exception {
-        sendBody(CamelRouteBuilder.SCHEDULING_TASKS_ENDPOINT_NAME,schedulingTask);
+        sendBody(CamelRouteBuilder.SCHEDULING_TASKS_ENDPOINT_NAME, schedulingTask);
         int expectedExecutorCalls = 1 + maximumRedeliveriesOnFailure;
-        Thread.sleep(expectedExecutorCalls *redeliveryDelayOnFailure);
-        Mockito.verify(schedulingTaskExecutor,times(expectedExecutorCalls)).executeSchedulingTask(eq(schedulingTask));
+        Thread.sleep(expectedExecutorCalls * redeliveryDelayOnFailure);
+        Mockito.verify(schedulingTaskExecutor, times(expectedExecutorCalls)).executeSchedulingTask(eq(schedulingTask));
         context.stop();
     }
 
     @Override
     protected RouteBuilder createRouteBuilder() throws Exception {
         CamelRouteBuilder routeBuilder = (CamelRouteBuilder) super.createRouteBuilder();
-        Whitebox.setInternalState(routeBuilder,"schedulingTaskExecutor",schedulingTaskExecutor);
+        Whitebox.setInternalState(routeBuilder, "schedulingTaskExecutor", schedulingTaskExecutor);
         maximumRedeliveriesOnFailure = routeBuilder.getMaximumRedeliveriesOnFailure();
         redeliveryDelayOnFailure = routeBuilder.getRedeliveryDelayOnFailure();
         return routeBuilder;

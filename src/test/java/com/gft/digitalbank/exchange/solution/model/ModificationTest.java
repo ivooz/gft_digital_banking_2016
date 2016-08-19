@@ -2,12 +2,11 @@ package com.gft.digitalbank.exchange.solution.model;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.utils.PojoFactory;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Ivo Zieliński on 2016-08-17.
@@ -30,14 +29,14 @@ public class ModificationTest {
 
     @Test
     public void getModifiedOrderId_whenSetToValue_thenGetShouldReturnThatValue() throws Exception {
-        assertEquals(MODIFIED_ORDER_ID,sut.getModifiedOrderId());
+        assertEquals(MODIFIED_ORDER_ID, sut.getModifiedOrderId());
     }
 
     @Test
     public void getDetails_whenSetToValue_thenGetShouldReturnThatValue() throws Exception {
         Details details = sut.getDetails();
-        assertEquals(PRICE,details.getPrice());
-        assertEquals(AMOUNT,details.getAmount());
+        assertEquals(PRICE, details.getPrice());
+        assertEquals(AMOUNT, details.getAmount());
     }
 
 }

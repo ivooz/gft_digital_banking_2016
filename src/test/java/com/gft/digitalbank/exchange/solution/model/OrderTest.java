@@ -9,9 +9,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -130,32 +131,32 @@ public class OrderTest {
     @Parameters(method = "buyAndSellSides")
     public void getSetSide_whenSetToValue_thenGetShouldReturnThatValue(Side side) {
         sut.setSide(side);
-        assertEquals(side,sut.getSide());
+        assertEquals(side, sut.getSide());
     }
 
     @Test
     public void getSetClient_whenSetToValue_thenGetShouldReturnThatValue() {
         sut.setClient(CLIENT);
-        assertEquals(CLIENT,sut.getClient());
+        assertEquals(CLIENT, sut.getClient());
     }
 
     @Test
     public void getSetDetails_whenSetToValue_thenGetShouldReturnThatValue() {
         Details details = pojoFactory.createDetails();
         sut.setDetails(details);
-        assertThat(sut.getDetails(),is(sameInstance(details)));
+        assertThat(sut.getDetails(), is(sameInstance(details)));
     }
 
     @Test
     public void getPrice_whenSetToValue_thenGetShouldReturnThatValue() {
         sut.getDetails().setPrice(PRICE);
-        assertEquals(PRICE,sut.getPrice());
+        assertEquals(PRICE, sut.getPrice());
     }
 
     @Test
     public void getAmount_whenSetToValue_thenGetShouldReturnThatValue() {
         sut.getDetails().setAmount(AMOUNT);
-        assertEquals(AMOUNT,sut.getAmount());
+        assertEquals(AMOUNT, sut.getAmount());
     }
 
     private Object buyAndSellSides() {

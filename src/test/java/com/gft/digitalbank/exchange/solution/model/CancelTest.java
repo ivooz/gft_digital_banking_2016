@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Ivo Zieliński on 2016-08-17.
@@ -24,6 +24,6 @@ public class CancelTest {
     @Test
     public void getSetCancelledOrderId_whenSetToValue_thenGetShouldReturnThatValue() throws Exception {
         sut.setCancelledOrderId(ID);
-        assertEquals(ID,sut.getCancelledOrderId());
+        assertEquals(ID, sut.getCancelledOrderId());
     }
 }

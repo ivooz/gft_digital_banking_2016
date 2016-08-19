@@ -59,14 +59,14 @@ public class ShutdownNotificationRouteTest extends CamelRouteTest {
         } catch (IOException e) {
             fail(e.getMessage());
         }
-        Mockito.verify(shutdownNotificationListener,times(1)).handleShutdownNotification();
+        Mockito.verify(shutdownNotificationListener, times(1)).handleShutdownNotification();
         context.stop();
     }
 
     @Override
     protected RouteBuilder createRouteBuilder() throws Exception {
         CamelRouteBuilder routeBuilder = (CamelRouteBuilder) super.createRouteBuilder();
-        Whitebox.setInternalState(routeBuilder,"shutdownNotificationListener",shutdownNotificationListener);
+        Whitebox.setInternalState(routeBuilder, "shutdownNotificationListener", shutdownNotificationListener);
         return routeBuilder;
     }
 }

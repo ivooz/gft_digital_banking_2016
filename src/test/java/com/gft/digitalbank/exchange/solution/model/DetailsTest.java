@@ -35,13 +35,13 @@ public class DetailsTest {
     @Test
     public void getSetAmount_whenSetToValue_thenGetShouldReturnThatValue() {
         sut.setAmount(AMOUNT);
-        assertEquals(AMOUNT,sut.getAmount());
+        assertEquals(AMOUNT, sut.getAmount());
     }
 
     @Test
     public void getSetPrice_whenSetToValue_thenGetShouldReturnThatValue() {
         sut.setPrice(PRICE);
-        assertEquals(PRICE,sut.getPrice());
+        assertEquals(PRICE, sut.getPrice());
     }
 
 }

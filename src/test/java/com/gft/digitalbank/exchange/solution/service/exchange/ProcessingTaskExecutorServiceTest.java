@@ -68,8 +68,8 @@ public class ProcessingTaskExecutorServiceTest {
     public void shutdownAndAwaitTermination_whenExecutorThrowsException_itShouldBeWrappedAndRethrown()
             throws InterruptedException, ExchangeShutdownException {
         ThreadPoolExecutor threadPoolExecutor = Mockito.mock(ThreadPoolExecutor.class);
-        doThrow(InterruptedException.class).when(threadPoolExecutor).awaitTermination(anyLong(),anyObject());
-        Whitebox.setInternalState(sut,"taskExecutor",threadPoolExecutor);
+        doThrow(InterruptedException.class).when(threadPoolExecutor).awaitTermination(anyLong(), anyObject());
+        Whitebox.setInternalState(sut, "taskExecutor", threadPoolExecutor);
         sut.shutdownAndAwaitTermination();
     }
 

@@ -18,7 +18,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertTrue;
@@ -130,10 +133,7 @@ public class ResultsGathererTest {
         if (order.getDetails().getPrice() != orderEntry.getPrice()) {
             return false;
         }
-        if (!order.getClient().equals(orderEntry.getClient())) {
-            return false;
-        }
-        return true;
+        return order.getClient().equals(orderEntry.getClient());
     }
 
     private Object[] transactionCounts() {

@@ -6,7 +6,8 @@ import org.junit.experimental.categories.Category;
 
 import static org.hamcrest.Matchers.sameInstance;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by Ivo Zieliński on 2016-08-16.
@@ -25,7 +26,7 @@ public class ExceptionOptionalTest {
     public void of_whenPassedAnException_shouldHaveNotExceptionPresent() {
         Exception exception = new Exception();
         ExceptionOptional exceptionOptional = ExceptionOptional.of(exception);
-        assertThat(exceptionOptional.get(),is(sameInstance(exception)));
+        assertThat(exceptionOptional.get(), is(sameInstance(exception)));
     }
 
     @Test(expected = NullPointerException.class)

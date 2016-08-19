@@ -17,7 +17,7 @@ import java.io.IOException;
  * Created by Ivo on 15/08/16.
  */
 @Category(UnitTest.class)
-public class CamelDynamicRoutingTest extends CamelRouteTest {
+public class CamelContentBasedRoutingTest extends CamelRouteTest {
 
     private final ResourceLoader resourceLoader = new ResourceLoader();
 

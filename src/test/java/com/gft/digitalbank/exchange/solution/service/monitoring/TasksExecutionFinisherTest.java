@@ -10,12 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,9 +20,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Ivo on 14/08/16.
@@ -68,7 +63,7 @@ public class TasksExecutionFinisherTest {
         }
         when(productExchangeIndex.getAllExchanges()).thenReturn(productExchanges);
         List<Exception> exceptions = sut.finishAllTasks();
-        assertThat(exceptions.size(),is(equalTo(exceptionCount)));
+        assertThat(exceptions.size(), is(equalTo(exceptionCount)));
     }
 
     private Object[] exceptionCounts() {

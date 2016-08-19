@@ -13,7 +13,6 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import java.lang.IllegalStateException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,7 +30,7 @@ public class CamelRouteBuilderTest {
 
     @Mock
     ShutdownNotificationListener shutdownNotificationListener;
-    
+
     @Mock
     SchedulingTaskCreator<Order> orderSchedulingTaskCreator;
 
@@ -46,8 +45,8 @@ public class CamelRouteBuilderTest {
 
     @Before
     public void initialize() {
-        sut = new CamelRouteBuilder(shutdownNotificationListener,orderSchedulingTaskCreator,cancelSchedulingTaskCreator,
-                modificationSchedulingTaskCreator,schedulingTaskExecutor, MAXIMUM_REDELIVERIES_ON_FAILURE,
+        sut = new CamelRouteBuilder(shutdownNotificationListener, orderSchedulingTaskCreator, cancelSchedulingTaskCreator,
+                modificationSchedulingTaskCreator, schedulingTaskExecutor, MAXIMUM_REDELIVERIES_ON_FAILURE,
                 REDELIVERY_DELAY_ON_FAILURE);
     }
 
@@ -63,14 +62,14 @@ public class CamelRouteBuilderTest {
     }
 
     @Test
-    public void getMaximumRedeliveriesOnFailure_whenCalled_shouldReturnValuePassedToConstructor(){
+    public void getMaximumRedeliveriesOnFailure_whenCalled_shouldReturnValuePassedToConstructor() {
         int maximumRedeliveriesOnFailure = sut.getMaximumRedeliveriesOnFailure();
-        assertEquals(MAXIMUM_REDELIVERIES_ON_FAILURE,maximumRedeliveriesOnFailure);
+        assertEquals(MAXIMUM_REDELIVERIES_ON_FAILURE, maximumRedeliveriesOnFailure);
     }
 
     @Test
-    public void getRedeliveryDelayOnFailure_whenCalled_shouldReturnValuePassedToConstructor(){
+    public void getRedeliveryDelayOnFailure_whenCalled_shouldReturnValuePassedToConstructor() {
         int redeliveryDelayOnFailure = sut.getRedeliveryDelayOnFailure();
-        assertEquals(REDELIVERY_DELAY_ON_FAILURE,redeliveryDelayOnFailure);
+        assertEquals(REDELIVERY_DELAY_ON_FAILURE, redeliveryDelayOnFailure);
     }
 }

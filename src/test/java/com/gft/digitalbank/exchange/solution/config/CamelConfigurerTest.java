@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,30 +48,30 @@ public class CamelConfigurerTest {
 
     @Test(expected = NullPointerException.class)
     public void configure_whenPasseNullDestinations_shouldThrowNullPointerException() throws Exception {
-        sut.configure(null,BROKER_URL);
+        sut.configure(null, BROKER_URL);
     }
 
     @Test(expected = NullPointerException.class)
     public void configure_whenPasseNullBrokerUrl_shouldThrowNullPointerException() throws Exception {
-        sut.configure(Collections.emptyList(),null);
+        sut.configure(Collections.emptyList(), null);
     }
 
     @Test(expected = NullPointerException.class)
     public void configure_whenPasseNulls_shouldThrowNullPointerException() throws Exception {
-        sut.configure(null,null);
+        sut.configure(null, null);
     }
 
     @Test
-    public void configure_whenDestinationsAndBrokerUrlPassed_shouldAddAMQComponentAndRoutesAndBrokerCount() throws Exception{
+    public void configure_whenDestinationsAndBrokerUrlPassed_shouldAddAMQComponentAndRoutesAndBrokerCount() throws Exception {
         List<String> destinations = Collections.emptyList();
         sut.configure(destinations, BROKER_URL);
-        Mockito.verify(camelContext,times(1)).addComponent(anyObject(),anyObject());
-        Mockito.verify(shutdownNotificationListener,times(1)).setBrokerCount(destinations.size());
+        Mockito.verify(camelContext, times(1)).addComponent(anyObject(), anyObject());
+        Mockito.verify(shutdownNotificationListener, times(1)).setBrokerCount(destinations.size());
 
     }
 
     @Test(expected = StockExchangeStartupException.class)
-    public void configure_whenCamelContextThrowsExceptionDuringAddingRoutes_shouldWrapAndRethrow() throws Exception{
+    public void configure_whenCamelContextThrowsExceptionDuringAddingRoutes_shouldWrapAndRethrow() throws Exception {
         doThrow(Exception.class).when(camelContext).addRoutes(anyObject());
         sut.configure(Collections.emptyList(), BROKER_URL);
     }
@@ -80,13 +79,13 @@ public class CamelConfigurerTest {
     @Test
     public void registerProcessingListener_whenPassedProcessingListener_shouldPassItToShutdownNotificationListener() throws Exception {
         sut.registerProcessingListener(processingListener);
-        Mockito.verify(shutdownNotificationListener,times(1)).setProcessingListener(processingListener);
+        Mockito.verify(shutdownNotificationListener, times(1)).setProcessingListener(processingListener);
     }
 
     @Test
     public void start_whenCalled_shouldStartCamelContext() throws Exception {
         sut.start();
-        Mockito.verify(camelContext,times(1)).start();
+        Mockito.verify(camelContext, times(1)).start();
     }
 
     @Test(expected = StockExchangeStartupException.class)

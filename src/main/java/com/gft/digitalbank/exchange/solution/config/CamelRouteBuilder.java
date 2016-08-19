@@ -12,7 +12,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import lombok.NonNull;
-import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
 
@@ -46,7 +45,6 @@ public class CamelRouteBuilder extends RouteBuilder {
     private static final String MODIFICATION_IDENTIFYING_JSONPATH = "$[?(@.messageType=='MODIFICATION')]";
     private static final String CANCEL_IDENTIFYING_JSONPATH = "$[?(@.messageType=='CANCEL')]";
     private static final String SHUTDOWN_NOTIFICATION_IDENTIFYING_JSONPATH = "$[?(@.messageType=='SHUTDOWN_NOTIFICATION')]";
-    private static final String SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME = "handleShutdownNotification";
     private static final String CANNOT_CONFIGURE_ROUTES_WITHOUT_QUEUE_DESTINATIONS = "Cannot configure routes without queue destinations.";
 
     private final ShutdownNotificationListener shutdownNotificationListener;
@@ -91,7 +89,7 @@ public class CamelRouteBuilder extends RouteBuilder {
         if (!destinations.isEmpty()) {
             from(convertDestinationsToQueueUrls()).to(AMQ_MESSAGE_ENDPOINT);
         }
-        defineDynamicRouting();
+        defineContentBasedRouting();
         defineOrdersRoute();
         defineModificationsRoute();
         defineCancelsRoute();
@@ -99,7 +97,7 @@ public class CamelRouteBuilder extends RouteBuilder {
         defineSchedulingTaskExecutionRoute();
     }
 
-    private void defineDynamicRouting() {
+    private void defineContentBasedRouting() {
         from(AMQ_MESSAGE_ENDPOINT)
                 .routeId(DYNAMIC_ROUTING_ROUTE_ID)
                 .choice()
@@ -140,7 +138,7 @@ public class CamelRouteBuilder extends RouteBuilder {
 
     private void defineShutdownNotificationsRoute() {
         from(SHUTDOWN_NOTIFICATIONS_ENDPOINT_NAME)
-                .bean(shutdownNotificationListener, SHUTDOWN_NOTIFICATION_HANDLER_METHOD_NAME).stop();
+                .bean(shutdownNotificationListener).stop();
     }
 
     private void defineSchedulingTaskExecutionRoute() {

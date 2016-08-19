@@ -3,7 +3,6 @@ package com.gft.digitalbank.exchange.solution.service.processing;
 import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
-import com.google.common.base.Preconditions;
 import lombok.NonNull;
 
 /**

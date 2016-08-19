@@ -4,7 +4,6 @@ import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 import com.google.common.base.Preconditions;
 import com.google.inject.assistedinject.Assisted;
-import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,7 +54,7 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
      */
     @Override
     public int compareTo(@NonNull ProcessingTask otherProcessingTask) {
-        if (this == otherProcessingTask) {
+        if (this.equals(otherProcessingTask)) {
             return 0;
         }
         return (int) (this.getTradingMessage().getTimestamp() - otherProcessingTask.getTradingMessage().getTimestamp());
@@ -71,12 +70,17 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
         this.productExchange = productExchange;
     }
 
+    /**
+     * Two ProcessingTasks are equal if the TradingMessages they encapsulate are equal
+     * @param other ProcessingTask
+     * @return true if equal
+     */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProcessingTask)) return false;
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof ProcessingTask)) return false;
 
-        ProcessingTask<?> that = (ProcessingTask<?>) o;
+        ProcessingTask<?> that = (ProcessingTask<?>) other;
 
         return tradingMessage.equals(that.tradingMessage);
     }

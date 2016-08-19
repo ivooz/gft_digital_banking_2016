@@ -14,16 +14,14 @@ import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by Ivo Zieliński on 2016-08-17.
@@ -43,7 +41,7 @@ public class StockExchangeTest {
     @Before
     public void initialize() {
         sut = new StockExchange();
-        Whitebox.setInternalState(sut,"camelConfigurer",camelConfigurer);
+        Whitebox.setInternalState(sut, "camelConfigurer", camelConfigurer);
     }
 
     @Test(expected = NullPointerException.class)
@@ -55,20 +53,20 @@ public class StockExchangeTest {
     public void register_whenPassedProcessingListener_itShouldBePassedToCamelConfigurer() {
         ProcessingListener processingListener = Mockito.mock(ProcessingListener.class);
         sut.register(processingListener);
-        Mockito.verify(camelConfigurer,times(1)).registerProcessingListener(eq(processingListener));
+        Mockito.verify(camelConfigurer, times(1)).registerProcessingListener(eq(processingListener));
     }
 
     @Test(expected = NullPointerException.class)
-    public void setDestinations_whenPassedNullProductExchange_shouldThrowNullPointerException()  {
+    public void setDestinations_whenPassedNullProductExchange_shouldThrowNullPointerException() {
         sut.setDestinations(null);
     }
 
     @Test
-    public void setDestinations_whenPassedListOfDestinations_shouldPassItToCamelConfigurer()  {
+    public void setDestinations_whenPassedListOfDestinations_shouldPassItToCamelConfigurer() {
         List<String> destinations = Collections.emptyList();
         sut.setDestinations(destinations);
         try {
-            Mockito.verify(camelConfigurer,times(1)).configure(eq(destinations),anyObject());
+            Mockito.verify(camelConfigurer, times(1)).configure(eq(destinations), anyObject());
         } catch (StockExchangeStartupException e) {
             fail(e.getMessage());
         }
@@ -78,14 +76,14 @@ public class StockExchangeTest {
     public void setDestinations_whenCamelConfigurerThrowsException_itShouldNotBeRethrown() throws StockExchangeStartupException {
         List<String> destinations = Collections.emptyList();
         doThrow(StockExchangeStartupException.class)
-                .when(camelConfigurer).configure(eq(destinations),anyObject());
+                .when(camelConfigurer).configure(eq(destinations), anyObject());
         sut.setDestinations(destinations);
     }
 
     @Test
     public void start_whenCalled_shouldStartCamelConfigurer() throws StockExchangeStartupException {
         sut.start();
-        Mockito.verify(camelConfigurer,times(1)).start();
+        Mockito.verify(camelConfigurer, times(1)).start();
     }
 
     @Test
