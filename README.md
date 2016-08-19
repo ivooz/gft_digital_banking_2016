@@ -27,7 +27,21 @@ SchedulingTasks saves the product name of the handled Order in IdProductIndex, s
 
 ![modificationSchedulingTask.png](https://bitbucket.org/repo/ALkroe/images/2878997432-modificationSchedulingTask.png)
 
+### Handling Cancels 
+
+An Order is cancelled by setting a Order.scheduledForDeletion flag to true, so that is is ignored when Orders are fetched from BUY/SELL queues.
+
+### Handling Modifications
+
+A copy of Order is made with new Details value and it is resubmitted like a newly incoming Order. Old Order is cancelled.
+
 ### Shutdown Notification Handling
+
+When a Shutdown Notifications are received from all queues the following procedure begins:
+
+1. Camel context is stopped, which means shutting down all executor services and waiting for the currently active Camel threads to terminate
+2. All single threaded executors associated with ProductExchanges are shutdown.
+3. All remainin ProcessingTasks from buffers are executed.
 
 ### Testing
 
