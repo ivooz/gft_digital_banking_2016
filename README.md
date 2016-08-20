@@ -7,7 +7,7 @@ This document contains diagrams and component definitions explaining the program
 
 All incoming messages are processed by Apache Camel.
 
-![messageRouting1.png](https://bitbucket.org/repo/ALkroe/images/2266142288-messageRouting1.png)
+![messageRouting1.png](https://bitbucket.org/repo/ALkroe/images/110417686-Screenshot%20from%202016-08-20%2013:08:45.png)
 
 The messages are unmarshalled according to the value of MessageType field of the received json object. Trading message is the wrapped inside ProcessingTask, which in turn is wrapped in SchedulingTask.
 
