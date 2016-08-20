@@ -30,12 +30,12 @@ public class ModificationTest {
 
 
     @Test
-    public void getModifiedOrderId_whenSetToValue_thenGetShouldReturnThatValue() throws Exception {
+    public void getModifiedOrderId_whenSetToValue_thenGetShouldReturnThatValue() {
         assertEquals(MODIFIED_ORDER_ID, sut.getModifiedOrderId());
     }
 
     @Test
-    public void getDetails_whenSetToValue_thenGetShouldReturnThatValue() throws Exception {
+    public void getDetails_whenSetToValue_thenGetShouldReturnThatValue() {
         Details details = sut.getDetails();
         assertEquals(PRICE, details.getPrice());
         assertEquals(AMOUNT, details.getAmount());
