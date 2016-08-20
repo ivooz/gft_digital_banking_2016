@@ -1,15 +1,18 @@
-package com.gft.digitalbank.exchange.solution.utils;
+package com.gft.digitalbank.exchange.solution.test.utils;
 
 import com.gft.digitalbank.exchange.solution.model.Cancel;
 
 /**
- * Created by iozi on 2016-08-19.
+ * Created by Ivo Zieliński on 2016-08-19.
  */
-public class CancelPojoFactory extends PojoFactory {
+public class CancelPojoFactory extends PojoFactory<Cancel> {
 
     public static final int DEFAULT_CANCELLED_ORDER_ID = 1;
 
-    public Cancel createDefaultCancel() {
+    /**
+     * {@inheritDoc}
+     */
+    public Cancel createDefault() {
         return Cancel.builder().timestamp(DEFAULT_TIMESTAMP)
                 .broker(DEFAULT_BROKER)
                 .id(DEFAULT_ID)

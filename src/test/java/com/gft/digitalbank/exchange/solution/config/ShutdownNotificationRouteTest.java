@@ -1,8 +1,8 @@
 package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationProcessor;
-import com.gft.digitalbank.exchange.solution.utils.ResourceLoader;
+import com.gft.digitalbank.exchange.solution.service.processing.ShutdownNotificationProcessor;
+import com.gft.digitalbank.exchange.solution.test.utils.ResourceLoader;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
@@ -24,6 +24,9 @@ import static org.mockito.Mockito.times;
  */
 @Category(UnitTest.class)
 public class ShutdownNotificationRouteTest extends CamelRouteTest {
+
+    private static final String SHUTDOWN_NOTIFICATION_JSON_FILENAME = "shutdownNotification.json";
+    private static final String SHUTDOWN_NOTIFICATION_PROCESSOR = "shutdownNotificationProcessor";
 
     private ResourceLoader resourceLoader = new ResourceLoader();
 
@@ -55,7 +58,7 @@ public class ShutdownNotificationRouteTest extends CamelRouteTest {
     @Test
     public void shutdownNotification_whenPassedShutdownNotificationJson_shouldCallShutdownNotificationListener() throws Exception {
         try {
-            template.sendBody(resourceLoader.readStringFromResourceFile("shutdownNotification.json"));
+            template.sendBody(resourceLoader.readStringFromResourceFile(SHUTDOWN_NOTIFICATION_JSON_FILENAME));
         } catch (IOException e) {
             fail(e.getMessage());
         }
@@ -66,7 +69,7 @@ public class ShutdownNotificationRouteTest extends CamelRouteTest {
     @Override
     protected RouteBuilder createRouteBuilder() throws Exception {
         CamelRouteBuilder routeBuilder = (CamelRouteBuilder) super.createRouteBuilder();
-        Whitebox.setInternalState(routeBuilder, "shutdownNotificationProcessor", shutdownNotificationProcessor);
+        Whitebox.setInternalState(routeBuilder, SHUTDOWN_NOTIFICATION_PROCESSOR, shutdownNotificationProcessor);
         return routeBuilder;
     }
 }

@@ -9,6 +9,8 @@ import org.junit.After;
 import java.util.Collections;
 
 /**
+ * Base class for unit tests of existing Camel routes.
+ *
  * Created by Ivo on 15/08/16.
  */
 public abstract class CamelRouteTest extends CamelTestSupport {
@@ -26,6 +28,10 @@ public abstract class CamelRouteTest extends CamelTestSupport {
     protected static final String MOCK_SCHEDULING_TASKS_ENDPOINT_NAME =
             MOCK_ENDPOINT_PREFIX + CamelRouteBuilder.SCHEDULING_TASKS_ENDPOINT_NAME;
 
+    /**
+     * Defines endpoints interceptions/redirects of Camel routes.
+     * @throws Exception
+     */
     public abstract void mockEndpoints() throws Exception;
 
     @After

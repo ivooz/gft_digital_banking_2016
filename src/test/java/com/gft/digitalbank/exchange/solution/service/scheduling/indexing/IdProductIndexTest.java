@@ -45,6 +45,4 @@ public class IdProductIndexTest {
         Optional<String> productName = sut.get(ID);
         assertThat(productName, is(sameInstance(Optional.empty())));
     }
-
-
 }

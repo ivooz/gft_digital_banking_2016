@@ -73,6 +73,4 @@ public class SchedulingTaskCreatorTest {
     public void createSchedulingTask_whenOfTypedAsCancelAndPassedNull_shouldThrowNullPointerException() {
         cancelSchedulingTaskCreator.createSchedulingTask(null);
     }
-
-
 }

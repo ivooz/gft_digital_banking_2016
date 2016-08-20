@@ -2,7 +2,7 @@ package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.service.scheduling.CancelSchedulingTask;
-import com.gft.digitalbank.exchange.solution.utils.ResourceLoader;
+import com.gft.digitalbank.exchange.solution.test.utils.ResourceLoader;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
@@ -24,6 +24,7 @@ import static org.hamcrest.core.Is.is;
 @Category(UnitTest.class)
 public class CancelRouteTest extends CamelRouteTest {
 
+    public static final String CANCEL_JSON_FILENAME = "cancel.json";
     private ResourceLoader resourceLoader = new ResourceLoader();
 
     @Produce(uri = CamelRouteBuilder.CANCELS_ENDPOINT_NAME)
@@ -52,7 +53,7 @@ public class CancelRouteTest extends CamelRouteTest {
     public void cancel_whenPassedCancelJson_shouldDeserializeAndCreateCancelSchedulingTask() throws Exception {
         schedulingTasksEndpoint.setExpectedCount(1);
         try {
-            template.sendBody(resourceLoader.readStringFromResourceFile("cancel.json"));
+            template.sendBody(resourceLoader.readStringFromResourceFile(CANCEL_JSON_FILENAME));
         } catch (IOException e) {
             fail(e.getMessage());
         }

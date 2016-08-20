@@ -1,4 +1,4 @@
-package com.gft.digitalbank.exchange.solution.utils;
+package com.gft.digitalbank.exchange.solution.test.utils;
 
 import com.gft.digitalbank.exchange.solution.model.*;
 import javafx.util.Pair;
@@ -6,11 +6,14 @@ import javafx.util.Pair;
 /**
  * Created by Ivo on 11/08/16.
  */
-public class OrderPojoFactory extends PojoFactory {
+public class OrderPojoFactory extends PojoFactory<Order> {
 
     private DetailsPojoFactory detailsPojoFactory = new DetailsPojoFactory();
 
-    public Order createDefaultOrder() {
+    /**
+     * {@inheritDoc}
+     */
+    public Order createDefault() {
         return getOrderBuilderWithDefaultValues().build();
     }
 
@@ -67,7 +70,7 @@ public class OrderPojoFactory extends PojoFactory {
         return Order.builder()
                 .broker(DEFAULT_BROKER)
                 .client(DEFAULT_CLIENT)
-                .details(detailsPojoFactory.createDefaultDetails())
+                .details(detailsPojoFactory.createDefault())
                 .id(DEFAULT_ID)
                 .side(DEFAULT_SIDE)
                 .timestamp(DEFAULT_TIMESTAMP)

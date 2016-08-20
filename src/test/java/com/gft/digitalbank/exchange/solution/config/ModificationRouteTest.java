@@ -2,7 +2,7 @@ package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.service.scheduling.ModificationSchedulingTask;
-import com.gft.digitalbank.exchange.solution.utils.ResourceLoader;
+import com.gft.digitalbank.exchange.solution.test.utils.ResourceLoader;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
@@ -23,6 +23,8 @@ import static org.hamcrest.core.Is.is;
 @Category(UnitTest.class)
 public class ModificationRouteTest extends CamelRouteTest {
 
+    private static final String MODIFICATION_JSON_FILENAME = "modification.json";
+    
     private ResourceLoader resourceLoader = new ResourceLoader();
 
     @Produce(uri = CamelRouteBuilder.MODIFICATIONS_ENDPOINT_NAME)
@@ -51,7 +53,7 @@ public class ModificationRouteTest extends CamelRouteTest {
     public void modification_whenPassedModificationJson_shouldDeserializeAndCreateModificationSchedulingTask() throws Exception {
         schedulingTasksEndpoint.setExpectedCount(1);
         try {
-            template.sendBody(resourceLoader.readStringFromResourceFile("modification.json"));
+            template.sendBody(resourceLoader.readStringFromResourceFile(MODIFICATION_JSON_FILENAME));
         } catch (IOException e) {
             fail(e.getMessage());
         }

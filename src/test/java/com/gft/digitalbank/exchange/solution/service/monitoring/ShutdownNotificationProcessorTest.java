@@ -2,6 +2,7 @@ package com.gft.digitalbank.exchange.solution.service.monitoring;
 
 import com.gft.digitalbank.exchange.listener.ProcessingListener;
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
+import com.gft.digitalbank.exchange.solution.service.processing.ShutdownNotificationProcessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

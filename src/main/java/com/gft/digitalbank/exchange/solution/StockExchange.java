@@ -29,11 +29,17 @@ public class StockExchange implements Exchange {
         this.camelConfigurer = injector.getInstance(CamelConfigurer.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void register(@NonNull ProcessingListener processingListener) {
         camelConfigurer.registerProcessingListener(processingListener);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDestinations(@NonNull List<String> destinations) {
         try {
@@ -43,6 +49,9 @@ public class StockExchange implements Exchange {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void start() {
         try {

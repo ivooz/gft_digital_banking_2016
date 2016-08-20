@@ -1,7 +1,7 @@
 package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.utils.ResourceLoader;
+import com.gft.digitalbank.exchange.solution.test.utils.ResourceLoader;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
@@ -18,6 +18,12 @@ import java.io.IOException;
  */
 @Category(UnitTest.class)
 public class CamelContentBasedRoutingTest extends CamelRouteTest {
+
+    public static final String IGNORE_MESSAGE_ENDPOINT = "mock:ignore";
+    public static final String ORDER_JSON_FILENAME = "order.json";
+    public static final String MODIFICATION_JSON_FILENAME = "modification.json";
+    public static final String CANCEL_JSON_FILENAME = "cancel.json";
+    public static final String SHUTDOWN_NOTIFICATION_JSON_FILENAME = "shutdownNotification.json";
 
     private final ResourceLoader resourceLoader = new ResourceLoader();
 
@@ -57,7 +63,7 @@ public class CamelContentBasedRoutingTest extends CamelRouteTest {
                         .to(MOCK_SHUTDOWN_NOTIFICATIONS_ENDPOINT_NAME);
                 interceptSendToEndpoint(CamelRouteBuilder.SCHEDULING_TASKS_ENDPOINT_NAME)
                         .skipSendToOriginalEndpoint()
-                        .to("mock:ignore");
+                        .to(IGNORE_MESSAGE_ENDPOINT);
             }
         };
         context.getRouteDefinition(CamelRouteBuilder.DYNAMIC_ROUTING_ROUTE_ID)
@@ -70,7 +76,7 @@ public class CamelContentBasedRoutingTest extends CamelRouteTest {
     public void dynamicRouting_whenPassedOrderJson_shouldRouteToOrdersEndpoint() throws Exception {
         ordersEndpoint.setExpectedCount(1);
         try {
-            template.sendBody(resourceLoader.readStringFromResourceFile("order.json"));
+            template.sendBody(resourceLoader.readStringFromResourceFile(ORDER_JSON_FILENAME));
         } catch (IOException e) {
             fail(e.getMessage());
         }
@@ -78,10 +84,10 @@ public class CamelContentBasedRoutingTest extends CamelRouteTest {
     }
 
     @Test
-    public void dynamicRouting_whenPassedModificationJson_shouldRouteToModificationsEndpoint() throws Exception {
+    public void contentBasedRouting_whenPassedModificationJson_shouldRouteToModificationsEndpoint() throws Exception {
         modificationsEndpoint.setExpectedCount(1);
         try {
-            template.sendBody(resourceLoader.readStringFromResourceFile("modification.json"));
+            template.sendBody(resourceLoader.readStringFromResourceFile(MODIFICATION_JSON_FILENAME));
         } catch (IOException e) {
             fail(e.getMessage());
         }
@@ -89,10 +95,10 @@ public class CamelContentBasedRoutingTest extends CamelRouteTest {
     }
 
     @Test
-    public void dynamicRouting_whenPassedCancelJson_shouldRouteToCancelsEndpoint() throws Exception {
+    public void contentBasedRouting_whenPassedCancelJson_shouldRouteToCancelsEndpoint() throws Exception {
         cancelsEndpoint.setExpectedCount(1);
         try {
-            template.sendBody(resourceLoader.readStringFromResourceFile("cancel.json"));
+            template.sendBody(resourceLoader.readStringFromResourceFile(CANCEL_JSON_FILENAME));
         } catch (IOException e) {
             fail(e.getMessage());
         }
@@ -100,10 +106,11 @@ public class CamelContentBasedRoutingTest extends CamelRouteTest {
     }
 
     @Test
-    public void dynamicRouting_whenPassedShutdownNotificationJson_shouldRouteToShutdownNotificationsEndpoint() throws Exception {
+    public void contentBasedRouting_whenPassedShutdownNotificationJson_shouldRouteToShutdownNotificationsEndpoint()
+            throws Exception {
         shutdownNotificationsEndpoint.setExpectedCount(1);
         try {
-            template.sendBody(resourceLoader.readStringFromResourceFile("shutdownNotification.json"));
+            template.sendBody(resourceLoader.readStringFromResourceFile(SHUTDOWN_NOTIFICATION_JSON_FILENAME));
         } catch (IOException e) {
             fail(e.getMessage());
         }

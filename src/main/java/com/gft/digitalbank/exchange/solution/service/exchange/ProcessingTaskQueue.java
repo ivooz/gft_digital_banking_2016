@@ -11,7 +11,7 @@ import java.util.concurrent.PriorityBlockingQueue;
  * Defines the ProcessingTask queueing logic.
  * Tasks are buffered until the buffer size is exceeded - after that point the queue is considered full.
  * ProcessingTasks are taken from the top of the queue according to the order of they were dispatched in.
- * Increasing the buffer size decreases the probability that tasks will be served out of order.
+ * Increasing the buffer size decreases the probability that tasks will be processed out of order.
  * <p>
  * Created by Ivo Zieliński on 2016-07-06.
  */
@@ -59,7 +59,7 @@ public class ProcessingTaskQueue {
     }
 
     /**
-     * Checks whether there are any ProcessingTasks queued
+     * Checks whether there are any ProcessingTasks queued.
      *
      * @return true if empty
      */
@@ -68,7 +68,7 @@ public class ProcessingTaskQueue {
     }
 
     /**
-     * Checks whether there are no ProcessingTasks queued
+     * Checks whether there are no ProcessingTasks queued.
      *
      * @return true if not empty
      */

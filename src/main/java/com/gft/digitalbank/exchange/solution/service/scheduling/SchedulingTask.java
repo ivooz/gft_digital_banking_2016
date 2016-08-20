@@ -31,8 +31,9 @@ public abstract class SchedulingTask<E extends TradingMessage> {
      * ProductExchange.
      *
      * @throws OrderNotFoundException if the ProductExchange associated with the Order to alter could not be determined.
-     *                                In parallel execution of SchedulingTasks sometimes the Cancel/Modification TradingMessage processing is scheduled
-     *                                before the associated Order TradingMessage, so that its product and consequently ProductExchange is unknown.
+     *                                In parallel execution of SchedulingTasks sometimes the Cancel/Modification
+     *                                TradingMessage processing is scheduled before the associated Order TradingMessage,
+     *                                so that its product and consequently ProductExchange is unknown.
      */
     abstract void execute() throws OrderNotFoundException;
 

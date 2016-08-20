@@ -21,7 +21,6 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
 
     private final TradingMessageProcessor<E> tradingMessageProcessor;
     private final E tradingMessage;
-
     private ProductExchange productExchange;
 
     public ProcessingTask(TradingMessageProcessor<E> tradingMessageProcessor,
@@ -32,6 +31,8 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
 
     /**
      * Initializes the process of applying the TradingMessage against the ProductExchange.
+     *
+     * @throws IllegalStateException if ProductExchange was not set.
      */
     public void run() {
         Preconditions.checkState(productExchange != null, PRODUCT_EXCHANGE_NOT_SET_EXCEPTION_MESSAGE);
@@ -63,6 +64,7 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
     /**
      * Sets the ProductExchange to apply the TradingMessage against. This cannot be done during the ProcessingTask
      * creation as it is not always immediately known to which ProductExchange the ProcessingTask pertains.
+     * Must be set before calling run method.
      *
      * @param productExchange that the task will be executed against
      */
@@ -72,16 +74,19 @@ public class ProcessingTask<E extends TradingMessage> implements Comparable<Proc
 
     /**
      * Two ProcessingTasks are equal if the TradingMessages they encapsulate are equal
+     *
      * @param other ProcessingTask
      * @return true if equal
      */
     @Override
     public boolean equals(Object other) {
-        if (this == other) return true;
-        if (!(other instanceof ProcessingTask)) return false;
-
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof ProcessingTask)) {
+            return false;
+        }
         ProcessingTask<?> that = (ProcessingTask<?>) other;
-
         return tradingMessage.equals(that.tradingMessage);
     }
 

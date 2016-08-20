@@ -29,6 +29,9 @@ public class StockExchangeModule extends CamelModuleWithMatchingRoutes {
     private static final String PROPERTIES_FILE_NAME = "application.properties";
     private static final String UNABLE_TO_LOAD_PROPERTIES_FILE = "Unable to load properties file";
 
+    /**
+     * Binds injection points with classes and factories.
+     */
     @Override
     public void configure() {
         super.configure();
@@ -39,33 +42,22 @@ public class StockExchangeModule extends CamelModuleWithMatchingRoutes {
             LOGGER.error(UNABLE_TO_LOAD_PROPERTIES_FILE, ex);
             throw new IllegalStateException(UNABLE_TO_LOAD_PROPERTIES_FILE, ex);
         }
-
     }
 
     private void bindGenericProcessors() throws IOException {
         Names.bindProperties(binder(), getProperties());
-        bind(new TypeLiteral<TradingMessageProcessor<Order>>() {
-        }).to(OrderProcessor.class);
-        bind(new TypeLiteral<TradingMessageProcessor<Cancel>>() {
-        }).to(CancelProcessor.class);
-        bind(new TypeLiteral<TradingMessageProcessor<Modification>>() {
-        }).to(ModificationProcessor.class);
+        bind(new TypeLiteral<TradingMessageProcessor<Order>>() {}).to(OrderProcessor.class);
+        bind(new TypeLiteral<TradingMessageProcessor<Cancel>>() {}).to(CancelProcessor.class);
+        bind(new TypeLiteral<TradingMessageProcessor<Modification>>() {}).to(ModificationProcessor.class);
     }
 
     private void bindGenericFactories() {
-        install(new FactoryModuleBuilder().implement(new TypeLiteral<SchedulingTask<Order>>() {
-        }, OrderSchedulingTask.class)
-                .build(new TypeLiteral<SchedulingTaskFactory<Order>>() {
-                }));
-        install(new FactoryModuleBuilder().implement(new TypeLiteral<SchedulingTask<Modification>>() {
-        }, ModificationSchedulingTask.class)
-                .build(new TypeLiteral<SchedulingTaskFactory<Modification>>() {
-                }));
-        install(new FactoryModuleBuilder().implement(new TypeLiteral<SchedulingTask<Cancel>>() {
-        }, CancelSchedulingTask.class)
-                .build(new TypeLiteral<SchedulingTaskFactory<Cancel>>() {
-                }));
-
+        install(new FactoryModuleBuilder().implement(new TypeLiteral<SchedulingTask<Order>>() {},
+                OrderSchedulingTask.class).build(new TypeLiteral<SchedulingTaskFactory<Order>>() {}));
+        install(new FactoryModuleBuilder().implement(new TypeLiteral<SchedulingTask<Modification>>() {},
+                ModificationSchedulingTask.class).build(new TypeLiteral<SchedulingTaskFactory<Modification>>() {}));
+        install(new FactoryModuleBuilder().implement(new TypeLiteral<SchedulingTask<Cancel>>() {},
+                CancelSchedulingTask.class).build(new TypeLiteral<SchedulingTaskFactory<Cancel>>() {}));
     }
 
     private Properties getProperties() throws IOException {

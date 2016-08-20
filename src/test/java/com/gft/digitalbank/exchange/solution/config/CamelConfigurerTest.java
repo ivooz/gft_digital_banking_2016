@@ -2,7 +2,7 @@ package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.listener.ProcessingListener;
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationProcessor;
+import com.gft.digitalbank.exchange.solution.service.processing.ShutdownNotificationProcessor;
 import org.apache.camel.CamelContext;
 import org.junit.Before;
 import org.junit.Test;

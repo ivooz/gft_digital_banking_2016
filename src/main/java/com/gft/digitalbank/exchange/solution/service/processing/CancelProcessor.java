@@ -9,19 +9,23 @@ import lombok.NonNull;
 import java.util.Optional;
 
 /**
- * @inheritDoc Created by Ivo Zieliński on 2016-06-30.
+ * Defines how a Cancel message is applied to the ProductExchange.
+ *
+ * Created by Ivo Zieliński on 2016-07-15.
  */
 @Singleton
 public class CancelProcessor implements TradingMessageProcessor<Cancel> {
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * Retrieves the Order to modify from the ProductExchange cache, if it is not there it means that it has already been
+     * fully processed or cancelled.
+     * The retrieved Order is removed from ProductExchange.
      */
     @Override
     public void processTradingMessage(@NonNull Cancel cancel, @NonNull ProductExchange productExchange) {
         Optional<Order> orderToCancel = productExchange.getById(cancel.getCancelledOrderId());
         if (!orderToCancel.isPresent()) {
-            //The Order has already been cancelled or fully processed
             return;
         }
         Order order = orderToCancel.get();

@@ -10,7 +10,9 @@ import com.google.inject.assistedinject.Assisted;
 import java.util.Optional;
 
 /**
- * @inheritDoc Created by Ivo Zieliński on 2016-06-28.
+ * {@inheritDoc}
+ *
+ * Created by Ivo Zieliński on 2016-06-28.
  */
 public class CancelSchedulingTask extends SchedulingTask<Cancel> {
 
@@ -22,7 +24,8 @@ public class CancelSchedulingTask extends SchedulingTask<Cancel> {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * Before the ProcessingTask is scheduled a ProductExchange of the cancelled Order is retrieved.
      */
     @Override
     public void execute() throws OrderNotFoundException {

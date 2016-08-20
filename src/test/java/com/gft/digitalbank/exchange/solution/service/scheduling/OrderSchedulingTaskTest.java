@@ -59,6 +59,4 @@ public class OrderSchedulingTaskTest {
         Mockito.verify(idProductIndex, times(1)).put(ORDER_ID, PRODUCT_NAME);
         Mockito.verify(productExchange, times(1)).enqueueTask(processingTask);
     }
-
-
 }

@@ -17,6 +17,7 @@ public class OrderEntryConverter {
      * Maps Order to OrderEntry
      *
      * @param order to map
+     * @param id of the OrderEntry
      * @return mapped OrderEntry
      */
     public OrderEntry convertToOrderEntry(@NonNull Order order, int id) {

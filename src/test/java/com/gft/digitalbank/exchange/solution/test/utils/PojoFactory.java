@@ -1,11 +1,13 @@
-package com.gft.digitalbank.exchange.solution.utils;
+package com.gft.digitalbank.exchange.solution.test.utils;
 
 import com.gft.digitalbank.exchange.solution.model.Side;
 
 /**
- * Created by iozi on 2016-08-19.
+ * Contains default values for pojos created by PojoFactories
+ *
+ * Created by Ivo Zieliński on 2016-08-19.
  */
-public abstract class PojoFactory {
+public abstract class PojoFactory<E> {
 
     public static final int MODIFIED_ORDER_ID = 5;
     public static final Side DEFAULT_SIDE = Side.BUY;
@@ -23,4 +25,10 @@ public abstract class PojoFactory {
     public static final int DEFAULT_PRICE = 1;
 
     protected int counter;
+
+    /**
+     * The instance will be instantiated with values contained in static fields.
+     * @return Cancel pojo
+     */
+    public abstract E createDefault();
 }

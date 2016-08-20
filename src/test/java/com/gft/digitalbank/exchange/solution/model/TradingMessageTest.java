@@ -1,7 +1,7 @@
 package com.gft.digitalbank.exchange.solution.model;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
+import com.gft.digitalbank.exchange.solution.test.utils.OrderPojoFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -20,21 +20,21 @@ public class TradingMessageTest {
     @Before
     public void initialize() {
         orderPojoFactory = new OrderPojoFactory();
-        sut = orderPojoFactory.createDefaultOrder();
+        sut = orderPojoFactory.createDefault();
     }
 
     @Test
     public void getId_whenSetToValue_thenGetShouldReturnThatValue() {
-        assertEquals(orderPojoFactory.DEFAULT_ID, sut.getId());
+        assertEquals(OrderPojoFactory.DEFAULT_ID, sut.getId());
     }
 
     @Test
     public void getBroker_whenSetToValue_thenGetShouldReturnThatValue() {
-        assertEquals(orderPojoFactory.DEFAULT_BROKER, sut.getBroker());
+        assertEquals(OrderPojoFactory.DEFAULT_BROKER, sut.getBroker());
     }
 
     @Test
     public void getTimestamp_whenSetToValue_thenGetShouldReturnThatValue() {
-        assertEquals(orderPojoFactory.DEFAULT_TIMESTAMP, sut.getTimestamp());
+        assertEquals(OrderPojoFactory.DEFAULT_TIMESTAMP, sut.getTimestamp());
     }
 }

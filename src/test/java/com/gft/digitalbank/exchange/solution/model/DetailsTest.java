@@ -1,8 +1,7 @@
 package com.gft.digitalbank.exchange.solution.model;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
-import com.gft.digitalbank.exchange.solution.utils.DetailsPojoFactory;
-import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
+import com.gft.digitalbank.exchange.solution.test.utils.DetailsPojoFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -23,7 +22,7 @@ public class DetailsTest {
     @Before
     public void initialize() {
         DetailsPojoFactory detailsPojoFactory = new DetailsPojoFactory();
-        this.sut = detailsPojoFactory.createDefaultDetails();
+        this.sut = detailsPojoFactory.createDefault();
     }
 
     @Test

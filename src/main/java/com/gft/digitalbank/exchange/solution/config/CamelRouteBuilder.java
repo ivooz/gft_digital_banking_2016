@@ -3,7 +3,7 @@ package com.gft.digitalbank.exchange.solution.config;
 import com.gft.digitalbank.exchange.solution.model.Cancel;
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.Order;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationProcessor;
+import com.gft.digitalbank.exchange.solution.service.processing.ShutdownNotificationProcessor;
 import com.gft.digitalbank.exchange.solution.service.scheduling.OrderNotFoundException;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskCreator;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskExecutor;
@@ -74,15 +74,41 @@ public class CamelRouteBuilder extends RouteBuilder {
         this.redeliveryDelayOnFailure = redeliveryDelayOnFailure;
     }
 
+    /**
+     * Sets the ActiveMQ queue names for Apache Camel.
+     * Set to empty list if you don't want to connect to ActiveMQ - extend this class to route messages to
+     * {@link CamelRouteBuilder#AMQ_MESSAGE_ENDPOINT} endpoint from a different source.
+     * Destinations must be set before configure is called.
+     * @param destinations' names
+     */
+    public void setDestinations(@NonNull List<String> destinations) {
+        this.destinations = destinations;
+    }
 
     /**
      * Configures the Camel routes given the previously supplied list of destinations.
+     * @throws IllegalStateException if destinations were not set.
      */
     public void configure() {
-
         Preconditions.checkState(destinations != null, CANNOT_CONFIGURE_ROUTES_WITHOUT_QUEUE_DESTINATIONS);
         defineErrorHandling();
         defineRoutes();
+    }
+
+    /**
+     * Retrieves maximum redelivery count whenever and OrderNotFoundException is thrown
+     * @return redelivery count
+     */
+    public int getMaximumRedeliveriesOnFailure() {
+        return maximumRedeliveriesOnFailure;
+    }
+
+    /**
+     * Retrieves the delay between redeliveries of a failed message.
+     * @return the delay
+     */
+    public int getRedeliveryDelayOnFailure() {
+        return redeliveryDelayOnFailure;
     }
 
     private void defineRoutes() {
@@ -106,10 +132,6 @@ public class CamelRouteBuilder extends RouteBuilder {
                 .when().jsonpath(CANCEL_IDENTIFYING_JSONPATH).to(CANCELS_ENDPOINT_NAME)
                 .when().jsonpath(SHUTDOWN_NOTIFICATION_IDENTIFYING_JSONPATH).to(SHUTDOWN_NOTIFICATIONS_ENDPOINT_NAME)
                 .end();
-    }
-
-    public void setDestinations(@NonNull List<String> destinations) {
-        this.destinations = destinations;
     }
 
     private void defineOrdersRoute() {
@@ -155,23 +177,8 @@ public class CamelRouteBuilder extends RouteBuilder {
     }
 
     private void defineErrorHandling() {
-//        errorHandler(defaultErrorHandler()
-//                .allowRedeliveryWhileStopping(true)
-//                .maximumRedeliveries(maximumRedeliveriesOnFailure)
-//                .redeliveryDelay(redeliveryDelayOnFailure)
-//                .retryAttemptedLogLevel(LoggingLevel.INFO));
-
         onException(OrderNotFoundException.class)
                 .maximumRedeliveries(maximumRedeliveriesOnFailure)
                 .redeliveryDelay(redeliveryDelayOnFailure);
-
-    }
-
-    public int getMaximumRedeliveriesOnFailure() {
-        return maximumRedeliveriesOnFailure;
-    }
-
-    public int getRedeliveryDelayOnFailure() {
-        return redeliveryDelayOnFailure;
     }
 }

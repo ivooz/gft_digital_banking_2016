@@ -1,6 +1,9 @@
-package com.gft.digitalbank.exchange.solution.service.monitoring;
+package com.gft.digitalbank.exchange.solution.service.processing;
 
 import com.gft.digitalbank.exchange.listener.ProcessingListener;
+import com.gft.digitalbank.exchange.solution.service.monitoring.ProcessingFinisher;
+import com.gft.digitalbank.exchange.solution.service.monitoring.ProcessingShutdownException;
+import com.gft.digitalbank.exchange.solution.service.monitoring.ResultsGatherer;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -39,6 +42,9 @@ public class ShutdownNotificationProcessor {
     /**
      * Counts the ShutdownNotification messages. When the counter reaches the Broker count, shutdown procedures are initiated
      * and the processing results are passed to the ProcessingListener.
+     * As the stock exchange shutdown means stopping camel context, the procedure itself cannot be initiated in a Camel
+     * Thread - thus it is ran in a separate one.
+     * @return CompletableFuture for the handling task
      */
     @Handler
     public CompletableFuture<Void> handleShutdownNotification() {
@@ -71,7 +77,7 @@ public class ShutdownNotificationProcessor {
      * Lets the ProcessingMonitor know how many brokers there are, so it can start the shutdown procedure after a specific
      * amount of ShutdownNotifications has been received.
      *
-     * @param brokerCount which is used to check wheter all brokers were closed
+     * @param brokerCount which is used to check whether all brokers were closed
      */
     public void setBrokerCount(int brokerCount) {
         this.brokerCount = new AtomicInteger(brokerCount);

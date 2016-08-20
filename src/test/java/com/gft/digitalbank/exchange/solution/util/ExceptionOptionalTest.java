@@ -15,7 +15,6 @@ import static org.junit.Assert.assertThat;
 @Category(UnitTest.class)
 public class ExceptionOptionalTest {
 
-
     @Test
     public void empty_whenCreatedViaThisMethod_shouldHaveNotExceptionPresent() {
         ExceptionOptional exceptionOptional = ExceptionOptional.empty();
@@ -33,5 +32,4 @@ public class ExceptionOptionalTest {
     public void of_whenPassedNull_shouldThrowNullPointerException() {
         ExceptionOptional.of(null);
     }
-
 }

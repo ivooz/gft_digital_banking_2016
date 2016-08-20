@@ -2,7 +2,7 @@ package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.service.scheduling.OrderSchedulingTask;
-import com.gft.digitalbank.exchange.solution.utils.ResourceLoader;
+import com.gft.digitalbank.exchange.solution.test.utils.ResourceLoader;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
@@ -22,6 +22,7 @@ import static org.hamcrest.core.Is.is;
  */
 @Category(UnitTest.class)
 public class OrderRouteTest extends CamelRouteTest {
+
     private ResourceLoader resourceLoader = new ResourceLoader();
 
     @Produce(uri = CamelRouteBuilder.ORDERS_ENDPOINT_NAME)

@@ -23,6 +23,8 @@ import static org.mockito.Mockito.times;
 @Category(UnitTest.class)
 public class RouteExceptionHandlingTest extends CamelRouteTest {
 
+    private static final String SCHEDULING_TASK_EXECUTOR = "schedulingTaskExecutor";
+
     private SchedulingTaskExecutor schedulingTaskExecutor = Mockito.mock(SchedulingTaskExecutor.class);
     private SchedulingTask schedulingTask;
     private int maximumRedeliveriesOnFailure;
@@ -39,6 +41,7 @@ public class RouteExceptionHandlingTest extends CamelRouteTest {
     public void exceptionHandling_whenSchedulingTaskExecutorThrowsException_theMessageShouldBeResubmitted() throws Exception {
         sendBody(CamelRouteBuilder.SCHEDULING_TASKS_ENDPOINT_NAME, schedulingTask);
         int expectedExecutorCalls = 1 + maximumRedeliveriesOnFailure;
+        //Wait till all redeliveries complete
         Thread.sleep(expectedExecutorCalls * redeliveryDelayOnFailure);
         Mockito.verify(schedulingTaskExecutor, times(expectedExecutorCalls)).executeSchedulingTask(eq(schedulingTask));
         context.stop();
@@ -47,7 +50,7 @@ public class RouteExceptionHandlingTest extends CamelRouteTest {
     @Override
     protected RouteBuilder createRouteBuilder() throws Exception {
         CamelRouteBuilder routeBuilder = (CamelRouteBuilder) super.createRouteBuilder();
-        Whitebox.setInternalState(routeBuilder, "schedulingTaskExecutor", schedulingTaskExecutor);
+        Whitebox.setInternalState(routeBuilder, SCHEDULING_TASK_EXECUTOR, schedulingTaskExecutor);
         maximumRedeliveriesOnFailure = routeBuilder.getMaximumRedeliveriesOnFailure();
         redeliveryDelayOnFailure = routeBuilder.getRedeliveryDelayOnFailure();
         return routeBuilder;

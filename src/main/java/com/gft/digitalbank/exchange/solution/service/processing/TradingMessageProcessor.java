@@ -4,7 +4,7 @@ import com.gft.digitalbank.exchange.solution.model.TradingMessage;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 
 /**
- * Defines how the TradingMessage is applied to the ProductExchange.
+ * Defines how a TradingMessage is applied to the ProductExchange.
  * <p>
  * Created by Ivo Zieliński on 2016-07-15.
  */

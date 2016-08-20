@@ -6,7 +6,7 @@ import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.model.Side;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchangeFactory;
-import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
+import com.gft.digitalbank.exchange.solution.test.utils.OrderPojoFactory;
 import javafx.util.Pair;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -155,6 +155,4 @@ public class OrderExecutionTaskProcessorTest {
                 new Object[]{200, 50, 1000, Side.SELL}
         };
     }
-
-
 }

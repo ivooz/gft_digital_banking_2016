@@ -1,7 +1,7 @@
 package com.gft.digitalbank.exchange.solution.config;
 
 import com.gft.digitalbank.exchange.listener.ProcessingListener;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationProcessor;
+import com.gft.digitalbank.exchange.solution.service.processing.ShutdownNotificationProcessor;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.NonNull;
@@ -73,7 +73,7 @@ public class CamelConfigurer {
     }
 
     /**
-     * Starts cCamel context
+     * Starts Camel context
      *
      * @throws StockExchangeStartupException when there is a problem with starting Camel
      */

@@ -1,7 +1,7 @@
 package com.gft.digitalbank.exchange.solution.model;
 
 /**
- * Represents the Order type.
+ * Represents the Order transaction type.
  * <p>
  * Created by Ivo Zieliński on 2016-06-27.
  */
@@ -20,7 +20,7 @@ public enum Side {
     };
 
     /**
-     * @return the opposite side
+     * @return the opposite Side
      */
     public abstract Side opposite();
 }

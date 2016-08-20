@@ -73,6 +73,4 @@ public class CancelSchedulingTaskTest {
         }
         Mockito.verify(productExchange, times(1)).enqueueTask(processingTask);
     }
-
-
 }

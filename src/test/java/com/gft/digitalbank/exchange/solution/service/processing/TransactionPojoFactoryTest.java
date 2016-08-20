@@ -3,7 +3,7 @@ package com.gft.digitalbank.exchange.solution.service.processing;
 import com.gft.digitalbank.exchange.model.Transaction;
 import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Order;
-import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
+import com.gft.digitalbank.exchange.solution.test.utils.OrderPojoFactory;
 import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;

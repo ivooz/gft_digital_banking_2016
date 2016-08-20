@@ -58,17 +58,6 @@ public class CancelProcessorTest {
         sut.processTradingMessage(null, null);
     }
 
-//    Optional<Order> orderToCancel = productExchange.getById(cancel.getCancelledOrderId());
-//    if (!orderToCancel.isPresent()) {
-//        //The Order has already been cancelled or fully processed
-//        return;
-//    }
-//    Order order = orderToCancel.get();
-//    if (!cancel.getBroker().equals(order.getBroker())) {
-//        return;
-//    }
-//    productExchange.remove(order);
-
     @Test
     public void processTradingMessage_whenPassedCancelAndOrderIsQueuedAndBrokersMatch_itShouldCancelTheOrder() {
         when(cancel.getCancelledOrderId()).thenReturn(CANCELLED_ORDER_ID);
@@ -80,7 +69,7 @@ public class CancelProcessorTest {
     }
 
     @Test
-    public void processTradingMessage_whenPassedCancelAndOrderIsQueuedAndBrokersDontMatch_itShouldNotCancelTheOrder() {
+    public void processTradingMessage_whenPassedCancelAndOrderIsQueuedAndBrokersDonNotMatch_itShouldNotCancelTheOrder() {
         when(cancel.getCancelledOrderId()).thenReturn(CANCELLED_ORDER_ID);
         when(productExchange.getById(CANCELLED_ORDER_ID)).thenReturn(Optional.of(orderToCancel));
         when(orderToCancel.getBroker()).thenReturn(OTHER_BROKER);

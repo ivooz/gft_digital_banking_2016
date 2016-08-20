@@ -40,7 +40,5 @@ public class SchedulingTaskExecutorTest {
         } catch (OrderNotFoundException e) {
             fail(e.getMessage());
         }
-
     }
-
 }

@@ -35,8 +35,9 @@ public class Order extends TradingMessage implements Comparable<Order> {
      * Copying constructor.
      *
      * @param order to be copied
+     * @param timestamp for the new Order
      */
-    public Order(@NonNull Order order, long timestamp) {
+    public Order(Order order, long timestamp) {
         this(order.getId(), timestamp, order.getBroker(), order.getClient(), order.getSide(), order.getProduct(),
                 new Details(order.getDetails()), order.scheduledForDeletion);
     }
@@ -68,20 +69,20 @@ public class Order extends TradingMessage implements Comparable<Order> {
      */
     @Override
     public int compareTo(@NonNull Order otherOrder) {
-        final int BEFORE = -1;
-        final int EQUAL = 0;
-        final int AFTER = 1;
+        final int before = -1;
+        final int equal = 0;
+        final int after = 1;
 
         if (this.equals(otherOrder)) {
-            return EQUAL;
+            return equal;
         }
 
         if (this.getSide() == otherOrder.getSide()) {
             int comparison = getPrice() - otherOrder.getPrice();
             if (comparison > 0) {
-                return this.side == Side.BUY ? BEFORE : AFTER;
+                return this.side == Side.BUY ? before : after;
             } else if (comparison < 0) {
-                return this.side == Side.BUY ? AFTER : BEFORE;
+                return this.side == Side.BUY ? after : before;
             }
         }
         return (int) (this.getTimestamp() - otherOrder.getTimestamp());

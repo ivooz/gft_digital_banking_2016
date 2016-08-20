@@ -72,6 +72,4 @@ public class ModifySchedulingTaskTest {
         }
         Mockito.verify(productExchange, times(1)).enqueueTask(processingTask);
     }
-
-
 }

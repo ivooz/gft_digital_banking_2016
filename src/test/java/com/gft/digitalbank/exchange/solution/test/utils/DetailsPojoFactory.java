@@ -1,14 +1,16 @@
-package com.gft.digitalbank.exchange.solution.utils;
+package com.gft.digitalbank.exchange.solution.test.utils;
 
 import com.gft.digitalbank.exchange.solution.model.Details;
 
 /**
- * Created by iozi on 2016-08-19.
+ * Created by Ivo Zieliński on 2016-08-19.
  */
-public class DetailsPojoFactory extends PojoFactory {
+public class DetailsPojoFactory extends PojoFactory<Details> {
 
-
-    public Details createDefaultDetails() {
+    /**
+     * {@inheritDoc}
+     */
+    public Details createDefault() {
         return getDetailsBuilderWithDefaultValues().build();
     }
 

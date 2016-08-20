@@ -10,7 +10,7 @@ import com.google.inject.assistedinject.Assisted;
 import java.util.Optional;
 
 /**
- * @inheritDoc Created by Ivo Zieliński on 2016-06-28.
+ * {@inheritDoc} Created by Ivo Zieliński on 2016-06-28.
  */
 public class ModificationSchedulingTask extends SchedulingTask<Modification> {
 
@@ -22,7 +22,8 @@ public class ModificationSchedulingTask extends SchedulingTask<Modification> {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * Before the ProcessingTask is Scheduled a ProductExchange of the modified Order is retrieved.
      */
     @Override
     public void execute() throws OrderNotFoundException {

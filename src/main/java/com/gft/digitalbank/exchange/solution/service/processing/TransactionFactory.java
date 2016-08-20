@@ -12,8 +12,6 @@ import lombok.NonNull;
  */
 public class TransactionFactory {
 
-    private static final String CANNOT_TRANSACT_ORDERS_OF_THE_SAME_TYPE = "Cannot transact Orders of the same type!";
-
     /**
      * Creates a Transaction from two Orders. Orders are not modified.
      *

@@ -4,7 +4,7 @@ import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Cancel;
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.Order;
-import com.gft.digitalbank.exchange.solution.service.monitoring.ShutdownNotificationProcessor;
+import com.gft.digitalbank.exchange.solution.service.processing.ShutdownNotificationProcessor;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskCreator;
 import com.gft.digitalbank.exchange.solution.service.scheduling.SchedulingTaskExecutor;
 import org.junit.Before;

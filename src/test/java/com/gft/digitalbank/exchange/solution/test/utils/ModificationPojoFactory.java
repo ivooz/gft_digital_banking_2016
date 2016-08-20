@@ -1,22 +1,24 @@
-package com.gft.digitalbank.exchange.solution.utils;
+package com.gft.digitalbank.exchange.solution.test.utils;
 
 import com.gft.digitalbank.exchange.solution.model.Modification;
 
 /**
- * Created by iozi on 2016-08-19.
+ * Created by Ivo Zieliński on 2016-08-19.
  */
-public class ModificationPojoFactory extends PojoFactory {
+public class ModificationPojoFactory extends PojoFactory<Modification> {
 
     private DetailsPojoFactory detailsPojoFactory = new DetailsPojoFactory();
 
-    public Modification createDefaultModification() {
+    /**
+     * {@inheritDoc}
+     */
+    public Modification createDefault() {
         return getModificationBuilderWithDefaultValues().build();
     }
 
     public Modification createModificationWithBroker(String broker) {
         return getModificationBuilderWithDefaultValues().broker(broker).build();
     }
-
 
     public Modification createModificationWithModifiedOrderIdAmountAndPrice(int modifiedOrderId, int amount, int price) {
         return getModificationBuilderWithDefaultValues()
@@ -28,7 +30,7 @@ public class ModificationPojoFactory extends PojoFactory {
     private Modification.ModificationBuilder getModificationBuilderWithDefaultValues() {
         return Modification.builder()
                 .broker(DEFAULT_BROKER)
-                .details(detailsPojoFactory.createDefaultDetails())
+                .details(detailsPojoFactory.createDefault())
                 .id(DEFAULT_ID)
                 .modifiedOrderId(DEFAULT_MODIFIED_ORDER_ID)
                 .timestamp(DEFAULT_TIMESTAMP);

@@ -28,6 +28,8 @@ import static org.mockito.Mockito.*;
 @RunWith(JUnitParamsRunner.class)
 public class ProcessingTaskExecutorServiceTest {
 
+    private static final String TASK_EXECUTOR = "taskExecutor";
+    
     private ProcessingTaskExecutorService sut;
 
     @Before
@@ -69,7 +71,7 @@ public class ProcessingTaskExecutorServiceTest {
             throws InterruptedException, ExchangeShutdownException {
         ThreadPoolExecutor threadPoolExecutor = Mockito.mock(ThreadPoolExecutor.class);
         doThrow(InterruptedException.class).when(threadPoolExecutor).awaitTermination(anyLong(), anyObject());
-        Whitebox.setInternalState(sut, "taskExecutor", threadPoolExecutor);
+        Whitebox.setInternalState(sut, TASK_EXECUTOR, threadPoolExecutor);
         sut.shutdownAndAwaitTermination();
     }
 

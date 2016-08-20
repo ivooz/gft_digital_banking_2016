@@ -41,7 +41,7 @@ When a Shutdown Notifications are received from all queues the following procedu
 
 1. Camel context is stopped, which means shutting down all executor services and waiting for the currently active Camel threads to terminate
 2. All single threaded executors associated with ProductExchanges are shutdown.
-3. All remainin ProcessingTasks from buffers are executed.
+3. All remaining ProcessingTasks from buffers are executed.
 
 ### Testing
 

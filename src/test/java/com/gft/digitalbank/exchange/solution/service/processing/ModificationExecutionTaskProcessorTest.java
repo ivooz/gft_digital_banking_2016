@@ -4,8 +4,8 @@ import com.gft.digitalbank.exchange.solution.categories.UnitTest;
 import com.gft.digitalbank.exchange.solution.model.Modification;
 import com.gft.digitalbank.exchange.solution.model.Order;
 import com.gft.digitalbank.exchange.solution.service.exchange.ProductExchange;
-import com.gft.digitalbank.exchange.solution.utils.ModificationPojoFactory;
-import com.gft.digitalbank.exchange.solution.utils.OrderPojoFactory;
+import com.gft.digitalbank.exchange.solution.test.utils.ModificationPojoFactory;
+import com.gft.digitalbank.exchange.solution.test.utils.OrderPojoFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -25,9 +25,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ModificationExecutionTaskProcessorTest {
 
-    public static final String OTHER_BROKER = "otherBroker";
-    private ModificationProcessor sut;
-    private Order orderToModify;
+    private static final String OTHER_BROKER = "otherBroker";
 
     @Mock
     private OrderProcessor orderProcessor;
@@ -35,6 +33,8 @@ public class ModificationExecutionTaskProcessorTest {
     @Mock
     private ProductExchange productExchange;
 
+    private ModificationProcessor sut;
+    private Order orderToModify;
     private Modification modification;
     private OrderPojoFactory orderPojoFactory;
     private ModificationPojoFactory modificationPojoFactory;
@@ -45,7 +45,7 @@ public class ModificationExecutionTaskProcessorTest {
         modificationPojoFactory = new ModificationPojoFactory();
         orderPojoFactory = new OrderPojoFactory();
         orderToModify = orderPojoFactory.createNextOrder();
-        modification = modificationPojoFactory.createDefaultModification();
+        modification = modificationPojoFactory.createDefault();
     }
 
     @Test(expected = NullPointerException.class)
@@ -65,7 +65,7 @@ public class ModificationExecutionTaskProcessorTest {
 
     @Test
     public void processTradingMessage_whenPassedModificationAndOrderIsQueuedAndBrokersMatch_itShouldResubmitAModifiedOrderCopy() {
-        when(productExchange.getById(orderPojoFactory.DEFAULT_MODIFIED_ORDER_ID)).thenReturn(Optional.of(orderToModify));
+        when(productExchange.getById(OrderPojoFactory.DEFAULT_MODIFIED_ORDER_ID)).thenReturn(Optional.of(orderToModify));
         sut.processTradingMessage(modification, productExchange);
         Mockito.verify(orderProcessor, times(1))
                 .processTradingMessage(Mockito.any(Order.class), eq(productExchange));
@@ -73,7 +73,7 @@ public class ModificationExecutionTaskProcessorTest {
 
     @Test
     public void processTradingMessage_whenPassedModificationAndOrderIsQueuedAndBrokersDontMatch_itShouldNotResubmitTheOrder() {
-        when(productExchange.getById(orderPojoFactory.DEFAULT_MODIFIED_ORDER_ID)).thenReturn(Optional.of(orderToModify));
+        when(productExchange.getById(OrderPojoFactory.DEFAULT_MODIFIED_ORDER_ID)).thenReturn(Optional.of(orderToModify));
         modification = modificationPojoFactory.createModificationWithBroker(OTHER_BROKER);
         sut.processTradingMessage(modification, productExchange);
         Mockito.verify(orderProcessor, never())
@@ -82,7 +82,7 @@ public class ModificationExecutionTaskProcessorTest {
 
     @Test
     public void processTradingMessage_whenPassedModificationAndOrderIsNotQueued_itShouldNotResubmitTheOrder() {
-        when(productExchange.getById(orderPojoFactory.DEFAULT_MODIFIED_ORDER_ID)).thenReturn(Optional.empty());
+        when(productExchange.getById(OrderPojoFactory.DEFAULT_MODIFIED_ORDER_ID)).thenReturn(Optional.empty());
         sut.processTradingMessage(modification, productExchange);
         Mockito.verify(orderProcessor, never())
                 .processTradingMessage(Mockito.any(Order.class), eq(productExchange));

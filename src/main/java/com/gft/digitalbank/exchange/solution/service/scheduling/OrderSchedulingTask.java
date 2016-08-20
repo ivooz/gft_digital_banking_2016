@@ -8,7 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 /**
- * @inheritDoc Created by Ivo Zieliński on 2016-06-28.
+ * {@inheritDoc} Created by Ivo Zieliński on 2016-06-28.
  */
 public class OrderSchedulingTask extends SchedulingTask<Order> {
 
@@ -20,7 +20,9 @@ public class OrderSchedulingTask extends SchedulingTask<Order> {
     }
 
     /**
-     * @inheritDoc Adds a mapping entry orderId -> productName so that Cancel and Modify tasks can determine
+     * {@inheritDoc}
+     *
+     * Additionally inserts a mapping entry orderId-productName so that Cancel and Modify tasks can determine
      * in which ProductExchange the Order resides.
      */
     @Override

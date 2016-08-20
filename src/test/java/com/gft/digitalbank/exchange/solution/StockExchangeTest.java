@@ -30,6 +30,8 @@ import static org.mockito.Mockito.times;
 @RunWith(MockitoJUnitRunner.class)
 public class StockExchangeTest {
 
+    private static final String CAMEL_CONFIGURER_FIELD_NAME = "camelConfigurer";
+
     private StockExchange sut;
 
     @Mock
@@ -41,7 +43,7 @@ public class StockExchangeTest {
     @Before
     public void initialize() {
         sut = new StockExchange();
-        Whitebox.setInternalState(sut, "camelConfigurer", camelConfigurer);
+        Whitebox.setInternalState(sut, CAMEL_CONFIGURER_FIELD_NAME, camelConfigurer);
     }
 
     @Test(expected = NullPointerException.class)
