@@ -7,7 +7,7 @@ This document contains diagrams and component definitions explaining the program
 
 All incoming messages are processed by Apache Camel.
 
-![messageRouting1.png](https://bitbucket.org/repo/ALkroe/images/2266142288-messageRouting1.png)
+![messageRouting1.png](https://bitbucket.org/repo/ALkroe/images/308647501-messageRouting1.png)
 
 The messages are unmarshalled according to the value of MessageType field of the received json object. Trading message is the wrapped inside ProcessingTask, which in turn is wrapped in SchedulingTask.
 
@@ -48,7 +48,7 @@ When a Shutdown Notifications are received from all queues the following procedu
 All classes have been unit tested, to run them use the following command
 
 ```sh
-$ mvn test -P unit-tests
+$ mvn test -P unit
 ```
 
 For performance tests run:
@@ -66,5 +66,5 @@ $ mvn test -P functional
 To generate unit-test code coverage report run:
 
 ```sh
-$ mvn clean cobertura:cobertura -P unit-tests
+$ mvn clean cobertura:cobertura -P unit
 ```
